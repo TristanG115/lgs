@@ -1,4 +1,5 @@
 import type { ExecutionResult } from '../execution/types.js';
+import type { DocumentationAuditReader } from '../documentation/types.js';
 
 export const COMPLETION_REQUIREMENTS = [
   'acceptance_criteria_addressed', 'implementation_complete', 'relevant_tests_added_or_updated',
@@ -9,7 +10,7 @@ export const COMPLETION_REQUIREMENTS = [
 
 export type CompletionRequirement = typeof COMPLETION_REQUIREMENTS[number];
 export type CompletionStatus = 'passed' | 'blocked';
-export type CompletionEvidenceSource = 'task-record' | 'execution' | 'repository-intelligence';
+export type CompletionEvidenceSource = 'task-record' | 'execution' | 'repository-intelligence' | 'documentation-audit';
 
 export type CompletionEvidence = {
   id: string;
@@ -19,6 +20,7 @@ export type CompletionEvidence = {
   source: CompletionEvidenceSource;
   files?: { path: string; hash: string }[];
   executionId?: string;
+  documentationAuditId?: string;
 };
 
 export type CompletionChecklistItem = {
@@ -70,3 +72,5 @@ export interface ExecutionEvidenceReader {
 export interface EscalationEvidenceReader {
   read(taskId: string): { createdAt: string; to?: unknown }[];
 }
+
+export type { DocumentationAuditReader };

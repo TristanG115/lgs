@@ -11,3 +11,4 @@ export * from '../completion/index.js';
 export * from '../orchestration/index.js';
 export * from '../watchdog/index.js';
 export * from '../research/index.js';
+export * from '../documentation/index.js';

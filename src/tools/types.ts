@@ -37,7 +37,7 @@ export type ToolResultMetadata = {
   bytes: number;
   truncated: boolean;
   continuationToken?: string;
-  source?: 'repository-index' | 'codebase-map' | 'filesystem' | 'git' | 'execution' | 'research';
+  source?: 'repository-index' | 'codebase-map' | 'filesystem' | 'git' | 'execution' | 'research' | 'documentation';
 };
 
 export type ToolResult<T = unknown> = {

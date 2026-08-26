@@ -5,7 +5,7 @@ import type { ExecutionResult } from '../execution/types.js';
 import type { VerificationStep } from '../verification/config.js';
 import { FileCompletionEvidenceStore } from './evidence.js';
 import { FailureBudgetTracker } from './failures.js';
-import type { CompletionChecklistItem, CompletionConfiguration, CompletionEvaluation, CompletionEvidence, CompletionRequirement, ExecutionEvidenceReader } from './types.js';
+import type { CompletionChecklistItem, CompletionConfiguration, CompletionEvaluation, CompletionEvidence, CompletionRequirement, DocumentationAuditReader, ExecutionEvidenceReader } from './types.js';
 
 const LABELS: Record<CompletionRequirement, string> = {
   acceptance_criteria_addressed: 'Acceptance criteria addressed', implementation_complete: 'Implementation complete',
@@ -25,7 +25,8 @@ export class CompletionGuard {
     private readonly workspaceRoot: string,
     private readonly configuration: CompletionConfiguration,
     private readonly completionEvidence: FileCompletionEvidenceStore,
-    private readonly executions: ExecutionEvidenceReader
+    private readonly executions: ExecutionEvidenceReader,
+    private readonly documentationAudits?: DocumentationAuditReader
   ) { this.failures = new FailureBudgetTracker(executions, configuration.failureBudgets); }
 
   async attempt(taskId: string): Promise<CompletionEvaluation> { return this.evaluate(taskId); }
@@ -33,7 +34,7 @@ export class CompletionGuard {
   evaluate(taskId: string): CompletionEvaluation {
     const recorded = this.completionEvidence.read(taskId);
     const executions = this.executions.read(taskId);
-    const checklist = (Object.keys(this.configuration.gates) as CompletionRequirement[]).map(requirement => this.evaluateRequirement(requirement, this.configuration.gates[requirement], recorded, executions));
+    const checklist = (Object.keys(this.configuration.gates) as CompletionRequirement[]).map(requirement => this.evaluateRequirement(taskId, requirement, this.configuration.gates[requirement], recorded, executions));
     const failureBudget = this.failures.state(taskId);
     const required = checklist.filter(item => item.required);
     const outstanding = required.filter(item => !item.passed).map(item => item.detail);
@@ -44,10 +45,11 @@ export class CompletionGuard {
     };
   }
 
-  private evaluateRequirement(requirement: CompletionRequirement, required: boolean, recorded: CompletionEvidence[], executions: { recordedAt: string; execution: ExecutionResult }[]): CompletionChecklistItem {
+  private evaluateRequirement(taskId: string, requirement: CompletionRequirement, required: boolean, recorded: CompletionEvidence[], executions: { recordedAt: string; execution: ExecutionResult }[]): CompletionChecklistItem {
     if (!required) return { requirement, label: LABELS[requirement], required, passed: true, detail: `${LABELS[requirement]} is not required.`, evidence: [] };
     const step = STEP_REQUIREMENT[requirement];
     if (step) return commandItem(requirement, step, executions);
+    if (requirement === 'documentation_current' && this.documentationAudits) return this.documentationItem(taskId);
     if (requirement === 'codebase_map_current') return this.mapItem();
     if (requirement === 'no_unresolved_task_failures') return unresolvedItem(executions);
     const candidates = recorded.filter(entry => entry.requirement === requirement);
@@ -66,6 +68,17 @@ export class CompletionGuard {
       const evidence: CompletionEvidence = { id: `map-${index.generatedAt}`, requirement, summary: passed ? 'Repository index and CODEBASE_MAP match the workspace.' : `Stale entries: ${freshness.staleEntries.join(', ') || 'map metadata'}.`, recordedAt: freshness.checkedAt, source: 'repository-intelligence' };
       return { requirement, label: LABELS[requirement], required: true, passed, detail: evidence.summary, evidence: [evidence] };
     } catch { return { requirement, label: LABELS[requirement], required: true, passed: false, detail: 'CODEBASE_MAP current check could not find a valid repository index.', evidence: [] }; }
+  }
+
+  private documentationItem(taskId: string): CompletionChecklistItem {
+    const requirement: CompletionRequirement = 'documentation_current';
+    const audit = this.documentationAudits?.read(taskId);
+    if (!audit) return { requirement, label: LABELS[requirement], required: true, passed: false, detail: 'DocumentationAgent audit has not run after the current modifications.', evidence: [] };
+    if (!this.documentationAudits?.isCurrent(audit)) return { requirement, label: LABELS[requirement], required: true, passed: false, detail: 'DocumentationAgent audit is stale because code, documentation, CODEBASE_MAP, or task state changed.', evidence: [] };
+    const stale = audit.assessments.filter(item => item.status === 'stale');
+    const summary = stale.length ? `Documentation remains stale: ${stale.map(item => item.category).join(', ')}.` : audit.summary;
+    const evidence: CompletionEvidence = { id: audit.id, requirement, summary, recordedAt: audit.createdAt, source: 'documentation-audit', documentationAuditId: audit.id };
+    return { requirement, label: LABELS[requirement], required: true, passed: stale.length === 0, detail: summary, evidence: [evidence] };
   }
 }
 

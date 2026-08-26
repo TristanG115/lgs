@@ -1,6 +1,6 @@
 # LGS (Little Grad Student)
 
-LGS is a VS Code extension for reliable software-engineering agents. Phase 12 adds version-aware, research-first external knowledge on top of the read-only Watchdog, manager-and-worker orchestration, the evidence-backed Completion Guard, controlled verification, provider-neutral model backends, and deterministic Repository Intelligence.
+LGS is a VS Code extension for reliable software-engineering agents. Phase 13 makes documentation a mechanically enforced engineering output, building on version-aware research, the read-only Watchdog, manager-and-worker orchestration, the evidence-backed Completion Guard, controlled verification, provider-neutral model backends, and deterministic Repository Intelligence.
 
 ## Repository structure
 
@@ -14,6 +14,7 @@ LGS is a VS Code extension for reliable software-engineering agents. Phase 12 ad
 - `src/orchestration/` — logical agent sessions, role/model routing, inference scheduling, lifecycle control, and compact worker reports.
 - `src/watchdog/` — compact persistent task state, read-only progress review, continuation instructions, escalation routing, and escalation evidence.
 - `src/research/` — provider-neutral research tools, manifest version discovery, concise provenance, and task-local deduplication.
+- `src/documentation/` — DocumentationAgent context collection, category audits, freshness evidence, and incremental CODEBASE_MAP tools.
 - `.lgs/index.json` — generated machine-readable repository index.
 - `.lgs/CODEBASE_MAP.md` — generated compact architecture guide.
 - `src/shared/messages.ts` — typed message contracts and runtime validation shared by both sides.
@@ -217,3 +218,17 @@ research:
 ```
 
 An endpoint may contain a `{query}` placeholder; otherwise LGS adds a `q` query parameter. Endpoint responses may be a JSON array or an object with a `results` or `items` array. Each item can provide `url` or `link`, `title`, a concise `snippet`, an optional `authority`, and an optional `relevantVersion`. Authentication and vendor-specific protocols belong behind the configured gateway, keeping the LGS research contract provider-neutral and preventing credentials from entering task evidence.
+
+## Documentation as an engineering output
+
+Phase 13 requires documentation maintenance as part of every meaningful implementation. After modifications, the Manager runs `audit_documentation`. The dedicated DocumentationAgent receives a bounded engineering context containing the objective, acceptance criteria, current Git diff, changed paths and symbols, affected repository relationships, current documentation excerpts, CODEBASE_MAP, change classifications, and persistent task state. It returns one structured assessment for every documentation category and identifies which surfaces remain stale.
+
+The categories are user-facing, developer, architecture, configuration, API, useful inline comments, `.lgs/CODEBASE_MAP.md`, and task records. A category can be current, stale, or not applicable. Documentation guidance explicitly rejects comments that merely repeat obvious code; inline comments are appropriate only when they explain non-obvious constraints, decisions, or behavior.
+
+The latest audit is stored under `.lgs/tasks/<task-id>/documentation-audit.json`. Its evidence fingerprints the complete indexed workspace, CODEBASE_MAP, and task-state revision before analysis. A later code, test, manifest, documentation, map, or task-state edit invalidates the audit mechanically. `get_documentation_state` exposes the current audit and freshness result without rerunning model inference.
+
+Completion Guard uses the DocumentationAgent audit for the `documentation_current` gate. Completion is blocked when no post-change audit exists, the audit fingerprint is stale, or any affected category remains stale. The CODEBASE_MAP category is always overridden by deterministic Repository Intelligence freshness rather than model judgment, while the existing `codebase_map_current` completion gate remains an independent check.
+
+Agents use `update_codebase_map` after file creation, deletion, rename, responsibility changes, dependency or interface changes, major test changes, and architectural changes. The tool passes the previous Repository Index into the deterministic indexer, reuses unchanged entries, records added/changed/removed/renamed paths, and regenerates `.lgs/index.json` and `.lgs/CODEBASE_MAP.md`. Because updating the map changes audit context, the DocumentationAgent must run again afterward.
+
+The DocumentationAgent uses the `documentation-agent` role mapping from `agents.roleModels`; when it is not explicitly mapped, it shares the Manager provider connection and model as an independent logical request. Provider connections and model names remain configuration rather than hardcoded implementation details.
