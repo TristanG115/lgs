@@ -5,3 +5,4 @@ dist/
 .lgs/tasks/
 .lgs/runtime/
 .lgs/memory.json
+.lgs/benchmarks.json

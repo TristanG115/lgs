@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "generatedAt": "2026-08-26T23:53:27.805Z",
+  "generatedAt": "2026-08-26T23:59:20.475Z",
   "root": "/home/tristan/Documents/Github/lgs",
   "directories": [
     ".vscode",
@@ -13,6 +13,7 @@
     "src/integrations",
     "src/intelligence",
     "src/knowledge",
+    "src/localruntime",
     "src/model",
     "src/orchestration",
     "src/planning",
@@ -32,9 +33,9 @@
       "path": ".gitignore",
       "fileType": "unknown",
       "language": "",
-      "size": 80,
-      "mtimeMs": 1787787442916.923,
-      "hash": "a41f0d2fcd4b09ffea812339fd090e2662a6bbef",
+      "size": 101,
+      "mtimeMs": 1787788745114.0662,
+      "hash": "59d65ee87beeb93ddb5008858135afcd760ee4f6",
       "imports": [],
       "exports": [],
       "symbols": [],
@@ -77,9 +78,9 @@
       "path": "README.md",
       "fileType": "md",
       "language": "Markdown/Text",
-      "size": 34108,
-      "mtimeMs": 1787788383195.2004,
-      "hash": "61c3ca41da53d9f980ba909e05121d2f4ae9720e",
+      "size": 34782,
+      "mtimeMs": 1787788745188.0662,
+      "hash": "edb391a64eaee438dbb7cda9ce7bc721ae2f2fce",
       "imports": [],
       "exports": [],
       "symbols": [],
@@ -1221,6 +1222,110 @@
       "likelyTest": false,
       "likelyDocumentation": false,
       "directory": "src/knowledge",
+      "module": "src"
+    },
+    {
+      "path": "src/localruntime/index.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 86,
+      "mtimeMs": 1787788729204.0283,
+      "hash": "fe331eb24439ad8b4d952a72de982a1c4cdb5431",
+      "imports": [
+        "./types.js",
+        "./service.js",
+        "./tools.js"
+      ],
+      "exports": [],
+      "symbols": [],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/localruntime",
+      "module": "src"
+    },
+    {
+      "path": "src/localruntime/service.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 3585,
+      "mtimeMs": 1787788729125.0283,
+      "hash": "ff7bd092ffa480ea07a5b5105ecea50659615b11",
+      "imports": [
+        "node:crypto",
+        "node:fs",
+        "node:path",
+        "./types.js"
+      ],
+      "exports": [
+        "LocalRuntimeDiscovery",
+        "BenchmarkStore",
+        "metrics"
+      ],
+      "symbols": [
+        "CANDIDATES",
+        "LocalRuntimeDiscovery",
+        "BenchmarkStore",
+        "metrics",
+        "valid"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/localruntime",
+      "module": "src"
+    },
+    {
+      "path": "src/localruntime/tools.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 2750,
+      "mtimeMs": 1787788729164.0283,
+      "hash": "1d9f9bbe921c6cafb3c44f9dba1049c27f57ceeb",
+      "imports": [
+        "../tools/framework.js",
+        "../tools/types.js",
+        "./service.js",
+        "./types.js"
+      ],
+      "exports": [
+        "registerLocalRuntimeTools"
+      ],
+      "symbols": [
+        "READ",
+        "WRITE",
+        "registerLocalRuntimeTools"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/localruntime",
+      "module": "src"
+    },
+    {
+      "path": "src/localruntime/types.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 1006,
+      "mtimeMs": 1787788729084.028,
+      "hash": "a427466ef1878d3ed8cf05e112ec43bddbe92ec7",
+      "imports": [],
+      "exports": [
+        "LocalRuntimeKind",
+        "LocalRuntimeStatus",
+        "LocalModelMetrics",
+        "LocalRuntimeRecord",
+        "BenchmarkCase",
+        "BenchmarkRecord"
+      ],
+      "symbols": [
+        "LocalRuntimeKind",
+        "LocalRuntimeStatus",
+        "LocalModelMetrics",
+        "LocalRuntimeRecord",
+        "BenchmarkCase",
+        "BenchmarkRecord"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/localruntime",
       "module": "src"
     },
     {
@@ -2667,9 +2772,9 @@
       "path": "src/tools/index.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 718,
-      "mtimeMs": 1787788347792.1147,
-      "hash": "ec5903eba2ad96b674713e94ce5fd8943a11cc0b",
+      "size": 760,
+      "mtimeMs": 1787788745040.066,
+      "hash": "bbfc500268f0c92460b917ce73ca42257104a03a",
       "imports": [
         "./types.js",
         "./schema.js",
@@ -2690,7 +2795,8 @@
         "../commit/index.js",
         "../knowledge/index.js",
         "../planning/index.js",
-        "../integrations/index.js"
+        "../integrations/index.js",
+        "../localruntime/index.js"
       ],
       "exports": [],
       "symbols": [],
@@ -2885,9 +2991,9 @@
       "path": "src/tools/workspace.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 4514,
-      "mtimeMs": 1787788347830.115,
-      "hash": "8e2f68f9a3bd3dba21417516ae1e07b2411710cd",
+      "size": 4771,
+      "mtimeMs": 1787788745078.066,
+      "hash": "846fb56f618eeb64da3b54942ff0e1f8b59e3f3f",
       "imports": [
         "./git.js",
         "./repository.js",
@@ -2904,7 +3010,8 @@
         "../commit/index.js",
         "../knowledge/index.js",
         "../planning/index.js",
-        "../integrations/index.js"
+        "../integrations/index.js",
+        "../localruntime/index.js"
       ],
       "exports": [
         "createWorkspaceToolRegistry"
@@ -3601,6 +3708,27 @@
       "module": "test"
     },
     {
+      "path": "test/localruntime.test.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 870,
+      "mtimeMs": 1787788745152.0662,
+      "hash": "dd3c862547a0ce22ded46cec31addd97d476bee9",
+      "imports": [
+        "vitest",
+        "node:fs",
+        "node:os",
+        "node:path",
+        "../src/tools/index.js"
+      ],
+      "exports": [],
+      "symbols": [],
+      "likelyTest": true,
+      "likelyDocumentation": false,
+      "directory": "test",
+      "module": "test"
+    },
+    {
       "path": "test/messages.test.ts",
       "fileType": "ts",
       "language": "TypeScript",
@@ -3891,6 +4019,7 @@
         "src/integrations",
         "src/intelligence",
         "src/knowledge",
+        "src/localruntime",
         "src/model",
         "src/orchestration",
         "src/planning",
@@ -3950,6 +4079,10 @@
         "src/knowledge/skills.ts",
         "src/knowledge/tools.ts",
         "src/knowledge/types.ts",
+        "src/localruntime/index.ts",
+        "src/localruntime/service.ts",
+        "src/localruntime/tools.ts",
+        "src/localruntime/types.ts",
         "src/model/anthropic.ts",
         "src/model/backend.ts",
         "src/model/ollama.ts",
@@ -4027,6 +4160,7 @@
         "test/indexer.test.ts",
         "test/integrations.test.ts",
         "test/knowledge.test.ts",
+        "test/localruntime.test.ts",
         "test/messages.test.ts",
         "test/orchestration.test.ts",
         "test/planning.test.ts",
@@ -4095,6 +4229,7 @@
           "src/integrations",
           "src/intelligence",
           "src/knowledge",
+          "src/localruntime",
           "src/model",
           "src/orchestration",
           "src/planning",
@@ -4144,6 +4279,10 @@
           "src/knowledge/skills.ts",
           "src/knowledge/tools.ts",
           "src/knowledge/types.ts",
+          "src/localruntime/index.ts",
+          "src/localruntime/service.ts",
+          "src/localruntime/tools.ts",
+          "src/localruntime/types.ts",
           "src/model/anthropic.ts",
           "src/model/backend.ts",
           "src/model/ollama.ts",
@@ -4234,6 +4373,7 @@
           "test/indexer.test.ts",
           "test/integrations.test.ts",
           "test/knowledge.test.ts",
+          "test/localruntime.test.ts",
           "test/messages.test.ts",
           "test/orchestration.test.ts",
           "test/planning.test.ts",
@@ -4673,6 +4813,38 @@
     {
       "from": "src/knowledge/tools.ts",
       "to": "src/knowledge/skills.ts"
+    },
+    {
+      "from": "src/localruntime/index.ts",
+      "to": "src/localruntime/types.ts"
+    },
+    {
+      "from": "src/localruntime/index.ts",
+      "to": "src/localruntime/service.ts"
+    },
+    {
+      "from": "src/localruntime/index.ts",
+      "to": "src/localruntime/tools.ts"
+    },
+    {
+      "from": "src/localruntime/service.ts",
+      "to": "src/localruntime/types.ts"
+    },
+    {
+      "from": "src/localruntime/tools.ts",
+      "to": "src/tools/framework.ts"
+    },
+    {
+      "from": "src/localruntime/tools.ts",
+      "to": "src/tools/types.ts"
+    },
+    {
+      "from": "src/localruntime/tools.ts",
+      "to": "src/localruntime/service.ts"
+    },
+    {
+      "from": "src/localruntime/tools.ts",
+      "to": "src/localruntime/types.ts"
     },
     {
       "from": "src/model/anthropic.ts",
@@ -5279,6 +5451,10 @@
       "to": "src/integrations/index.ts"
     },
     {
+      "from": "src/tools/index.ts",
+      "to": "src/localruntime/index.ts"
+    },
+    {
       "from": "src/tools/loop.ts",
       "to": "src/model/backend.ts"
     },
@@ -5397,6 +5573,10 @@
     {
       "from": "src/tools/workspace.ts",
       "to": "src/integrations/index.ts"
+    },
+    {
+      "from": "src/tools/workspace.ts",
+      "to": "src/localruntime/index.ts"
     },
     {
       "from": "src/verification/config.ts",
@@ -5691,6 +5871,10 @@
       "to": "src/tools/index.ts"
     },
     {
+      "from": "test/localruntime.test.ts",
+      "to": "src/tools/index.ts"
+    },
+    {
       "from": "test/messages.test.ts",
       "to": "src/shared/messages.ts"
     },
@@ -5807,6 +5991,7 @@
       "src/documentation/tools.ts",
       "src/integrations/tools.ts",
       "src/knowledge/tools.ts",
+      "src/localruntime/tools.ts",
       "src/orchestration/tools.ts",
       "src/planning/tools.ts",
       "src/research/tools.ts",
@@ -5829,6 +6014,7 @@
       "src/integrations/tools.ts",
       "src/integrations/types.ts",
       "src/knowledge/tools.ts",
+      "src/localruntime/tools.ts",
       "src/orchestration/tools.ts",
       "src/planning/tools.ts",
       "src/research/tools.ts",
@@ -6067,6 +6253,7 @@
       "test/git.test.ts",
       "test/integrations.test.ts",
       "test/knowledge.test.ts",
+      "test/localruntime.test.ts",
       "test/planning.test.ts",
       "test/research.test.ts",
       "test/review.test.ts",
@@ -6117,6 +6304,18 @@
     ],
     "src/knowledge/tools.ts": [
       "src/knowledge/index.ts"
+    ],
+    "src/localruntime/types.ts": [
+      "src/localruntime/index.ts",
+      "src/localruntime/service.ts",
+      "src/localruntime/tools.ts"
+    ],
+    "src/localruntime/service.ts": [
+      "src/localruntime/index.ts",
+      "src/localruntime/tools.ts"
+    ],
+    "src/localruntime/tools.ts": [
+      "src/localruntime/index.ts"
     ],
     "src/model/anthropic.ts": [
       "src/model/profiles.ts"
@@ -6317,6 +6516,10 @@
       "src/tools/index.ts",
       "src/tools/workspace.ts"
     ],
+    "src/localruntime/index.ts": [
+      "src/tools/index.ts",
+      "src/tools/workspace.ts"
+    ],
     "src/watchdog/triggers.ts": [
       "src/tools/loop.ts",
       "src/watchdog/index.ts"
@@ -6380,12 +6583,13 @@
     ".lgs/logs/",
     ".lgs/tasks/",
     ".lgs/runtime/",
-    ".lgs/memory.json"
+    ".lgs/memory.json",
+    ".lgs/benchmarks.json"
   ],
   "freshness": {
     "index": "current",
     "codebaseMap": "current",
-    "checkedAt": "2026-08-26T23:53:27.806Z",
+    "checkedAt": "2026-08-26T23:59:20.475Z",
     "staleEntries": []
   },
   "incremental": {
@@ -6435,6 +6639,10 @@
       "src/knowledge/skills.ts",
       "src/knowledge/tools.ts",
       "src/knowledge/types.ts",
+      "src/localruntime/index.ts",
+      "src/localruntime/service.ts",
+      "src/localruntime/tools.ts",
+      "src/localruntime/types.ts",
       "src/model/anthropic.ts",
       "src/model/backend.ts",
       "src/model/ollama.ts",
@@ -6512,6 +6720,7 @@
       "test/indexer.test.ts",
       "test/integrations.test.ts",
       "test/knowledge.test.ts",
+      "test/localruntime.test.ts",
       "test/messages.test.ts",
       "test/orchestration.test.ts",
       "test/planning.test.ts",

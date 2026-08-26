@@ -18,3 +18,4 @@ export * from '../commit/index.js';
 export * from '../knowledge/index.js';
 export * from '../planning/index.js';
 export * from '../integrations/index.js';
+export * from '../localruntime/index.js';

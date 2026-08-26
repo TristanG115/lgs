@@ -293,3 +293,7 @@ LGS normalizes reasoning as `{ enabled, effort: low | medium | high }` and expos
 ## Integrations
 
 The Integration Hub normalizes MCP servers, LGS plugins, and connected apps into descriptors with origin, health, requested permissions, capabilities, allowed agents, and process ownership. External tools are schema-validated and registered through the normal LGS tool framework; their callers do not depend on the originating transport. `.lgs/config.yaml` may declare `integrations.required`, `recommended`, and `optional` IDs without secrets. The current local catalog is intentionally explicit: an integration must be registered and healthy before its capabilities are exposed, and agent-role restrictions are enforced at invocation time. `list_integrations` provides the browser-ready Installed/MCP/Apps data surface; only LGS-owned processes may be stopped by future MCP lifecycle controls.
+
+## Local runtimes and benchmarks
+
+`discover_local_runtimes` safely probes Ollama, LM Studio, llama.cpp-compatible, and explicitly configured OpenAI-compatible endpoints without launching, restarting, or stopping any server. It reports state, available models, exposed capabilities, and ownership. Benchmark history is stored locally in ignored `.lgs/benchmarks.json`; `record_model_benchmark` records representative navigation, tool selection, implementation, debugging, review, instruction-following, and planning cases. Speed metrics (latency and tokens/sec) are stored separately from optional quality scores so LGS never treats the fastest model as automatically best.
