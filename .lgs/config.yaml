@@ -1,0 +1,42 @@
+verification:
+  install:
+    executable: npm
+    args: [ci]
+    category: package-manager
+    timeoutMs: 600000
+  typecheck:
+    executable: npm
+    args: [run, typecheck]
+    category: build
+  lint:
+    executable: npm
+    args: [run, lint]
+    category: test
+  targetedTest:
+    executable: npx
+    args: [vitest, run, "{targets}"]
+    category: test
+    include: ["test/**"]
+  test:
+    executable: npm
+    args: [test]
+    category: test
+  build:
+    executable: npm
+    args: [run, build]
+    category: build
+  start:
+    executable: npm
+    args: [run, dev]
+    category: process
+
+permissions:
+  commands:
+    default: ask
+    categories:
+      build: always_allow
+      test: always_allow
+      package-manager: ask
+      process: ask
+      dangerous: deny
+

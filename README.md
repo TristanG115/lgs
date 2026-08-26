@@ -1,6 +1,6 @@
 # LGS (Little Grad Student)
 
-LGS is a VS Code extension for reliable software-engineering agents. Phase 5 adds bounded Git intelligence and task baselines on top of provider-neutral model backends, deterministic Repository Intelligence, and read-only workspace tools.
+LGS is a VS Code extension for reliable software-engineering agents. Phase 8 adds controlled, evidence-producing software verification on top of provider-neutral model backends, deterministic Repository Intelligence, and guarded workspace tools.
 
 ## Repository structure
 
@@ -8,6 +8,8 @@ LGS is a VS Code extension for reliable software-engineering agents. Phase 5 add
 - `src/webview/` — browser-side UI and styles.
 - `src/intelligence/indexer.ts` — deterministic filesystem/source indexer and codebase-map generator.
 - `src/tools/` — typed tool contracts, validation, guarded execution, repository/Git tools, task baselines, audit records, and the model continuation loop.
+- `src/execution/` — structured process execution, command permissions, normalized output, raw logs, and persisted task evidence.
+- `src/verification/` — generic project verification configuration, targeted selection, and model-facing verification tools.
 - `.lgs/index.json` — generated machine-readable repository index.
 - `.lgs/CODEBASE_MAP.md` — generated compact architecture guide.
 - `src/shared/messages.ts` — typed message contracts and runtime validation shared by both sides.
@@ -74,3 +76,38 @@ Configuration precedence is built-in default → user setting → workspace sett
 Provider connections are independent profiles, so multiple OpenAI-compatible endpoints can coexist. Profiles support enablement, ordinary headers, secret custom headers, model aliases, capability overrides, connection testing, and model discovery. API keys and secret header values remain in VS Code SecretStorage; the Settings webview receives only metadata such as whether a secret exists.
 
 The General, Appearance, Models & Providers, Agents, Integrations, Context, Verification, Git, Usage & Budgets, Memory, Skills, Permissions, and Advanced sections are navigable. Unimplemented sections show explicit placeholders rather than nonfunctional controls. Appearance supports Follow VS Code plus initial LGS light and dark semantic palettes.
+
+## Controlled command execution
+
+Phase 8 gives agents a `run_verification` tool backed by structured command definitions. A request carries an executable, an argument array, a workspace-relative working directory, explicit environment overrides, a command category, and a bounded timeout. LGS launches the executable directly with shell mode disabled, inherits only a small operational environment allowlist, rejects working-directory escape and malformed values, and propagates cancellation from the chat Stop action.
+
+Command policy is resolved at executable, category, and default levels with workspace values taking precedence over user values. The supported policies are `always_allow`, `ask`, and `deny`; categories are `read-only`, `build`, `test`, `package-manager`, `git-mutation`, `network`, `process`, and `dangerous`. The composer approval setting supplies the fallback policy, while `.lgs/config.yaml` can set workspace-specific rules under `permissions.commands`. Commands with an `ask` result use a modal VS Code approval prompt before any process starts.
+
+Model-facing execution results contain the exact display command, status and exit code, a primary error, relevant stack lines, important file locations, and short stdout/stderr previews. Full logs are retained under `.lgs/logs/` and are available only through explicitly paged `get_execution_log` calls. Every task-associated execution is appended to `.lgs/tasks/<task-id>/evidence.json`; both runtime directories are ignored by Git and Repository Intelligence.
+
+## Verification configuration
+
+Project verification is package-manager-neutral. Each `.lgs/config.yaml` entry is an object with `executable`, `args`, and `category`, plus optional `cwd`, `env`, `timeoutMs`, and `include`. The supported keys are `install`, `typecheck`, `lint`, `targetedTest`, `test`, `build`, and `start`; a key can contain one command or a sequence. LGS does not infer npm, Cargo, Gradle, pytest, or another tool—the repository supplies the appropriate executable and argument array.
+
+`targetedTest` definitions may use `include` globs to associate changed workspace paths with a command. The literal `{targets}` argument expands into separate, non-shell arguments, allowing a change such as `test/auth.test.ts` to run only its related verification command. During development agents are instructed to use targeted verification; full configured gates are reserved for the completion check in Phase 9.
+
+Example:
+
+```yaml
+verification:
+  typecheck:
+    executable: cargo
+    args: [check]
+    category: build
+  targetedTest:
+    executable: pytest
+    args: ["{targets}"]
+    category: test
+    include: ["tests/auth/**"]
+permissions:
+  commands:
+    default: ask
+    categories:
+      test: always_allow
+      dangerous: deny
+```

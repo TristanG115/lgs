@@ -1,6 +1,6 @@
 # LGS Codebase Map
 
-Generated: 2026-08-26T03:33:29.708Z
+Generated: 2026-08-26T09:48:40.605Z
 
 This map is generated deterministically from the filesystem, manifests, and source syntax. Source files remain authoritative.
 
@@ -12,8 +12,8 @@ This map is generated deterministically from the filesystem, manifests, and sour
 
 ## Repository shape
 
-- Files: 42
-- Directories: 10
+- Files: 54
+- Directories: 12
 - Modules: 4
 - Entry points: src/extension.ts
 - Manifests: package-lock.json, package.json, tsconfig.json
@@ -43,8 +43,21 @@ This map is generated deterministically from the filesystem, manifests, and sour
 
 ### src
 - Path: src
-- Files: 25; directories: 7
+- Files: 36; directories: 9
 - Entry points: `src/extension.ts`
+  - `src/execution/evidence.ts` — TypeScript
+    - Symbols: TaskEvidenceSink, FileTaskEvidenceStore
+  - `src/execution/index.ts` — TypeScript
+  - `src/execution/logs.ts` — TypeScript
+    - Symbols: RawExecutionLog, RawExecutionLogStore
+  - `src/execution/normalize.ts` — TypeScript
+    - Symbols: ERROR, STACK, LOCATION, MAX_STREAM_LINES, displayCommand, normalizeOutput, lines, unique, relevantPreview, hasLocation
+  - `src/execution/permissions.ts` — TypeScript
+    - Symbols: CommandPermissionResolver, findExecutable
+  - `src/execution/service.ts` — TypeScript
+    - Symbols: DEFAULT_TIMEOUT_MS, MAX_TIMEOUT_MS, INHERITED_ENV, CommandExecutionService, validateRequest, controlledEnvironment
+  - `src/execution/types.ts` — TypeScript
+    - Symbols: COMMAND_CATEGORIES, CommandCategory, PermissionPolicy, CommandDefinition, ExecutionRequest, PermissionConfiguration, PermissionResolution, ExecutionStatus, NormalizedCommandOutput, ExecutionResult, ExecutionEvidence, PermissionPrompt
   - `src/extension.ts` — TypeScript
     - Symbols: SavedChat, activate, deactivate, LgsViewProvider, getHtml, rebuildIndex, openCodebaseMap
   - `src/intelligence/indexer.ts` — TypeScript
@@ -64,7 +77,7 @@ This map is generated deterministically from the filesystem, manifests, and sour
   - `src/model/types.ts` — TypeScript
     - Symbols: Role, TextContent, ImageContent, Content, LgsMessage, GenerationOptions, ModelInfo, ModelCapabilities, ConnectionState, Usage, TokenInformation, BackendErrorCode
   - `src/settings/configuration.ts` — TypeScript
-    - Symbols: WorkspaceConfiguration, SettingsManager
+    - Symbols: SettingsManager
   - `src/settings/defaults.ts` — TypeScript
     - Symbols: SETTINGS_CATEGORIES, createDefaultRegistry, visibleSettings
   - `src/settings/panel.ts` — TypeScript
@@ -90,13 +103,12 @@ This map is generated deterministically from the filesystem, manifests, and sour
     - Symbols: JsonSchema, ToolPermission, ToolErrorCode, ToolError, ToolResultMetadata, ToolResult, ToolIdentity, ToolAuditRecord, ToolAuditSink, ToolExecutionContext, ToolExecutionOutput, ToolDefinition
   - `src/tools/workspace.ts` — TypeScript
     - Symbols: createWorkspaceToolRegistry
-  - `src/webview/main.ts` — TypeScript
-    - Symbols: acquireVsCodeApi, vscode, app, generating, currentAssistant, history, input, send, stop, state, profile, model
-  - `src/webview/styles.css` — CSS
 
 ### test
 - Path: test
-- Files: 6; directories: 1
+- Files: 7; directories: 1
+  - `test/execution.test.ts` — TypeScript (test)
+    - Symbols: fixture, cleanup, request
   - `test/git.test.ts` — TypeScript (test)
     - Symbols: git, repository, cleanup, call
   - `test/indexer.test.ts` — TypeScript (test)
@@ -110,6 +122,20 @@ This map is generated deterministically from the filesystem, manifests, and sour
 
 ## Relationships
 
+- `src/execution/evidence.ts` → `src/execution/types.ts`
+- `src/execution/index.ts` → `src/execution/types.ts`
+- `src/execution/index.ts` → `src/execution/permissions.ts`
+- `src/execution/index.ts` → `src/execution/logs.ts`
+- `src/execution/index.ts` → `src/execution/evidence.ts`
+- `src/execution/index.ts` → `src/execution/normalize.ts`
+- `src/execution/index.ts` → `src/execution/service.ts`
+- `src/execution/normalize.ts` → `src/execution/types.ts`
+- `src/execution/permissions.ts` → `src/execution/types.ts`
+- `src/execution/service.ts` → `src/execution/evidence.ts`
+- `src/execution/service.ts` → `src/execution/logs.ts`
+- `src/execution/service.ts` → `src/execution/normalize.ts`
+- `src/execution/service.ts` → `src/execution/permissions.ts`
+- `src/execution/service.ts` → `src/execution/types.ts`
 - `src/extension.ts` → `src/shared/messages.ts`
 - `src/extension.ts` → `src/shared/logger.ts`
 - `src/extension.ts` → `src/model/profiles.ts`
@@ -135,6 +161,7 @@ This map is generated deterministically from the filesystem, manifests, and sour
 - `src/model/registry.ts` → `src/model/profiles.ts`
 - `src/settings/configuration.ts` → `src/settings/defaults.ts`
 - `src/settings/configuration.ts` → `src/settings/registry.ts`
+- `src/settings/configuration.ts` → `src/verification/config.ts`
 - `src/settings/defaults.ts` → `src/settings/registry.ts`
 - `src/settings/panel.ts` → `src/model/profiles.ts`
 - `src/settings/panel.ts` → `src/settings/configuration.ts`
@@ -149,6 +176,8 @@ This map is generated deterministically from the filesystem, manifests, and sour
 - `src/tools/index.ts` → `src/tools/loop.ts`
 - `src/tools/index.ts` → `src/tools/git.ts`
 - `src/tools/index.ts` → `src/tools/workspace.ts`
+- `src/tools/index.ts` → `src/execution/index.ts`
+- `src/tools/index.ts` → `src/verification/index.ts`
 - `src/tools/loop.ts` → `src/model/backend.ts`
 - `src/tools/loop.ts` → `src/model/types.ts`
 - `src/tools/loop.ts` → `src/tools/framework.ts`
@@ -160,8 +189,23 @@ This map is generated deterministically from the filesystem, manifests, and sour
 - `src/tools/workspace.ts` → `src/tools/git.ts`
 - `src/tools/workspace.ts` → `src/tools/repository.ts`
 - `src/tools/workspace.ts` → `src/tools/framework.ts`
+- `src/tools/workspace.ts` → `src/verification/index.ts`
+- `src/tools/workspace.ts` → `src/execution/index.ts`
+- `src/verification/config.ts` → `src/execution/types.ts`
+- `src/verification/index.ts` → `src/verification/config.ts`
+- `src/verification/index.ts` → `src/verification/runner.ts`
+- `src/verification/index.ts` → `src/verification/tools.ts`
+- `src/verification/runner.ts` → `src/execution/index.ts`
+- `src/verification/runner.ts` → `src/execution/types.ts`
+- `src/verification/runner.ts` → `src/verification/config.ts`
+- `src/verification/tools.ts` → `src/tools/framework.ts`
+- `src/verification/tools.ts` → `src/tools/types.ts`
+- `src/verification/tools.ts` → `src/execution/logs.ts`
+- `src/verification/tools.ts` → `src/verification/config.ts`
+- `src/verification/tools.ts` → `src/verification/runner.ts`
 - `src/webview/main.ts` → `src/webview/styles.css`
 - `src/webview/main.ts` → `src/shared/messages.ts`
+- `test/execution.test.ts` → `src/tools/index.ts`
 - `test/git.test.ts` → `src/tools/index.ts`
 - `test/indexer.test.ts` → `src/intelligence/indexer.ts`
 - `test/messages.test.ts` → `src/shared/messages.ts`
@@ -176,6 +220,13 @@ This map is generated deterministically from the filesystem, manifests, and sour
 
 ## Reverse dependencies
 
+- `src/execution/evidence.ts` ← `src/execution/index.ts`, `src/execution/service.ts`
+- `src/execution/index.ts` ← `src/tools/index.ts`, `src/tools/workspace.ts`, `src/verification/runner.ts`
+- `src/execution/logs.ts` ← `src/execution/index.ts`, `src/execution/service.ts`, `src/verification/tools.ts`
+- `src/execution/normalize.ts` ← `src/execution/index.ts`, `src/execution/service.ts`
+- `src/execution/permissions.ts` ← `src/execution/index.ts`, `src/execution/service.ts`
+- `src/execution/service.ts` ← `src/execution/index.ts`
+- `src/execution/types.ts` ← `src/execution/evidence.ts`, `src/execution/index.ts`, `src/execution/normalize.ts`, `src/execution/permissions.ts`, `src/execution/service.ts`, `src/verification/config.ts`, `src/verification/runner.ts`
 - `src/intelligence/indexer.ts` ← `src/extension.ts`, `src/tools/repository.ts`, `test/indexer.test.ts`
 - `src/model/anthropic.ts` ← `src/model/profiles.ts`
 - `src/model/backend.ts` ← `src/extension.ts`, `src/model/anthropic.ts`, `src/model/ollama.ts`, `src/model/openai.ts`, `src/model/profiles.ts`, `src/model/registry.ts`, `src/tools/loop.ts`, `test/stream.test.ts`
@@ -190,14 +241,18 @@ This map is generated deterministically from the filesystem, manifests, and sour
 - `src/settings/registry.ts` ← `src/settings/configuration.ts`, `src/settings/defaults.ts`, `test/settings.test.ts`
 - `src/shared/logger.ts` ← `src/extension.ts`
 - `src/shared/messages.ts` ← `src/extension.ts`, `src/webview/main.ts`, `test/messages.test.ts`
-- `src/tools/framework.ts` ← `src/tools/git.ts`, `src/tools/index.ts`, `src/tools/loop.ts`, `src/tools/repository.ts`, `src/tools/workspace.ts`
+- `src/tools/framework.ts` ← `src/tools/git.ts`, `src/tools/index.ts`, `src/tools/loop.ts`, `src/tools/repository.ts`, `src/tools/workspace.ts`, `src/verification/tools.ts`
 - `src/tools/git.ts` ← `src/tools/index.ts`, `src/tools/workspace.ts`
-- `src/tools/index.ts` ← `src/extension.ts`, `test/git.test.ts`, `test/tools.test.ts`
+- `src/tools/index.ts` ← `src/extension.ts`, `test/execution.test.ts`, `test/git.test.ts`, `test/tools.test.ts`
 - `src/tools/loop.ts` ← `src/tools/index.ts`
 - `src/tools/repository.ts` ← `src/tools/index.ts`, `src/tools/workspace.ts`
 - `src/tools/schema.ts` ← `src/tools/framework.ts`, `src/tools/index.ts`
-- `src/tools/types.ts` ← `src/tools/framework.ts`, `src/tools/git.ts`, `src/tools/index.ts`, `src/tools/loop.ts`, `src/tools/repository.ts`, `src/tools/schema.ts`
+- `src/tools/types.ts` ← `src/tools/framework.ts`, `src/tools/git.ts`, `src/tools/index.ts`, `src/tools/loop.ts`, `src/tools/repository.ts`, `src/tools/schema.ts`, `src/verification/tools.ts`
 - `src/tools/workspace.ts` ← `src/tools/index.ts`
+- `src/verification/config.ts` ← `src/settings/configuration.ts`, `src/verification/index.ts`, `src/verification/runner.ts`, `src/verification/tools.ts`
+- `src/verification/index.ts` ← `src/tools/index.ts`, `src/tools/workspace.ts`
+- `src/verification/runner.ts` ← `src/verification/index.ts`, `src/verification/tools.ts`
+- `src/verification/tools.ts` ← `src/verification/index.ts`
 - `src/webview/styles.css` ← `src/webview/main.ts`
 
 ## Dependencies
@@ -215,9 +270,9 @@ This map is generated deterministically from the filesystem, manifests, and sour
 
 ## Incremental update
 
-- Reused: 41
+- Reused: 50
 - Added: 0
-- Changed: 1
+- Changed: 4
 - Removed: 0
 - Renamed: 0
 

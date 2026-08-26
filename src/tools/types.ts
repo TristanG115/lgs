@@ -6,9 +6,10 @@ export type JsonSchema =
   | { type: 'object'; description?: string; properties: Record<string, JsonSchema>; required?: string[]; additionalProperties?: boolean };
 
 export type ToolPermission = {
-  access: 'read-only';
+  access: 'read-only' | 'execute';
   scope: 'workspace';
-  network: false;
+  network: boolean;
+  category?: import('../execution/types.js').CommandCategory;
 };
 
 export type ToolErrorCode =
@@ -36,7 +37,7 @@ export type ToolResultMetadata = {
   bytes: number;
   truncated: boolean;
   continuationToken?: string;
-  source?: 'repository-index' | 'codebase-map' | 'filesystem' | 'git';
+  source?: 'repository-index' | 'codebase-map' | 'filesystem' | 'git' | 'execution';
 };
 
 export type ToolResult<T = unknown> = {
