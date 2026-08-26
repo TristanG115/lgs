@@ -1,6 +1,6 @@
 # LGS Codebase Map
 
-Generated: 2026-08-26T23:30:56.172Z
+Generated: 2026-08-26T23:39:20.547Z
 
 This map is generated deterministically from the filesystem, manifests, and source syntax. Source files remain authoritative.
 
@@ -12,8 +12,8 @@ This map is generated deterministically from the filesystem, manifests, and sour
 
 ## Repository shape
 
-- Files: 119
-- Directories: 20
+- Files: 125
+- Directories: 21
 - Modules: 4
 - Entry points: src/extension.ts
 - Manifests: package-lock.json, package.json, tsconfig.json
@@ -43,7 +43,7 @@ This map is generated deterministically from the filesystem, manifests, and sour
 
 ### src
 - Path: src
-- Files: 93; directories: 17
+- Files: 98; directories: 18
 - Entry points: `src/extension.ts`
   - `src/commit/index.ts` — TypeScript
   - `src/commit/service.ts` — TypeScript
@@ -93,18 +93,17 @@ This map is generated deterministically from the filesystem, manifests, and sour
     - Symbols: SavedChat, activate, deactivate, LgsViewProvider, getHtml, rebuildIndex, openCodebaseMap
   - `src/intelligence/indexer.ts` — TypeScript
     - Symbols: IndexedFile, RepositoryModule, RepositoryHierarchy, Freshness, RepositoryIndex, HARD_IGNORED, SOURCE, DOCS, MANIFESTS, readGitignore, isIgnored, discoverFiles
-  - `src/model/anthropic.ts` — TypeScript
-    - Symbols: AnthropicBackend
-  - `src/model/backend.ts` — TypeScript
-    - Symbols: BackendConfig, ModelBackend, httpError, jsonResponse, lines, authHeaders
-  - `src/model/ollama.ts` — TypeScript
-    - Symbols: OllamaBackend
-  - `src/model/openai.ts` — TypeScript
-    - Symbols: OpenAICompatibleBackend
+  - `src/knowledge/index.ts` — TypeScript
+  - `src/knowledge/memory.ts` — TypeScript
+    - Symbols: DEFAULT_MEMORY_CONFIGURATION, ProjectMemoryStore, valid, normalizeTags, tokenize, score, estimateTokens
+  - `src/knowledge/skills.ts` — TypeScript
+    - Symbols: DEFAULT_COST, WorkspaceSkillStore, frontmatter, record, string, strings, tokenize, score
+  - `src/knowledge/tools.ts` — TypeScript
+    - Symbols: READ, WRITE, KINDS, registerKnowledgeTools
 
 ### test
 - Path: test
-- Files: 15; directories: 1
+- Files: 16; directories: 1
   - `test/commit.test.ts` — TypeScript (test)
     - Symbols: root, baseline
   - `test/completion.test.ts` — TypeScript (test)
@@ -116,6 +115,8 @@ This map is generated deterministically from the filesystem, manifests, and sour
   - `test/git.test.ts` — TypeScript (test)
     - Symbols: git, repository, cleanup, call
   - `test/indexer.test.ts` — TypeScript (test)
+    - Symbols: fixture, cleanup
+  - `test/knowledge.test.ts` — TypeScript (test)
     - Symbols: fixture, cleanup
   - `test/messages.test.ts` — TypeScript (test)
   - `test/orchestration.test.ts` — TypeScript (test)
@@ -220,6 +221,17 @@ This map is generated deterministically from the filesystem, manifests, and sour
 - `src/extension.ts` → `src/settings/configuration.ts`
 - `src/extension.ts` → `src/settings/panel.ts`
 - `src/extension.ts` → `src/tools/index.ts`
+- `src/knowledge/index.ts` → `src/knowledge/types.ts`
+- `src/knowledge/index.ts` → `src/knowledge/skills.ts`
+- `src/knowledge/index.ts` → `src/knowledge/memory.ts`
+- `src/knowledge/index.ts` → `src/knowledge/tools.ts`
+- `src/knowledge/memory.ts` → `src/knowledge/types.ts`
+- `src/knowledge/skills.ts` → `src/knowledge/types.ts`
+- `src/knowledge/tools.ts` → `src/tools/types.ts`
+- `src/knowledge/tools.ts` → `src/tools/framework.ts`
+- `src/knowledge/tools.ts` → `src/knowledge/types.ts`
+- `src/knowledge/tools.ts` → `src/knowledge/memory.ts`
+- `src/knowledge/tools.ts` → `src/knowledge/skills.ts`
 - `src/model/anthropic.ts` → `src/model/types.ts`
 - `src/model/anthropic.ts` → `src/model/backend.ts`
 - `src/model/backend.ts` → `src/model/types.ts`
@@ -245,17 +257,6 @@ This map is generated deterministically from the filesystem, manifests, and sour
 - `src/orchestration/inference.ts` → `src/model/types.ts`
 - `src/orchestration/inference.ts` → `src/orchestration/types.ts`
 - `src/orchestration/orchestrator.ts` → `src/model/types.ts`
-- `src/orchestration/orchestrator.ts` → `src/orchestration/report.ts`
-- `src/orchestration/orchestrator.ts` → `src/orchestration/scheduler.ts`
-- `src/orchestration/orchestrator.ts` → `src/orchestration/types.ts`
-- `src/orchestration/report.ts` → `src/orchestration/types.ts`
-- `src/orchestration/scheduler.ts` → `src/orchestration/types.ts`
-- `src/orchestration/tools.ts` → `src/model/types.ts`
-- `src/orchestration/tools.ts` → `src/tools/types.ts`
-- `src/orchestration/tools.ts` → `src/tools/framework.ts`
-- `src/orchestration/tools.ts` → `src/orchestration/orchestrator.ts`
-- `src/orchestration/tools.ts` → `src/orchestration/types.ts`
-- `src/orchestration/types.ts` → `src/model/types.ts`
 
 ## Reverse dependencies
 
@@ -284,6 +285,11 @@ This map is generated deterministically from the filesystem, manifests, and sour
 - `src/execution/service.ts` ← `src/execution/index.ts`, `src/runtime/processes.ts`
 - `src/execution/types.ts` ← `src/completion/failures.ts`, `src/completion/guard.ts`, `src/completion/types.ts`, `src/execution/evidence.ts`, `src/execution/index.ts`, `src/execution/normalize.ts`, `src/execution/permissions.ts`, `src/execution/service.ts`, `src/runtime/types.ts`, `src/verification/config.ts`, `src/verification/runner.ts`
 - `src/intelligence/indexer.ts` ← `src/completion/guard.ts`, `src/documentation/context.ts`, `src/documentation/store.ts`, `src/documentation/tools.ts`, `src/extension.ts`, `src/research/dependencies.ts`, `src/tools/repository.ts`, `test/completion.test.ts`, `test/documentation.test.ts`, `test/indexer.test.ts`, `test/review.test.ts`
+- `src/knowledge/index.ts` ← `src/tools/index.ts`, `src/tools/workspace.ts`
+- `src/knowledge/memory.ts` ← `src/knowledge/index.ts`, `src/knowledge/tools.ts`
+- `src/knowledge/skills.ts` ← `src/knowledge/index.ts`, `src/knowledge/tools.ts`
+- `src/knowledge/tools.ts` ← `src/knowledge/index.ts`
+- `src/knowledge/types.ts` ← `src/knowledge/index.ts`, `src/knowledge/memory.ts`, `src/knowledge/skills.ts`, `src/knowledge/tools.ts`
 - `src/model/anthropic.ts` ← `src/model/profiles.ts`
 - `src/model/backend.ts` ← `src/documentation/analyzer.ts`, `src/extension.ts`, `src/model/anthropic.ts`, `src/model/ollama.ts`, `src/model/openai.ts`, `src/model/profiles.ts`, `src/model/registry.ts`, `src/orchestration/inference.ts`, `src/review/analyzer.ts`, `src/tools/loop.ts`, `src/watchdog/analyzer.ts`, `src/watchdog/escalation.ts`, `test/orchestration.test.ts`, `test/stream.test.ts`
 - `src/model/ollama.ts` ← `src/model/profiles.ts`
@@ -327,13 +333,13 @@ This map is generated deterministically from the filesystem, manifests, and sour
 - `src/settings/registry.ts` ← `src/settings/configuration.ts`, `src/settings/defaults.ts`, `test/settings.test.ts`
 - `src/shared/logger.ts` ← `src/extension.ts`
 - `src/shared/messages.ts` ← `src/extension.ts`, `src/webview/main.ts`, `test/messages.test.ts`
-- `src/tools/framework.ts` ← `src/commit/tools.ts`, `src/completion/tools.ts`, `src/documentation/tools.ts`, `src/orchestration/tools.ts`, `src/research/tools.ts`, `src/review/tools.ts`, `src/runtime/tools.ts`, `src/tools/git.ts`, `src/tools/index.ts`, `src/tools/loop.ts`, `src/tools/repository.ts`, `src/tools/workspace.ts`, `src/verification/tools.ts`, `src/watchdog/escalation.ts`, `src/watchdog/tools.ts`
+- `src/tools/framework.ts` ← `src/commit/tools.ts`, `src/completion/tools.ts`, `src/documentation/tools.ts`, `src/knowledge/tools.ts`, `src/orchestration/tools.ts`, `src/research/tools.ts`, `src/review/tools.ts`, `src/runtime/tools.ts`, `src/tools/git.ts`, `src/tools/index.ts`, `src/tools/loop.ts`, `src/tools/repository.ts`, `src/tools/workspace.ts`, `src/verification/tools.ts`, `src/watchdog/escalation.ts`, `src/watchdog/tools.ts`
 - `src/tools/git.ts` ← `src/commit/service.ts`, `src/documentation/agent.ts`, `src/documentation/context.ts`, `src/review/context.ts`, `src/review/reviewer.ts`, `src/tools/index.ts`, `src/tools/workspace.ts`
-- `src/tools/index.ts` ← `src/extension.ts`, `test/commit.test.ts`, `test/completion.test.ts`, `test/documentation.test.ts`, `test/execution.test.ts`, `test/git.test.ts`, `test/research.test.ts`, `test/review.test.ts`, `test/runtime.test.ts`, `test/tools.test.ts`, `test/watchdog.test.ts`
+- `src/tools/index.ts` ← `src/extension.ts`, `test/commit.test.ts`, `test/completion.test.ts`, `test/documentation.test.ts`, `test/execution.test.ts`, `test/git.test.ts`, `test/knowledge.test.ts`, `test/research.test.ts`, `test/review.test.ts`, `test/runtime.test.ts`, `test/tools.test.ts`, `test/watchdog.test.ts`
 - `src/tools/loop.ts` ← `src/tools/index.ts`, `src/watchdog/escalation.ts`
 - `src/tools/repository.ts` ← `src/tools/index.ts`, `src/tools/workspace.ts`
 - `src/tools/schema.ts` ← `src/tools/framework.ts`, `src/tools/index.ts`
-- `src/tools/types.ts` ← `src/commit/tools.ts`, `src/completion/tools.ts`, `src/documentation/tools.ts`, `src/orchestration/tools.ts`, `src/research/tools.ts`, `src/review/tools.ts`, `src/runtime/tools.ts`, `src/tools/framework.ts`, `src/tools/git.ts`, `src/tools/index.ts`, `src/tools/loop.ts`, `src/tools/repository.ts`, `src/tools/schema.ts`, `src/verification/tools.ts`, `src/watchdog/tools.ts`, `src/watchdog/triggers.ts`
+- `src/tools/types.ts` ← `src/commit/tools.ts`, `src/completion/tools.ts`, `src/documentation/tools.ts`, `src/knowledge/tools.ts`, `src/orchestration/tools.ts`, `src/research/tools.ts`, `src/review/tools.ts`, `src/runtime/tools.ts`, `src/tools/framework.ts`, `src/tools/git.ts`, `src/tools/index.ts`, `src/tools/loop.ts`, `src/tools/repository.ts`, `src/tools/schema.ts`, `src/verification/tools.ts`, `src/watchdog/tools.ts`, `src/watchdog/triggers.ts`
 - `src/tools/workspace.ts` ← `src/tools/index.ts`
 - `src/verification/config.ts` ← `src/completion/guard.ts`, `src/settings/configuration.ts`, `src/verification/index.ts`, `src/verification/runner.ts`, `src/verification/tools.ts`
 - `src/verification/index.ts` ← `src/tools/index.ts`, `src/tools/workspace.ts`
@@ -368,7 +374,7 @@ This map is generated deterministically from the filesystem, manifests, and sour
 ## Incremental update
 
 - Reused: 0
-- Added: 119
+- Added: 125
 - Changed: 0
 - Removed: 0
 - Renamed: 0

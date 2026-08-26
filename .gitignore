@@ -4,3 +4,4 @@ dist/
 .lgs/logs/
 .lgs/tasks/
 .lgs/runtime/
+.lgs/memory.json

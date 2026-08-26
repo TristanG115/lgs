@@ -279,3 +279,9 @@ The supported browser tools are `browser_open`, `browser_click`, `browser_type`,
 ## Verified commits
 
 Phase 16 exposes `create_verified_commit` after every required Completion Guard gate passes. It stages only task-tracked modifications that did not exist in the task-start Git baseline, inspects the staged diff, blocks obvious secret-like values, and refuses mixed files that overlap preexisting user work (which require manual hunk separation). The detailed commit body records Goal, Changes, Documentation, Verification, Files, and `LGS-Task` for future history inspection.
+
+## Skills and long-term memory
+
+Workspace skills live in `.lgs/skills/<name>/SKILL.md`. Their YAML frontmatter declares `name`, `description`, optional `applicableTasks`, `activationRules`, and `estimatedTokenCost`; adjacent files are available as supporting material. LGS lists, manually activates, or Manager-selects relevant skills within a stated token budget, rather than injecting every skill.
+
+Long-term memory is local durable knowledge in ignored `.lgs/memory.json`, deliberately separate from authoritative task state. Store concise architecture decisions, conventions, debugging discoveries, recurring patterns, and approved behavior with `remember_project_knowledge`. `search_project_memory` returns only relevant entries within a token budget. Inspect size and retention with `get_memory_state`, enable or disable it with `set_project_memory_enabled`, adjust session retention with `configure_project_memory_retention`, delete individual entries with `delete_project_memory`, and apply retention/size limits with `compact_project_memory`.

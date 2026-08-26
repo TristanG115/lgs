@@ -11,8 +11,9 @@ import { registerDocumentationTools, type DocumentationAgent, type FileDocumenta
 import { registerReviewTools, type FileReviewStore, type IndependentReviewer } from '../review/index.js';
 import { registerRuntimeTools, type FileRuntimeStore, type ManagedProcessManager, type RuntimeVerifier } from '../runtime/index.js';
 import { registerCommitTools, VerifiedCommitService } from '../commit/index.js';
+import { registerKnowledgeTools, ProjectMemoryStore, WorkspaceSkillStore } from '../knowledge/index.js';
 
-export function createWorkspaceToolRegistry(options: { gitBaseline?: GitBaseline; gitRunner?: GitCommandRunner; verificationRunner?: VerificationRunner; executionLogs?: RawExecutionLogStore; completionGuard?: CompletionGuard; completionEvidence?: FileCompletionEvidenceStore; orchestrator?: Orchestrator; managerAgentId?: string; taskState?: FileTaskStateStore; watchdog?: WatchdogService; research?: ResearchService; researchStore?: FileResearchStore; documentationAgent?: DocumentationAgent; documentationStore?: FileDocumentationAuditStore; independentReviewer?: IndependentReviewer; reviewStore?: FileReviewStore; processes?: ManagedProcessManager; runtimeVerifier?: RuntimeVerifier; runtimeStore?: FileRuntimeStore; commitService?: VerifiedCommitService } = {}): ToolRegistry {
+export function createWorkspaceToolRegistry(options: { gitBaseline?: GitBaseline; gitRunner?: GitCommandRunner; verificationRunner?: VerificationRunner; executionLogs?: RawExecutionLogStore; completionGuard?: CompletionGuard; completionEvidence?: FileCompletionEvidenceStore; orchestrator?: Orchestrator; managerAgentId?: string; taskState?: FileTaskStateStore; watchdog?: WatchdogService; research?: ResearchService; researchStore?: FileResearchStore; documentationAgent?: DocumentationAgent; documentationStore?: FileDocumentationAuditStore; independentReviewer?: IndependentReviewer; reviewStore?: FileReviewStore; processes?: ManagedProcessManager; runtimeVerifier?: RuntimeVerifier; runtimeStore?: FileRuntimeStore; commitService?: VerifiedCommitService; skills?: WorkspaceSkillStore; memories?: ProjectMemoryStore } = {}): ToolRegistry {
   const registry = registerGitTools(createRepositoryToolRegistry(), { baseline: options.gitBaseline, runner: options.gitRunner });
   if (options.verificationRunner && options.executionLogs) registerVerificationTools(registry, options.verificationRunner, options.executionLogs);
   if (options.completionGuard && options.completionEvidence) registerCompletionTools(registry, options.completionGuard, options.completionEvidence);
@@ -26,5 +27,8 @@ export function createWorkspaceToolRegistry(options: { gitBaseline?: GitBaseline
     ? new VerifiedCommitService(options.gitBaseline.workspaceRoot, options.completionGuard, options.taskState, options.gitBaseline)
     : undefined);
   if (commitService) registerCommitTools(registry, commitService);
+  const skills = options.skills ?? (options.gitBaseline ? new WorkspaceSkillStore(options.gitBaseline.workspaceRoot) : undefined);
+  const memories = options.memories ?? (options.gitBaseline ? new ProjectMemoryStore(options.gitBaseline.workspaceRoot) : undefined);
+  if (skills && memories) registerKnowledgeTools(registry, skills, memories);
   return registry;
 }

@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "generatedAt": "2026-08-26T23:30:56.172Z",
+  "generatedAt": "2026-08-26T23:39:20.547Z",
   "root": "/home/tristan/Documents/Github/lgs",
   "directories": [
     ".vscode",
@@ -11,6 +11,7 @@
     "src/documentation",
     "src/execution",
     "src/intelligence",
+    "src/knowledge",
     "src/model",
     "src/orchestration",
     "src/research",
@@ -29,9 +30,9 @@
       "path": ".gitignore",
       "fileType": "unknown",
       "language": "",
-      "size": 63,
-      "mtimeMs": 1787779631018.0398,
-      "hash": "8394ba6adf84ecbcbf82023cff9dd1012371ee76",
+      "size": 80,
+      "mtimeMs": 1787787442916.923,
+      "hash": "a41f0d2fcd4b09ffea812339fd090e2662a6bbef",
       "imports": [],
       "exports": [],
       "symbols": [],
@@ -74,9 +75,9 @@
       "path": "README.md",
       "fileType": "md",
       "language": "Markdown/Text",
-      "size": 31487,
-      "mtimeMs": 1787785997375.6714,
-      "hash": "3e9e392ac5f128e098d222cbed3b5602a90ead5d",
+      "size": 32540,
+      "mtimeMs": 1787787552641.19,
+      "hash": "40d009ca52c3acde06e069bfa1d992850218725f",
       "imports": [],
       "exports": [],
       "symbols": [],
@@ -980,6 +981,143 @@
       "likelyTest": false,
       "likelyDocumentation": false,
       "directory": "src/intelligence",
+      "module": "src"
+    },
+    {
+      "path": "src/knowledge/index.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 114,
+      "mtimeMs": 1787787442811.9229,
+      "hash": "c44471262cc9f4baf10d31476680aca8bb990390",
+      "imports": [
+        "./types.js",
+        "./skills.js",
+        "./memory.js",
+        "./tools.js"
+      ],
+      "exports": [],
+      "symbols": [],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/knowledge",
+      "module": "src"
+    },
+    {
+      "path": "src/knowledge/memory.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 4735,
+      "mtimeMs": 1787787546540.175,
+      "hash": "caac7b7129861d9874dc9abd058f6c99879615b6",
+      "imports": [
+        "node:crypto",
+        "node:fs",
+        "node:path",
+        "./types.js"
+      ],
+      "exports": [
+        "DEFAULT_MEMORY_CONFIGURATION",
+        "ProjectMemoryStore"
+      ],
+      "symbols": [
+        "DEFAULT_MEMORY_CONFIGURATION",
+        "ProjectMemoryStore",
+        "valid",
+        "normalizeTags",
+        "tokenize",
+        "score",
+        "estimateTokens"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/knowledge",
+      "module": "src"
+    },
+    {
+      "path": "src/knowledge/skills.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 3724,
+      "mtimeMs": 1787787366619.7375,
+      "hash": "1c1618f6da0fedb8ca4940bffcbfbff8e573b129",
+      "imports": [
+        "node:fs",
+        "node:path",
+        "yaml",
+        "./types.js"
+      ],
+      "exports": [
+        "WorkspaceSkillStore"
+      ],
+      "symbols": [
+        "DEFAULT_COST",
+        "WorkspaceSkillStore",
+        "frontmatter",
+        "record",
+        "string",
+        "strings",
+        "tokenize",
+        "score"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/knowledge",
+      "module": "src"
+    },
+    {
+      "path": "src/knowledge/tools.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 6357,
+      "mtimeMs": 1787787546575.1753,
+      "hash": "38845e86d900b2839fdd534f2d60edfe282ec83a",
+      "imports": [
+        "../tools/types.js",
+        "../tools/framework.js",
+        "./types.js",
+        "./memory.js",
+        "./skills.js"
+      ],
+      "exports": [
+        "registerKnowledgeTools"
+      ],
+      "symbols": [
+        "READ",
+        "WRITE",
+        "KINDS",
+        "registerKnowledgeTools"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/knowledge",
+      "module": "src"
+    },
+    {
+      "path": "src/knowledge/types.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 719,
+      "mtimeMs": 1787787366582.7373,
+      "hash": "fed0b06f25be82f5211fbccf45de999ff70d53dc",
+      "imports": [],
+      "exports": [
+        "SkillMetadata",
+        "WorkspaceSkill",
+        "MemoryKind",
+        "ProjectMemory",
+        "MemoryConfiguration"
+      ],
+      "symbols": [
+        "SkillMetadata",
+        "WorkspaceSkill",
+        "MemoryKind",
+        "ProjectMemory",
+        "MemoryConfiguration"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/knowledge",
       "module": "src"
     },
     {
@@ -2379,9 +2517,9 @@
       "path": "src/tools/index.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 599,
-      "mtimeMs": 1787785981621.6082,
-      "hash": "241d22c5573069461e65d690ccda42a4b3fc95c9",
+      "size": 638,
+      "mtimeMs": 1787787442848.923,
+      "hash": "7ed40ee0054187c50f01add1104917fa733ca7cb",
       "imports": [
         "./types.js",
         "./schema.js",
@@ -2399,7 +2537,8 @@
         "../documentation/index.js",
         "../review/index.js",
         "../runtime/index.js",
-        "../commit/index.js"
+        "../commit/index.js",
+        "../knowledge/index.js"
       ],
       "exports": [],
       "symbols": [],
@@ -2594,9 +2733,9 @@
       "path": "src/tools/workspace.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 3659,
-      "mtimeMs": 1787786941186.702,
-      "hash": "09c7c1148c271d216cebabde947fbcfdc7c9a1dc",
+      "size": 4168,
+      "mtimeMs": 1787787459191.963,
+      "hash": "fcbc0873da20f39983f1fd6bda8a9a54210ca3c5",
       "imports": [
         "./git.js",
         "./repository.js",
@@ -2610,7 +2749,8 @@
         "../documentation/index.js",
         "../review/index.js",
         "../runtime/index.js",
-        "../commit/index.js"
+        "../commit/index.js",
+        "../knowledge/index.js"
       ],
       "exports": [
         "createWorkspaceToolRegistry"
@@ -3263,6 +3403,30 @@
       "module": "test"
     },
     {
+      "path": "test/knowledge.test.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 2030,
+      "mtimeMs": 1787787526212.126,
+      "hash": "09fd984015a9802cee21be8cde816fa3b56d161b",
+      "imports": [
+        "vitest",
+        "node:fs",
+        "node:os",
+        "node:path",
+        "../src/tools/index.js"
+      ],
+      "exports": [],
+      "symbols": [
+        "fixture",
+        "cleanup"
+      ],
+      "likelyTest": true,
+      "likelyDocumentation": false,
+      "directory": "test",
+      "module": "test"
+    },
+    {
       "path": "test/messages.test.ts",
       "fileType": "ts",
       "language": "TypeScript",
@@ -3530,6 +3694,7 @@
         "src/documentation",
         "src/execution",
         "src/intelligence",
+        "src/knowledge",
         "src/model",
         "src/orchestration",
         "src/research",
@@ -3579,6 +3744,11 @@
         "src/execution/types.ts",
         "src/extension.ts",
         "src/intelligence/indexer.ts",
+        "src/knowledge/index.ts",
+        "src/knowledge/memory.ts",
+        "src/knowledge/skills.ts",
+        "src/knowledge/tools.ts",
+        "src/knowledge/types.ts",
         "src/model/anthropic.ts",
         "src/model/backend.ts",
         "src/model/ollama.ts",
@@ -3652,6 +3822,7 @@
         "test/execution.test.ts",
         "test/git.test.ts",
         "test/indexer.test.ts",
+        "test/knowledge.test.ts",
         "test/messages.test.ts",
         "test/orchestration.test.ts",
         "test/research.test.ts",
@@ -3717,6 +3888,7 @@
           "src/documentation",
           "src/execution",
           "src/intelligence",
+          "src/knowledge",
           "src/model",
           "src/orchestration",
           "src/research",
@@ -3756,6 +3928,11 @@
           "src/execution/types.ts",
           "src/extension.ts",
           "src/intelligence/indexer.ts",
+          "src/knowledge/index.ts",
+          "src/knowledge/memory.ts",
+          "src/knowledge/skills.ts",
+          "src/knowledge/tools.ts",
+          "src/knowledge/types.ts",
           "src/model/anthropic.ts",
           "src/model/backend.ts",
           "src/model/ollama.ts",
@@ -3842,6 +4019,7 @@
           "test/execution.test.ts",
           "test/git.test.ts",
           "test/indexer.test.ts",
+          "test/knowledge.test.ts",
           "test/messages.test.ts",
           "test/orchestration.test.ts",
           "test/research.test.ts",
@@ -4192,6 +4370,50 @@
     {
       "from": "src/extension.ts",
       "to": "src/tools/index.ts"
+    },
+    {
+      "from": "src/knowledge/index.ts",
+      "to": "src/knowledge/types.ts"
+    },
+    {
+      "from": "src/knowledge/index.ts",
+      "to": "src/knowledge/skills.ts"
+    },
+    {
+      "from": "src/knowledge/index.ts",
+      "to": "src/knowledge/memory.ts"
+    },
+    {
+      "from": "src/knowledge/index.ts",
+      "to": "src/knowledge/tools.ts"
+    },
+    {
+      "from": "src/knowledge/memory.ts",
+      "to": "src/knowledge/types.ts"
+    },
+    {
+      "from": "src/knowledge/skills.ts",
+      "to": "src/knowledge/types.ts"
+    },
+    {
+      "from": "src/knowledge/tools.ts",
+      "to": "src/tools/types.ts"
+    },
+    {
+      "from": "src/knowledge/tools.ts",
+      "to": "src/tools/framework.ts"
+    },
+    {
+      "from": "src/knowledge/tools.ts",
+      "to": "src/knowledge/types.ts"
+    },
+    {
+      "from": "src/knowledge/tools.ts",
+      "to": "src/knowledge/memory.ts"
+    },
+    {
+      "from": "src/knowledge/tools.ts",
+      "to": "src/knowledge/skills.ts"
     },
     {
       "from": "src/model/anthropic.ts",
@@ -4770,6 +4992,10 @@
       "to": "src/commit/index.ts"
     },
     {
+      "from": "src/tools/index.ts",
+      "to": "src/knowledge/index.ts"
+    },
+    {
       "from": "src/tools/loop.ts",
       "to": "src/model/backend.ts"
     },
@@ -4876,6 +5102,10 @@
     {
       "from": "src/tools/workspace.ts",
       "to": "src/commit/index.ts"
+    },
+    {
+      "from": "src/tools/workspace.ts",
+      "to": "src/knowledge/index.ts"
     },
     {
       "from": "src/verification/config.ts",
@@ -5158,6 +5388,10 @@
       "to": "src/intelligence/indexer.ts"
     },
     {
+      "from": "test/knowledge.test.ts",
+      "to": "src/tools/index.ts"
+    },
+    {
       "from": "test/messages.test.ts",
       "to": "src/shared/messages.ts"
     },
@@ -5267,6 +5501,7 @@
       "src/commit/tools.ts",
       "src/completion/tools.ts",
       "src/documentation/tools.ts",
+      "src/knowledge/tools.ts",
       "src/orchestration/tools.ts",
       "src/research/tools.ts",
       "src/review/tools.ts",
@@ -5284,6 +5519,7 @@
       "src/commit/tools.ts",
       "src/completion/tools.ts",
       "src/documentation/tools.ts",
+      "src/knowledge/tools.ts",
       "src/orchestration/tools.ts",
       "src/research/tools.ts",
       "src/review/tools.ts",
@@ -5519,11 +5755,29 @@
       "test/documentation.test.ts",
       "test/execution.test.ts",
       "test/git.test.ts",
+      "test/knowledge.test.ts",
       "test/research.test.ts",
       "test/review.test.ts",
       "test/runtime.test.ts",
       "test/tools.test.ts",
       "test/watchdog.test.ts"
+    ],
+    "src/knowledge/types.ts": [
+      "src/knowledge/index.ts",
+      "src/knowledge/memory.ts",
+      "src/knowledge/skills.ts",
+      "src/knowledge/tools.ts"
+    ],
+    "src/knowledge/skills.ts": [
+      "src/knowledge/index.ts",
+      "src/knowledge/tools.ts"
+    ],
+    "src/knowledge/memory.ts": [
+      "src/knowledge/index.ts",
+      "src/knowledge/tools.ts"
+    ],
+    "src/knowledge/tools.ts": [
+      "src/knowledge/index.ts"
     ],
     "src/model/anthropic.ts": [
       "src/model/profiles.ts"
@@ -5722,6 +5976,10 @@
       "src/tools/index.ts",
       "src/tools/workspace.ts"
     ],
+    "src/knowledge/index.ts": [
+      "src/tools/index.ts",
+      "src/tools/workspace.ts"
+    ],
     "src/watchdog/triggers.ts": [
       "src/tools/loop.ts",
       "src/watchdog/index.ts"
@@ -5784,12 +6042,13 @@
     "*.log",
     ".lgs/logs/",
     ".lgs/tasks/",
-    ".lgs/runtime/"
+    ".lgs/runtime/",
+    ".lgs/memory.json"
   ],
   "freshness": {
     "index": "current",
     "codebaseMap": "current",
-    "checkedAt": "2026-08-26T23:30:56.172Z",
+    "checkedAt": "2026-08-26T23:39:20.547Z",
     "staleEntries": []
   },
   "incremental": {
@@ -5830,6 +6089,11 @@
       "src/execution/types.ts",
       "src/extension.ts",
       "src/intelligence/indexer.ts",
+      "src/knowledge/index.ts",
+      "src/knowledge/memory.ts",
+      "src/knowledge/skills.ts",
+      "src/knowledge/tools.ts",
+      "src/knowledge/types.ts",
       "src/model/anthropic.ts",
       "src/model/backend.ts",
       "src/model/ollama.ts",
@@ -5903,6 +6167,7 @@
       "test/execution.test.ts",
       "test/git.test.ts",
       "test/indexer.test.ts",
+      "test/knowledge.test.ts",
       "test/messages.test.ts",
       "test/orchestration.test.ts",
       "test/research.test.ts",
