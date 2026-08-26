@@ -38,9 +38,9 @@ The webview posts only the `ClientMessage` union. The extension host receives `u
 
 ## Repository intelligence
 
-Phase 2 maintains deterministic repository intelligence in `.lgs/`. Run **LGS: Rebuild Repository Index** to scan the workspace, update file fingerprints, parse TypeScript/JavaScript imports, exports, and top-level symbols, collect manifests and dependencies, and regenerate both artifacts. Unchanged files are reused from the prior index; added, changed, removed, and hash-matched renamed files are tracked in the incremental summary. Dependency, build, cache, `.git`, and `.lgs` directories are ignored.
+Phase 3 maintains deterministic repository intelligence in `.lgs/`. Run **LGS: Rebuild Repository Index** to update file fingerprints, parse TypeScript/JavaScript imports, exports, and top-level symbols, collect manifests and dependencies, and regenerate both artifacts. The index is hierarchical (`repository → module → directory → file → symbol`) and also records local relationships, reverse dependencies, likely tests/documentation, and important entry points.
 
-Use **LGS: Open Codebase Map** to open the generated architecture guide in VS Code. The map is intentionally compact and does not reproduce source code.
+Index updates reuse unchanged file entries and record added, changed, deleted, and hash-matched renamed files. The scanner respects `.gitignore` and excludes dependency, build, cache, `.git`, and generated `.lgs` directories. **LGS: Open Codebase Map** checks freshness and warns when the generated map needs rebuilding. The map is intentionally compact and does not reproduce source code.
 
 ## Settings and configuration
 

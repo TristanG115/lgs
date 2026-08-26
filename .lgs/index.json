@@ -1,6 +1,6 @@
 {
-  "version": 1,
-  "generatedAt": "2026-08-26T02:42:38.224Z",
+  "version": 2,
+  "generatedAt": "2026-08-26T02:55:10.685Z",
   "root": "/home/tristan/Documents/Github/lgs",
   "directories": [
     ".vscode",
@@ -25,7 +25,9 @@
       "exports": [],
       "symbols": [],
       "likelyTest": false,
-      "likelyDocumentation": false
+      "likelyDocumentation": false,
+      "directory": "",
+      "module": ""
     },
     {
       "path": ".vscode/launch.json",
@@ -38,7 +40,9 @@
       "exports": [],
       "symbols": [],
       "likelyTest": false,
-      "likelyDocumentation": false
+      "likelyDocumentation": false,
+      "directory": ".vscode",
+      "module": ""
     },
     {
       "path": ".vscode/tasks.json",
@@ -51,20 +55,24 @@
       "exports": [],
       "symbols": [],
       "likelyTest": false,
-      "likelyDocumentation": false
+      "likelyDocumentation": false,
+      "directory": ".vscode",
+      "module": ""
     },
     {
       "path": "README.md",
       "fileType": "md",
       "language": "Markdown/Text",
-      "size": 5746,
-      "mtimeMs": 1787712066276.1194,
-      "hash": "96afabda2b5c7ef96cba61b392d284c7347f5eba",
+      "size": 5950,
+      "mtimeMs": 1787712865530.841,
+      "hash": "0207d0e6a568e76965e674fd1bb57d85de849da2",
       "imports": [],
       "exports": [],
       "symbols": [],
       "likelyTest": false,
-      "likelyDocumentation": true
+      "likelyDocumentation": true,
+      "directory": "",
+      "module": ""
     },
     {
       "path": "esbuild.mjs",
@@ -84,7 +92,9 @@
         "webview"
       ],
       "likelyTest": false,
-      "likelyDocumentation": false
+      "likelyDocumentation": false,
+      "directory": "",
+      "module": ""
     },
     {
       "path": "eslint.config.mjs",
@@ -102,7 +112,9 @@
       ],
       "symbols": [],
       "likelyTest": false,
-      "likelyDocumentation": false
+      "likelyDocumentation": false,
+      "directory": "",
+      "module": ""
     },
     {
       "path": "media/lgs.svg",
@@ -115,7 +127,9 @@
       "exports": [],
       "symbols": [],
       "likelyTest": false,
-      "likelyDocumentation": false
+      "likelyDocumentation": false,
+      "directory": "media",
+      "module": "media"
     },
     {
       "path": "package-lock.json",
@@ -128,7 +142,9 @@
       "exports": [],
       "symbols": [],
       "likelyTest": false,
-      "likelyDocumentation": false
+      "likelyDocumentation": false,
+      "directory": "",
+      "module": ""
     },
     {
       "path": "package.json",
@@ -141,15 +157,17 @@
       "exports": [],
       "symbols": [],
       "likelyTest": false,
-      "likelyDocumentation": false
+      "likelyDocumentation": false,
+      "directory": "",
+      "module": ""
     },
     {
       "path": "src/extension.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 9446,
-      "mtimeMs": 1787712066278.4912,
-      "hash": "50d7fddb75fcc9dfe196301fa049c94db6acd987",
+      "size": 9893,
+      "mtimeMs": 1787712758688.7314,
+      "hash": "2defc248d6d5370b972e064dcc090a244968167f",
       "imports": [
         "vscode",
         "./shared/messages.js",
@@ -178,15 +196,17 @@
         "openCodebaseMap"
       ],
       "likelyTest": false,
-      "likelyDocumentation": false
+      "likelyDocumentation": false,
+      "directory": "src",
+      "module": "src"
     },
     {
       "path": "src/intelligence/indexer.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 10048,
-      "mtimeMs": 1787711160335.6,
-      "hash": "02c5f95a51b26ccce78b84cb9a3415b8cc558083",
+      "size": 18950,
+      "mtimeMs": 1787712900666.8772,
+      "hash": "189bde6b518715e9d37a16880a927b7fdf84e190",
       "imports": [
         "node:fs",
         "node:path",
@@ -195,36 +215,54 @@
       ],
       "exports": [
         "IndexedFile",
+        "RepositoryModule",
+        "RepositoryHierarchy",
+        "Freshness",
         "RepositoryIndex",
-        "discoverFiles",
+        "readGitignore",
         "isIgnored",
+        "discoverFiles",
         "indexRepository",
+        "getFreshness",
         "writeRepositoryIndex",
         "renderCodebaseMap"
       ],
       "symbols": [
         "IndexedFile",
+        "RepositoryModule",
+        "RepositoryHierarchy",
+        "Freshness",
         "RepositoryIndex",
-        "IGNORED",
+        "HARD_IGNORED",
         "SOURCE",
         "DOCS",
         "MANIFESTS",
-        "discoverFiles",
+        "readGitignore",
         "isIgnored",
+        "discoverFiles",
         "indexRepository",
+        "getFreshness",
         "writeRepositoryIndex",
         "renderCodebaseMap",
         "parseFile",
+        "buildHierarchy",
+        "detectEntryPoints",
         "declarationName",
         "resolveImport",
         "readDependencies",
+        "uniqueRelationships",
+        "globMatches",
+        "escapeRegExp",
+        "moduleFor",
         "fileHash",
         "relative",
         "directoriesOf",
         "languageFor"
       ],
       "likelyTest": false,
-      "likelyDocumentation": false
+      "likelyDocumentation": false,
+      "directory": "src/intelligence",
+      "module": "src"
     },
     {
       "path": "src/model/anthropic.ts",
@@ -244,7 +282,9 @@
         "AnthropicBackend"
       ],
       "likelyTest": false,
-      "likelyDocumentation": false
+      "likelyDocumentation": false,
+      "directory": "src/model",
+      "module": "src"
     },
     {
       "path": "src/model/backend.ts",
@@ -273,7 +313,9 @@
         "authHeaders"
       ],
       "likelyTest": false,
-      "likelyDocumentation": false
+      "likelyDocumentation": false,
+      "directory": "src/model",
+      "module": "src"
     },
     {
       "path": "src/model/ollama.ts",
@@ -293,7 +335,9 @@
         "OllamaBackend"
       ],
       "likelyTest": false,
-      "likelyDocumentation": false
+      "likelyDocumentation": false,
+      "directory": "src/model",
+      "module": "src"
     },
     {
       "path": "src/model/openai.ts",
@@ -313,7 +357,9 @@
         "OpenAICompatibleBackend"
       ],
       "likelyTest": false,
-      "likelyDocumentation": false
+      "likelyDocumentation": false,
+      "directory": "src/model",
+      "module": "src"
     },
     {
       "path": "src/model/profiles.ts",
@@ -348,7 +394,9 @@
         "createBackend"
       ],
       "likelyTest": false,
-      "likelyDocumentation": false
+      "likelyDocumentation": false,
+      "directory": "src/model",
+      "module": "src"
     },
     {
       "path": "src/model/registry.ts",
@@ -370,7 +418,9 @@
         "createBackends"
       ],
       "likelyTest": false,
-      "likelyDocumentation": false
+      "likelyDocumentation": false,
+      "directory": "src/model",
+      "module": "src"
     },
     {
       "path": "src/model/types.ts",
@@ -419,7 +469,9 @@
         "backendError"
       ],
       "likelyTest": false,
-      "likelyDocumentation": false
+      "likelyDocumentation": false,
+      "directory": "src/model",
+      "module": "src"
     },
     {
       "path": "src/settings/configuration.ts",
@@ -445,7 +497,9 @@
         "SettingsManager"
       ],
       "likelyTest": false,
-      "likelyDocumentation": false
+      "likelyDocumentation": false,
+      "directory": "src/settings",
+      "module": "src"
     },
     {
       "path": "src/settings/defaults.ts",
@@ -468,15 +522,17 @@
         "visibleSettings"
       ],
       "likelyTest": false,
-      "likelyDocumentation": false
+      "likelyDocumentation": false,
+      "directory": "src/settings",
+      "module": "src"
     },
     {
       "path": "src/settings/panel.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 11614,
-      "mtimeMs": 1787712147454.1667,
-      "hash": "97889fa92a23e01bcf7f0f98b3a440bbf799d06b",
+      "size": 11662,
+      "mtimeMs": 1787712212177.2046,
+      "hash": "e852fa7df2fb33995d34c8f3662ead977c9f45ad",
       "imports": [
         "vscode",
         "../model/profiles.js",
@@ -492,7 +548,9 @@
         "script"
       ],
       "likelyTest": false,
-      "likelyDocumentation": false
+      "likelyDocumentation": false,
+      "directory": "src/settings",
+      "module": "src"
     },
     {
       "path": "src/settings/registry.ts",
@@ -521,7 +579,9 @@
         "resolveSetting"
       ],
       "likelyTest": false,
-      "likelyDocumentation": false
+      "likelyDocumentation": false,
+      "directory": "src/settings",
+      "module": "src"
     },
     {
       "path": "src/shared/logger.ts",
@@ -538,7 +598,9 @@
         "Logger"
       ],
       "likelyTest": false,
-      "likelyDocumentation": false
+      "likelyDocumentation": false,
+      "directory": "src/shared",
+      "module": "src"
     },
     {
       "path": "src/shared/messages.ts",
@@ -563,7 +625,9 @@
         "isHostMessage"
       ],
       "likelyTest": false,
-      "likelyDocumentation": false
+      "likelyDocumentation": false,
+      "directory": "src/shared",
+      "module": "src"
     },
     {
       "path": "src/webview/main.ts",
@@ -588,7 +652,9 @@
         "add"
       ],
       "likelyTest": false,
-      "likelyDocumentation": false
+      "likelyDocumentation": false,
+      "directory": "src/webview",
+      "module": "src"
     },
     {
       "path": "src/webview/styles.css",
@@ -601,15 +667,17 @@
       "exports": [],
       "symbols": [],
       "likelyTest": false,
-      "likelyDocumentation": false
+      "likelyDocumentation": false,
+      "directory": "src/webview",
+      "module": "src"
     },
     {
       "path": "test/indexer.test.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 2628,
-      "mtimeMs": 1787711111908.577,
-      "hash": "ff4aedd5a30d55b427cc0ad937217e3038157ada",
+      "size": 4433,
+      "mtimeMs": 1787712844192.819,
+      "hash": "2f21babca0b57827c3c00c28fa06f5f79f4155ce",
       "imports": [
         "vitest",
         "node:fs",
@@ -619,10 +687,13 @@
       ],
       "exports": [],
       "symbols": [
-        "fixture"
+        "fixture",
+        "cleanup"
       ],
       "likelyTest": true,
-      "likelyDocumentation": false
+      "likelyDocumentation": false,
+      "directory": "test",
+      "module": "test"
     },
     {
       "path": "test/messages.test.ts",
@@ -638,7 +709,9 @@
       "exports": [],
       "symbols": [],
       "likelyTest": true,
-      "likelyDocumentation": false
+      "likelyDocumentation": false,
+      "directory": "test",
+      "module": "test"
     },
     {
       "path": "test/settings.test.ts",
@@ -663,7 +736,9 @@
         "context"
       ],
       "likelyTest": true,
-      "likelyDocumentation": false
+      "likelyDocumentation": false,
+      "directory": "test",
+      "module": "test"
     },
     {
       "path": "test/stream.test.ts",
@@ -679,7 +754,9 @@
       "exports": [],
       "symbols": [],
       "likelyTest": true,
-      "likelyDocumentation": false
+      "likelyDocumentation": false,
+      "directory": "test",
+      "module": "test"
     },
     {
       "path": "tsconfig.json",
@@ -692,7 +769,9 @@
       "exports": [],
       "symbols": [],
       "likelyTest": false,
-      "likelyDocumentation": false
+      "likelyDocumentation": false,
+      "directory": "",
+      "module": ""
     },
     {
       "path": "vitest.config.ts",
@@ -709,9 +788,153 @@
       ],
       "symbols": [],
       "likelyTest": false,
-      "likelyDocumentation": false
+      "likelyDocumentation": false,
+      "directory": "",
+      "module": ""
     }
   ],
+  "hierarchy": {
+    "repository": {
+      "path": "",
+      "directories": [
+        ".vscode",
+        "media",
+        "src",
+        "src/intelligence",
+        "src/model",
+        "src/settings",
+        "src/shared",
+        "src/webview",
+        "test"
+      ],
+      "files": [
+        ".gitignore",
+        ".vscode/launch.json",
+        ".vscode/tasks.json",
+        "README.md",
+        "esbuild.mjs",
+        "eslint.config.mjs",
+        "media/lgs.svg",
+        "package-lock.json",
+        "package.json",
+        "src/extension.ts",
+        "src/intelligence/indexer.ts",
+        "src/model/anthropic.ts",
+        "src/model/backend.ts",
+        "src/model/ollama.ts",
+        "src/model/openai.ts",
+        "src/model/profiles.ts",
+        "src/model/registry.ts",
+        "src/model/types.ts",
+        "src/settings/configuration.ts",
+        "src/settings/defaults.ts",
+        "src/settings/panel.ts",
+        "src/settings/registry.ts",
+        "src/shared/logger.ts",
+        "src/shared/messages.ts",
+        "src/webview/main.ts",
+        "src/webview/styles.css",
+        "test/indexer.test.ts",
+        "test/messages.test.ts",
+        "test/settings.test.ts",
+        "test/stream.test.ts",
+        "tsconfig.json",
+        "vitest.config.ts"
+      ],
+      "modules": [
+        "root",
+        "media",
+        "src",
+        "test"
+      ]
+    },
+    "modules": [
+      {
+        "id": "root",
+        "name": "Repository root",
+        "path": "",
+        "packageManifest": "package.json",
+        "directories": [
+          ".vscode"
+        ],
+        "files": [
+          ".gitignore",
+          ".vscode/launch.json",
+          ".vscode/tasks.json",
+          "README.md",
+          "esbuild.mjs",
+          "eslint.config.mjs",
+          "package-lock.json",
+          "package.json",
+          "tsconfig.json",
+          "vitest.config.ts"
+        ],
+        "entryPoints": []
+      },
+      {
+        "id": "media",
+        "name": "media",
+        "path": "media",
+        "directories": [
+          "media"
+        ],
+        "files": [
+          "media/lgs.svg"
+        ],
+        "entryPoints": []
+      },
+      {
+        "id": "src",
+        "name": "src",
+        "path": "src",
+        "directories": [
+          "src",
+          "src/intelligence",
+          "src/model",
+          "src/settings",
+          "src/shared",
+          "src/webview"
+        ],
+        "files": [
+          "src/extension.ts",
+          "src/intelligence/indexer.ts",
+          "src/model/anthropic.ts",
+          "src/model/backend.ts",
+          "src/model/ollama.ts",
+          "src/model/openai.ts",
+          "src/model/profiles.ts",
+          "src/model/registry.ts",
+          "src/model/types.ts",
+          "src/settings/configuration.ts",
+          "src/settings/defaults.ts",
+          "src/settings/panel.ts",
+          "src/settings/registry.ts",
+          "src/shared/logger.ts",
+          "src/shared/messages.ts",
+          "src/webview/main.ts",
+          "src/webview/styles.css"
+        ],
+        "entryPoints": [
+          "src/extension.ts"
+        ]
+      },
+      {
+        "id": "test",
+        "name": "test",
+        "path": "test",
+        "directories": [
+          "test"
+        ],
+        "files": [
+          "test/indexer.test.ts",
+          "test/messages.test.ts",
+          "test/settings.test.ts",
+          "test/stream.test.ts"
+        ],
+        "entryPoints": []
+      }
+    ]
+  },
   "moduleRelationships": [
     {
       "from": "src/extension.ts",
@@ -862,6 +1085,78 @@
       "to": "src/model/backend.ts"
     }
   ],
+  "reverseDependencies": {
+    "src/shared/messages.ts": [
+      "src/extension.ts",
+      "src/webview/main.ts",
+      "test/messages.test.ts"
+    ],
+    "src/shared/logger.ts": [
+      "src/extension.ts"
+    ],
+    "src/model/profiles.ts": [
+      "src/extension.ts",
+      "src/model/registry.ts",
+      "src/settings/panel.ts",
+      "test/settings.test.ts"
+    ],
+    "src/model/registry.ts": [
+      "src/extension.ts",
+      "test/settings.test.ts"
+    ],
+    "src/model/types.ts": [
+      "src/extension.ts",
+      "src/model/anthropic.ts",
+      "src/model/backend.ts",
+      "src/model/ollama.ts",
+      "src/model/openai.ts"
+    ],
+    "src/model/backend.ts": [
+      "src/extension.ts",
+      "src/model/anthropic.ts",
+      "src/model/ollama.ts",
+      "src/model/openai.ts",
+      "src/model/profiles.ts",
+      "src/model/registry.ts",
+      "test/stream.test.ts"
+    ],
+    "src/intelligence/indexer.ts": [
+      "src/extension.ts",
+      "test/indexer.test.ts"
+    ],
+    "src/settings/configuration.ts": [
+      "src/extension.ts",
+      "src/settings/panel.ts",
+      "test/settings.test.ts"
+    ],
+    "src/settings/panel.ts": [
+      "src/extension.ts"
+    ],
+    "src/model/anthropic.ts": [
+      "src/model/profiles.ts"
+    ],
+    "src/model/ollama.ts": [
+      "src/model/profiles.ts"
+    ],
+    "src/model/openai.ts": [
+      "src/model/profiles.ts"
+    ],
+    "src/settings/defaults.ts": [
+      "src/settings/configuration.ts",
+      "test/settings.test.ts"
+    ],
+    "src/settings/registry.ts": [
+      "src/settings/configuration.ts",
+      "src/settings/defaults.ts",
+      "test/settings.test.ts"
+    ],
+    "src/webview/styles.css": [
+      "src/webview/main.ts"
+    ]
+  },
+  "entryPoints": [
+    "src/extension.ts"
+  ],
   "manifests": [
     "package-lock.json",
     "package.json",
@@ -878,6 +1173,17 @@
     "typescript": "^5.6.0",
     "typescript-eslint": "^8.0.0",
     "vitest": "^2.1.0"
+  },
+  "gitignore": [
+    "node_modules/",
+    "dist/",
+    "*.log"
+  ],
+  "freshness": {
+    "index": "current",
+    "codebaseMap": "current",
+    "checkedAt": "2026-08-26T02:55:10.685Z",
+    "staleEntries": []
   },
   "incremental": {
     "reused": [],
