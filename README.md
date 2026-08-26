@@ -1,6 +1,6 @@
 # LGS (Little Grad Student)
 
-LGS is a VS Code extension for reliable software-engineering agents. Phase 13 makes documentation a mechanically enforced engineering output, building on version-aware research, the read-only Watchdog, manager-and-worker orchestration, the evidence-backed Completion Guard, controlled verification, provider-neutral model backends, and deterministic Repository Intelligence.
+LGS is a VS Code extension for reliable software-engineering agents. Phase 14 adds fresh-context independent review and Manager disposition on top of mechanically enforced documentation, version-aware research, the read-only Watchdog, manager-and-worker orchestration, the evidence-backed Completion Guard, controlled verification, provider-neutral model backends, and deterministic Repository Intelligence.
 
 ## Repository structure
 
@@ -15,6 +15,7 @@ LGS is a VS Code extension for reliable software-engineering agents. Phase 13 ma
 - `src/watchdog/` — compact persistent task state, read-only progress review, continuation instructions, escalation routing, and escalation evidence.
 - `src/research/` — provider-neutral research tools, manifest version discovery, concise provenance, and task-local deduplication.
 - `src/documentation/` — DocumentationAgent context collection, category audits, freshness evidence, and incremental CODEBASE_MAP tools.
+- `src/review/` — fresh Reviewer evidence, structured findings, Manager dispositions, approval freshness, and completion integration.
 - `.lgs/index.json` — generated machine-readable repository index.
 - `.lgs/CODEBASE_MAP.md` — generated compact architecture guide.
 - `src/shared/messages.ts` — typed message contracts and runtime validation shared by both sides.
@@ -232,3 +233,17 @@ Completion Guard uses the DocumentationAgent audit for the `documentation_curren
 Agents use `update_codebase_map` after file creation, deletion, rename, responsibility changes, dependency or interface changes, major test changes, and architectural changes. The tool passes the previous Repository Index into the deterministic indexer, reuses unchanged entries, records added/changed/removed/renamed paths, and regenerates `.lgs/index.json` and `.lgs/CODEBASE_MAP.md`. Because updating the map changes audit context, the DocumentationAgent must run again afterward.
 
 The DocumentationAgent uses the `documentation-agent` role mapping from `agents.roleModels`; when it is not explicitly mapped, it shares the Manager provider connection and model as an independent logical request. Provider connections and model names remain configuration rather than hardcoded implementation details.
+
+## Independent review
+
+Phase 14 prevents the implementation agent from being the sole judge of its own work. After implementation, verification, research, and documentation are current, the Manager calls `run_independent_review`. LGS creates a new Reviewer inference request containing only the original objective, acceptance criteria, final/current diff, bounded relevant source and tests, compact verification results, retained research findings, documentation changes and audit state, plus the task-start baseline of staged, unstaged, and untracked user changes. The implementation conversation and worker transcripts are never included.
+
+The Reviewer actively looks for correctness bugs, missed requirements, regressions, edge cases, security problems, unsupported assumptions, missing or weak tests, stale documentation, architecture problems, unnecessary scope, and accidental modification of preexisting user work. Findings are compact records with severity, confidence, location, description, evidence, and a recommended action. Reviews are retained in `.lgs/tasks/<task-id>/reviews.json` and available through `get_review_state`.
+
+A review with no findings is approved immediately. Otherwise it remains pending until the Manager calls `evaluate_review_findings` with an evidenced `confirmed` or `dismissed` decision for every finding. Confirmed findings are appended to remaining task work, produce the existing `reviewer_rejection` escalation trigger, and should be delegated to an Implementer or Debugger. The required loop is fix → targeted/full tests as appropriate → documentation audit and map update → fresh Reviewer check. Verification continues through the existing `VerificationRunner`, so the same-error and total-fix retry budgets still apply.
+
+Review freshness is mechanical. Its fingerprint covers the workspace and CODEBASE_MAP, task-state revision, command evidence, research findings, and DocumentationAgent audit. Any later code, test, verification, research, documentation, map, or task-state change invalidates approval and requires a fresh review iteration. This also prevents an old approval from being reused after a fix.
+
+Set `completion.gates.independent_review_passes: true` in `.lgs/config.yaml` when independent approval is mandatory. Completion Guard then blocks when review has not run, findings await Manager evaluation, changes were requested, or the latest approval is stale. When the gate is disabled, the tools remain available for risk-based review.
+
+The Reviewer uses `agents.roleModels.reviewer`. If no Reviewer-specific mapping exists, it shares the Manager provider connection and model through a separate logical request with a fresh context; no model or provider is hardcoded.

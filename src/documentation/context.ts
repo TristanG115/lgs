@@ -33,7 +33,7 @@ async function collectChanges(root: string, signal: AbortSignal, runner?: GitCom
     if (!baseline.repository) return { paths: [], diff: 'Workspace is not a Git repository; task modifications are listed separately.' };
     const paths = [...baseline.staged, ...baseline.unstaged, ...baseline.untracked].flatMap(change => [change.path, ...(change.originalPath ? [change.originalPath] : [])]);
     const client = new GitClient(root, runner);
-    const result = await client.tryRun('diff', ['HEAD', '--no-ext-diff', '--no-textconv', '--no-color', '--', '.'], signal);
+    const result = await client.tryRun('diff', ['HEAD', '--no-ext-diff', '--no-textconv', '--no-color', '--relative', '--', '.'], signal);
     const untracked = baseline.untracked.length ? `\nUntracked files:\n${baseline.untracked.map(change => `- ${change.path}`).join('\n')}` : '';
     return { paths, diff: bounded(stripGeneratedArtifacts(result?.stdout ?? '') + untracked, MAX_DIFF) };
   } catch (error) {

@@ -16,7 +16,8 @@ export function detectEscalationTriggers(options: { results?: ToolResult[]; resp
 }
 
 function reviewerRejected(result: ToolResult): boolean {
-  if (result.toolId !== 'delegate_subtasks' || result.status !== 'success') return false;
+  if (!['delegate_subtasks', 'run_independent_review', 'evaluate_review_findings'].includes(result.toolId) || result.status !== 'success') return false;
   const text = JSON.stringify(result.data).toLowerCase();
-  return text.includes('"role":"reviewer"') && /reject|not approved|changes required/.test(text);
+  return result.toolId === 'delegate_subtasks' ? text.includes('"role":"reviewer"') && /reject|not approved|changes required/.test(text)
+    : /"status":"changes-requested"/.test(text);
 }

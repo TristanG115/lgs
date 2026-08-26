@@ -5,7 +5,7 @@ import type { ExecutionResult } from '../execution/types.js';
 import type { VerificationStep } from '../verification/config.js';
 import { FileCompletionEvidenceStore } from './evidence.js';
 import { FailureBudgetTracker } from './failures.js';
-import type { CompletionChecklistItem, CompletionConfiguration, CompletionEvaluation, CompletionEvidence, CompletionRequirement, DocumentationAuditReader, ExecutionEvidenceReader } from './types.js';
+import type { CompletionChecklistItem, CompletionConfiguration, CompletionEvaluation, CompletionEvidence, CompletionRequirement, DocumentationAuditReader, ExecutionEvidenceReader, IndependentReviewReader } from './types.js';
 
 const LABELS: Record<CompletionRequirement, string> = {
   acceptance_criteria_addressed: 'Acceptance criteria addressed', implementation_complete: 'Implementation complete',
@@ -26,7 +26,8 @@ export class CompletionGuard {
     private readonly configuration: CompletionConfiguration,
     private readonly completionEvidence: FileCompletionEvidenceStore,
     private readonly executions: ExecutionEvidenceReader,
-    private readonly documentationAudits?: DocumentationAuditReader
+    private readonly documentationAudits?: DocumentationAuditReader,
+    private readonly independentReviews?: IndependentReviewReader
   ) { this.failures = new FailureBudgetTracker(executions, configuration.failureBudgets); }
 
   async attempt(taskId: string): Promise<CompletionEvaluation> { return this.evaluate(taskId); }
@@ -50,6 +51,7 @@ export class CompletionGuard {
     const step = STEP_REQUIREMENT[requirement];
     if (step) return commandItem(requirement, step, executions);
     if (requirement === 'documentation_current' && this.documentationAudits) return this.documentationItem(taskId);
+    if (requirement === 'independent_review_passes' && this.independentReviews) return this.independentReviewItem(taskId);
     if (requirement === 'codebase_map_current') return this.mapItem();
     if (requirement === 'no_unresolved_task_failures') return unresolvedItem(executions);
     const candidates = recorded.filter(entry => entry.requirement === requirement);
@@ -79,6 +81,19 @@ export class CompletionGuard {
     const summary = stale.length ? `Documentation remains stale: ${stale.map(item => item.category).join(', ')}.` : audit.summary;
     const evidence: CompletionEvidence = { id: audit.id, requirement, summary, recordedAt: audit.createdAt, source: 'documentation-audit', documentationAuditId: audit.id };
     return { requirement, label: LABELS[requirement], required: true, passed: stale.length === 0, detail: summary, evidence: [evidence] };
+  }
+
+  private independentReviewItem(taskId: string): CompletionChecklistItem {
+    const requirement: CompletionRequirement = 'independent_review_passes';
+    const review = this.independentReviews?.latest(taskId);
+    if (!review) return { requirement, label: LABELS[requirement], required: true, passed: false, detail: 'Independent review has not run.', evidence: [] };
+    if (!this.independentReviews?.isCurrent(review)) return { requirement, label: LABELS[requirement], required: true, passed: false, detail: 'Independent review evidence is stale after later code, test, verification, research, documentation, map, or task-state changes.', evidence: [] };
+    const passed = review.status === 'approved';
+    const summary = passed ? `Independent review iteration ${review.iteration} approved the current evidence.`
+      : review.status === 'pending-manager-evaluation' ? `Independent review iteration ${review.iteration} awaits Manager evaluation.`
+      : `Independent review iteration ${review.iteration} requested changes.`;
+    const evidence: CompletionEvidence = { id: review.id, requirement, summary, recordedAt: review.evaluatedAt ?? review.createdAt, source: 'independent-review', reviewId: review.id };
+    return { requirement, label: LABELS[requirement], required: true, passed, detail: summary, evidence: [evidence] };
   }
 }
 

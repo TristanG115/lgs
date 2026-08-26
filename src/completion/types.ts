@@ -1,5 +1,6 @@
 import type { ExecutionResult } from '../execution/types.js';
 import type { DocumentationAuditReader } from '../documentation/types.js';
+import type { IndependentReviewReader } from '../review/types.js';
 
 export const COMPLETION_REQUIREMENTS = [
   'acceptance_criteria_addressed', 'implementation_complete', 'relevant_tests_added_or_updated',
@@ -10,7 +11,7 @@ export const COMPLETION_REQUIREMENTS = [
 
 export type CompletionRequirement = typeof COMPLETION_REQUIREMENTS[number];
 export type CompletionStatus = 'passed' | 'blocked';
-export type CompletionEvidenceSource = 'task-record' | 'execution' | 'repository-intelligence' | 'documentation-audit';
+export type CompletionEvidenceSource = 'task-record' | 'execution' | 'repository-intelligence' | 'documentation-audit' | 'independent-review';
 
 export type CompletionEvidence = {
   id: string;
@@ -21,6 +22,7 @@ export type CompletionEvidence = {
   files?: { path: string; hash: string }[];
   executionId?: string;
   documentationAuditId?: string;
+  reviewId?: string;
 };
 
 export type CompletionChecklistItem = {
@@ -74,3 +76,4 @@ export interface EscalationEvidenceReader {
 }
 
 export type { DocumentationAuditReader };
+export type { IndependentReviewReader };
