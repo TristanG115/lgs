@@ -56,7 +56,8 @@ export class ToolExecutor {
       if (!issues.length && definition.validate) issues.push(...definition.validate(call.arguments).map(message => ({ path: '$', message })));
       if (issues.length) {
         result = errorResult(definition.id, call.callId, toolError('invalid_request', 'Tool arguments failed validation.', false, { issues }), started);
-      } else if (signal.aborted) result = errorResult(definition.id, call.callId, toolError('cancelled', 'Tool execution was cancelled.'), started, 'cancelled');
+      } else if (identity.taskMode === 'planning' && !planningTool(definition.id)) result = errorResult(definition.id, call.callId, toolError('unsupported', 'This action is disabled in Planning Mode.'), started);
+      else if (signal.aborted) result = errorResult(definition.id, call.callId, toolError('cancelled', 'Tool execution was cancelled.'), started, 'cancelled');
       else {
         try {
           const context: ToolExecutionContext = { ...identity, workspaceRoot: this.workspaceRoot, signal };
@@ -150,6 +151,7 @@ function errorResult(toolId: string, callId: string | undefined, error: ToolErro
 }
 
 function elapsed(started: number): number { return Math.max(0, Math.round((performance.now() - started) * 100) / 100); }
+function planningTool(id: string): boolean { return id.startsWith('list_') || id.startsWith('get_') || id.startsWith('read_') || id.startsWith('search_') || id.startsWith('find_') || id === 'web_search' || id === 'web_fetch' || id === 'documentation_search' || id === 'repository_search' || id.startsWith('git_') || id === 'create_plan_task'; }
 export function toolError(code: ToolError['code'], message: string, retryable = false, details?: Record<string, unknown>): ToolError {
   return { code, message, retryable, details };
 }

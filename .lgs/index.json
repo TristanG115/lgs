@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "generatedAt": "2026-08-26T23:39:20.547Z",
+  "generatedAt": "2026-08-26T23:48:49.029Z",
   "root": "/home/tristan/Documents/Github/lgs",
   "directories": [
     ".vscode",
@@ -14,6 +14,7 @@
     "src/knowledge",
     "src/model",
     "src/orchestration",
+    "src/planning",
     "src/research",
     "src/review",
     "src/runtime",
@@ -75,9 +76,9 @@
       "path": "README.md",
       "fileType": "md",
       "language": "Markdown/Text",
-      "size": 32540,
-      "mtimeMs": 1787787552641.19,
-      "hash": "40d009ca52c3acde06e069bfa1d992850218725f",
+      "size": 33294,
+      "mtimeMs": 1787788114160.5493,
+      "hash": "69fd59d48c28ddbffdecb5edf0b0a8ec7766ebf3",
       "imports": [],
       "exports": [],
       "symbols": [],
@@ -1007,9 +1008,9 @@
       "path": "src/knowledge/memory.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 4735,
-      "mtimeMs": 1787787546540.175,
-      "hash": "caac7b7129861d9874dc9abd058f6c99879615b6",
+      "size": 4733,
+      "mtimeMs": 1787787907724.0496,
+      "hash": "f19c109e990bdad209080abe366b68e141bc7c06",
       "imports": [
         "node:crypto",
         "node:fs",
@@ -1124,9 +1125,9 @@
       "path": "src/model/anthropic.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 2777,
-      "mtimeMs": 1787711658480.8813,
-      "hash": "1683fc0879b0fc3963ee7e30d294338b16e4fcd8",
+      "size": 2793,
+      "mtimeMs": 1787788114127.549,
+      "hash": "2c42d020e39c22fe3b44cffa6223188677db52c6",
       "imports": [
         "./types.js",
         "./backend.js"
@@ -1177,9 +1178,9 @@
       "path": "src/model/ollama.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 2310,
-      "mtimeMs": 1787711658480.8813,
-      "hash": "f1af191c4ea9092cae9c926a5ccb06726c100b5b",
+      "size": 2326,
+      "mtimeMs": 1787788061689.422,
+      "hash": "b6099d4ded5bba32078e6eb39685cdedad99f611",
       "imports": [
         "./types.js",
         "./backend.js"
@@ -1199,9 +1200,9 @@
       "path": "src/model/openai.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 2760,
-      "mtimeMs": 1787711658480.8813,
-      "hash": "755785ef9c0898a8d9efc03c212c1ec92f5eda23",
+      "size": 2906,
+      "mtimeMs": 1787788061620.422,
+      "hash": "f620d74067528e67b01b77edd28d3b9a057f2cb3",
       "imports": [
         "./types.js",
         "./backend.js"
@@ -1282,9 +1283,9 @@
       "path": "src/model/types.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 1874,
-      "mtimeMs": 1787705882345.3635,
-      "hash": "e37247d9175a07e1bb99c9338536e27d88d98dd9",
+      "size": 2068,
+      "mtimeMs": 1787788061585.4219,
+      "hash": "9bea3bc8e157e09cd996ed74c6a95d0828375cf8",
       "imports": [],
       "exports": [
         "Role",
@@ -1292,6 +1293,8 @@
         "ImageContent",
         "Content",
         "LgsMessage",
+        "ReasoningEffort",
+        "ReasoningConfiguration",
         "GenerationOptions",
         "ModelInfo",
         "ModelCapabilities",
@@ -1311,6 +1314,8 @@
         "ImageContent",
         "Content",
         "LgsMessage",
+        "ReasoningEffort",
+        "ReasoningConfiguration",
         "GenerationOptions",
         "ModelInfo",
         "ModelCapabilities",
@@ -1565,6 +1570,48 @@
       "likelyTest": false,
       "likelyDocumentation": false,
       "directory": "src/orchestration",
+      "module": "src"
+    },
+    {
+      "path": "src/planning/index.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 28,
+      "mtimeMs": 1787788082327.4722,
+      "hash": "767ac0796c659877c1d20c845ba46093d91218ab",
+      "imports": [
+        "./tools.js"
+      ],
+      "exports": [],
+      "symbols": [],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/planning",
+      "module": "src"
+    },
+    {
+      "path": "src/planning/tools.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 1621,
+      "mtimeMs": 1787788082296.4722,
+      "hash": "835c81192938ad8185bce057001238da66087808",
+      "imports": [
+        "../tools/types.js",
+        "../tools/framework.js",
+        "../watchdog/state.js"
+      ],
+      "exports": [
+        "registerPlanningTools"
+      ],
+      "symbols": [
+        "PLAN_PERMISSION",
+        "LIST",
+        "registerPlanningTools"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/planning",
       "module": "src"
     },
     {
@@ -2393,9 +2440,9 @@
       "path": "src/tools/framework.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 10573,
-      "mtimeMs": 1787737396794.4019,
-      "hash": "bf68af1d08ca2063643771b285af7cf286846f28",
+      "size": 11129,
+      "mtimeMs": 1787788082242.472,
+      "hash": "c0065982ab86896e2f8901f4f1bb2e10e0660959",
       "imports": [
         "./schema.js",
         "./types.js"
@@ -2418,6 +2465,7 @@
         "boundData",
         "errorResult",
         "elapsed",
+        "planningTool",
         "toolError",
         "throwIfCancelled",
         "redactSecrets",
@@ -2517,9 +2565,9 @@
       "path": "src/tools/index.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 638,
-      "mtimeMs": 1787787442848.923,
-      "hash": "7ed40ee0054187c50f01add1104917fa733ca7cb",
+      "size": 676,
+      "mtimeMs": 1787788082359.4722,
+      "hash": "74cc68a4388b581d1d61e744cd5b59b8621bf6fb",
       "imports": [
         "./types.js",
         "./schema.js",
@@ -2538,7 +2586,8 @@
         "../review/index.js",
         "../runtime/index.js",
         "../commit/index.js",
-        "../knowledge/index.js"
+        "../knowledge/index.js",
+        "../planning/index.js"
       ],
       "exports": [],
       "symbols": [],
@@ -2686,9 +2735,9 @@
       "path": "src/tools/types.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 3156,
-      "mtimeMs": 1787760072289.7087,
-      "hash": "5a99ab53c097e4ff19c0717894634ed02280417a",
+      "size": 3200,
+      "mtimeMs": 1787788082210.472,
+      "hash": "6fbe8b490af488d828f07780093f98af455fb633",
       "imports": [],
       "exports": [
         "JsonSchema",
@@ -2733,9 +2782,9 @@
       "path": "src/tools/workspace.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 4168,
-      "mtimeMs": 1787787459191.963,
-      "hash": "fcbc0873da20f39983f1fd6bda8a9a54210ca3c5",
+      "size": 4307,
+      "mtimeMs": 1787788082391.4724,
+      "hash": "bfd27e09bc057cf1125e73b7c6a4df810141132b",
       "imports": [
         "./git.js",
         "./repository.js",
@@ -2750,7 +2799,8 @@
         "../review/index.js",
         "../runtime/index.js",
         "../commit/index.js",
-        "../knowledge/index.js"
+        "../knowledge/index.js",
+        "../planning/index.js"
       ],
       "exports": [
         "createWorkspaceToolRegistry"
@@ -3470,6 +3520,27 @@
       "module": "test"
     },
     {
+      "path": "test/planning.test.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 1441,
+      "mtimeMs": 1787788101560.5188,
+      "hash": "410320d2eb4ddd2c2b826c64e89ecb143c51307a",
+      "imports": [
+        "vitest",
+        "node:fs",
+        "node:os",
+        "node:path",
+        "../src/tools/index.js"
+      ],
+      "exports": [],
+      "symbols": [],
+      "likelyTest": true,
+      "likelyDocumentation": false,
+      "directory": "test",
+      "module": "test"
+    },
+    {
       "path": "test/research.test.ts",
       "fileType": "ts",
       "language": "TypeScript",
@@ -3697,6 +3768,7 @@
         "src/knowledge",
         "src/model",
         "src/orchestration",
+        "src/planning",
         "src/research",
         "src/review",
         "src/runtime",
@@ -3764,6 +3836,8 @@
         "src/orchestration/scheduler.ts",
         "src/orchestration/tools.ts",
         "src/orchestration/types.ts",
+        "src/planning/index.ts",
+        "src/planning/tools.ts",
         "src/research/config.ts",
         "src/research/dependencies.ts",
         "src/research/index.ts",
@@ -3825,6 +3899,7 @@
         "test/knowledge.test.ts",
         "test/messages.test.ts",
         "test/orchestration.test.ts",
+        "test/planning.test.ts",
         "test/research.test.ts",
         "test/review.test.ts",
         "test/runtime.test.ts",
@@ -3891,6 +3966,7 @@
           "src/knowledge",
           "src/model",
           "src/orchestration",
+          "src/planning",
           "src/research",
           "src/review",
           "src/runtime",
@@ -3948,6 +4024,8 @@
           "src/orchestration/scheduler.ts",
           "src/orchestration/tools.ts",
           "src/orchestration/types.ts",
+          "src/planning/index.ts",
+          "src/planning/tools.ts",
           "src/research/config.ts",
           "src/research/dependencies.ts",
           "src/research/index.ts",
@@ -4022,6 +4100,7 @@
           "test/knowledge.test.ts",
           "test/messages.test.ts",
           "test/orchestration.test.ts",
+          "test/planning.test.ts",
           "test/research.test.ts",
           "test/review.test.ts",
           "test/runtime.test.ts",
@@ -4560,6 +4639,22 @@
       "to": "src/model/types.ts"
     },
     {
+      "from": "src/planning/index.ts",
+      "to": "src/planning/tools.ts"
+    },
+    {
+      "from": "src/planning/tools.ts",
+      "to": "src/tools/types.ts"
+    },
+    {
+      "from": "src/planning/tools.ts",
+      "to": "src/tools/framework.ts"
+    },
+    {
+      "from": "src/planning/tools.ts",
+      "to": "src/watchdog/state.ts"
+    },
+    {
       "from": "src/research/config.ts",
       "to": "src/research/types.ts"
     },
@@ -4996,6 +5091,10 @@
       "to": "src/knowledge/index.ts"
     },
     {
+      "from": "src/tools/index.ts",
+      "to": "src/planning/index.ts"
+    },
+    {
       "from": "src/tools/loop.ts",
       "to": "src/model/backend.ts"
     },
@@ -5106,6 +5205,10 @@
     {
       "from": "src/tools/workspace.ts",
       "to": "src/knowledge/index.ts"
+    },
+    {
+      "from": "src/tools/workspace.ts",
+      "to": "src/planning/index.ts"
     },
     {
       "from": "src/verification/config.ts",
@@ -5408,6 +5511,10 @@
       "to": "src/orchestration/index.ts"
     },
     {
+      "from": "test/planning.test.ts",
+      "to": "src/tools/index.ts"
+    },
+    {
       "from": "test/research.test.ts",
       "to": "src/tools/index.ts"
     },
@@ -5490,6 +5597,7 @@
       "src/commit/service.ts",
       "src/documentation/agent.ts",
       "src/documentation/store.ts",
+      "src/planning/tools.ts",
       "src/review/context.ts",
       "src/review/reviewer.ts",
       "src/watchdog/escalation.ts",
@@ -5503,6 +5611,7 @@
       "src/documentation/tools.ts",
       "src/knowledge/tools.ts",
       "src/orchestration/tools.ts",
+      "src/planning/tools.ts",
       "src/research/tools.ts",
       "src/review/tools.ts",
       "src/runtime/tools.ts",
@@ -5521,6 +5630,7 @@
       "src/documentation/tools.ts",
       "src/knowledge/tools.ts",
       "src/orchestration/tools.ts",
+      "src/planning/tools.ts",
       "src/research/tools.ts",
       "src/review/tools.ts",
       "src/runtime/tools.ts",
@@ -5756,6 +5866,7 @@
       "test/execution.test.ts",
       "test/git.test.ts",
       "test/knowledge.test.ts",
+      "test/planning.test.ts",
       "test/research.test.ts",
       "test/review.test.ts",
       "test/runtime.test.ts",
@@ -5823,6 +5934,9 @@
     ],
     "src/orchestration/tools.ts": [
       "src/orchestration/index.ts"
+    ],
+    "src/planning/tools.ts": [
+      "src/planning/index.ts"
     ],
     "src/research/types.ts": [
       "src/research/config.ts",
@@ -5980,6 +6094,10 @@
       "src/tools/index.ts",
       "src/tools/workspace.ts"
     ],
+    "src/planning/index.ts": [
+      "src/tools/index.ts",
+      "src/tools/workspace.ts"
+    ],
     "src/watchdog/triggers.ts": [
       "src/tools/loop.ts",
       "src/watchdog/index.ts"
@@ -6048,7 +6166,7 @@
   "freshness": {
     "index": "current",
     "codebaseMap": "current",
-    "checkedAt": "2026-08-26T23:39:20.547Z",
+    "checkedAt": "2026-08-26T23:48:49.029Z",
     "staleEntries": []
   },
   "incremental": {
@@ -6109,6 +6227,8 @@
       "src/orchestration/scheduler.ts",
       "src/orchestration/tools.ts",
       "src/orchestration/types.ts",
+      "src/planning/index.ts",
+      "src/planning/tools.ts",
       "src/research/config.ts",
       "src/research/dependencies.ts",
       "src/research/index.ts",
@@ -6170,6 +6290,7 @@
       "test/knowledge.test.ts",
       "test/messages.test.ts",
       "test/orchestration.test.ts",
+      "test/planning.test.ts",
       "test/research.test.ts",
       "test/review.test.ts",
       "test/runtime.test.ts",

@@ -54,6 +54,7 @@ export type ToolIdentity = {
   sessionId?: string;
   agentId?: string;
   model?: string;
+  taskMode?: 'planning' | 'implementation';
 };
 
 export type ToolAuditRecord = ToolIdentity & {

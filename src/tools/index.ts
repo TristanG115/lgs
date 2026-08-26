@@ -16,3 +16,4 @@ export * from '../review/index.js';
 export * from '../runtime/index.js';
 export * from '../commit/index.js';
 export * from '../knowledge/index.js';
+export * from '../planning/index.js';
