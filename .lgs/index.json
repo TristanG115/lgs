@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "generatedAt": "2026-08-26T02:55:10.685Z",
+  "generatedAt": "2026-08-26T03:33:29.708Z",
   "root": "/home/tristan/Documents/Github/lgs",
   "directories": [
     ".vscode",
@@ -10,6 +10,7 @@
     "src/model",
     "src/settings",
     "src/shared",
+    "src/tools",
     "src/webview",
     "test"
   ],
@@ -63,9 +64,9 @@
       "path": "README.md",
       "fileType": "md",
       "language": "Markdown/Text",
-      "size": 5950,
-      "mtimeMs": 1787712865530.841,
-      "hash": "0207d0e6a568e76965e674fd1bb57d85de849da2",
+      "size": 10122,
+      "mtimeMs": 1787715066104.629,
+      "hash": "cce7b45012b74421966f242c00a15f35b4956e5c",
       "imports": [],
       "exports": [],
       "symbols": [],
@@ -165,9 +166,9 @@
       "path": "src/extension.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 9893,
-      "mtimeMs": 1787712758688.7314,
-      "hash": "2defc248d6d5370b972e064dcc090a244968167f",
+      "size": 11286,
+      "mtimeMs": 1787714828459.1892,
+      "hash": "39d7169f338ac2297f7d95f4477c93f63a5c65ca",
       "imports": [
         "vscode",
         "./shared/messages.js",
@@ -180,7 +181,8 @@
         "node:fs",
         "node:path",
         "./settings/configuration.js",
-        "./settings/panel.js"
+        "./settings/panel.js",
+        "./tools/index.js"
       ],
       "exports": [
         "activate",
@@ -204,9 +206,9 @@
       "path": "src/intelligence/indexer.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 18950,
-      "mtimeMs": 1787712900666.8772,
-      "hash": "189bde6b518715e9d37a16880a927b7fdf84e190",
+      "size": 18910,
+      "mtimeMs": 1787713711407.06,
+      "hash": "2c6d768fed53d54fdcf8f04eae2ad9bb6278ea9a",
       "imports": [
         "node:fs",
         "node:path",
@@ -247,7 +249,7 @@
         "parseFile",
         "buildHierarchy",
         "detectEntryPoints",
-        "declarationName",
+        "declarationNames",
         "resolveImport",
         "readDependencies",
         "uniqueRelationships",
@@ -630,6 +632,351 @@
       "module": "src"
     },
     {
+      "path": "src/tools/framework.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 10529,
+      "mtimeMs": 1787714778255.0962,
+      "hash": "5c75e77b86bda2d43fc47b2bce5a8242f6ee5810",
+      "imports": [
+        "./schema.js",
+        "./types.js"
+      ],
+      "exports": [
+        "MemoryAuditSink",
+        "ToolRegistry",
+        "ToolExecutor",
+        "toolError",
+        "throwIfCancelled"
+      ],
+      "symbols": [
+        "DEFAULT_MAX_RESULT_BYTES",
+        "MAX_AUDIT_ARGUMENT_BYTES",
+        "SECRET_KEY",
+        "MemoryAuditSink",
+        "ToolRegistry",
+        "ToolExecutor",
+        "parseToolCall",
+        "boundData",
+        "errorResult",
+        "elapsed",
+        "toolError",
+        "throwIfCancelled",
+        "redactSecrets",
+        "redactValue",
+        "auditArguments"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/tools",
+      "module": "src"
+    },
+    {
+      "path": "src/tools/git.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 27316,
+      "mtimeMs": 1787715189433.8572,
+      "hash": "8b7ae33c2ddd2d2ac6fca6185413772e18b3bed2",
+      "imports": [
+        "node:child_process",
+        "node:crypto",
+        "node:fs",
+        "node:path",
+        "./framework.js",
+        "./types.js"
+      ],
+      "exports": [
+        "GitChange",
+        "GitBaseline",
+        "GitCommandResult",
+        "GitCommandRunner",
+        "GitCommandError",
+        "GitClient",
+        "runGitCommand",
+        "captureGitBaseline",
+        "GitBaselineStore",
+        "createGitToolRegistry",
+        "registerGitTools"
+      ],
+      "symbols": [
+        "GIT_COMMANDS",
+        "MAX_GIT_BUFFER",
+        "MAX_DIFF_LINES",
+        "MAX_HISTORY_PAGE",
+        "DEFAULT_HISTORY_PAGE",
+        "MAX_BLAME_LINES",
+        "MAX_TOKEN_LENGTH",
+        "GitChange",
+        "GitBaseline",
+        "GitCommandResult",
+        "GitCommandRunner",
+        "GitCommandError",
+        "GitClient",
+        "runGitCommand",
+        "captureGitBaseline",
+        "GitBaselineStore",
+        "createGitToolRegistry",
+        "registerGitTools",
+        "definition",
+        "gitStatusTool",
+        "gitDiffTool",
+        "gitFileHistoryTool",
+        "gitShowCommitTool",
+        "gitBlameRangeTool",
+        "gitLogSearchTool",
+        "requireRepository",
+        "readChanges",
+        "fingerprintChanges",
+        "fileFingerprint",
+        "compareStates",
+        "stateMap",
+        "publicBaseline",
+        "publicChange",
+        "matchingBaseline",
+        "emptyBaseline",
+        "parseLog",
+        "parseCommit",
+        "parseBlame",
+        "linePage",
+        "encodeToken",
+        "continuationOffset",
+        "safeGitPath",
+        "workspaceStatusPath",
+        "lexicalWorkspacePath",
+        "gitPathSchema",
+        "commitSchema",
+        "tokenSchema",
+        "clip",
+        "fail"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/tools",
+      "module": "src"
+    },
+    {
+      "path": "src/tools/index.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 207,
+      "mtimeMs": 1787714778362.0964,
+      "hash": "7b9e6abed914e5745f08d93c9120b25db6f2acab",
+      "imports": [
+        "./types.js",
+        "./schema.js",
+        "./framework.js",
+        "./repository.js",
+        "./loop.js",
+        "./git.js",
+        "./workspace.js"
+      ],
+      "exports": [],
+      "symbols": [],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/tools",
+      "module": "src"
+    },
+    {
+      "path": "src/tools/loop.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 4939,
+      "mtimeMs": 1787714828493.1892,
+      "hash": "5c9ec4a7fa63df4c43347b1d93461e783f1face3",
+      "imports": [
+        "../model/backend.js",
+        "../model/types.js",
+        "./framework.js",
+        "./types.js"
+      ],
+      "exports": [
+        "ToolModelTurn",
+        "ToolLoopModel",
+        "ToolLoopOutcome",
+        "runToolLoop",
+        "BackendToolLoopModel",
+        "parseModelTurn"
+      ],
+      "symbols": [
+        "ToolModelTurn",
+        "ToolLoopModel",
+        "ToolLoopOutcome",
+        "runToolLoop",
+        "BackendToolLoopModel",
+        "parseModelTurn",
+        "toolInstructions"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/tools",
+      "module": "src"
+    },
+    {
+      "path": "src/tools/repository.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 26940,
+      "mtimeMs": 1787713794442.2214,
+      "hash": "82192369177d06525479b3651ad858c5f5d2d019",
+      "imports": [
+        "node:fs",
+        "node:path",
+        "node:readline",
+        "../intelligence/indexer.js",
+        "./framework.js",
+        "./types.js"
+      ],
+      "exports": [
+        "createRepositoryToolRegistry"
+      ],
+      "symbols": [
+        "MAX_READ_LINES",
+        "DEFAULT_READ_LINES",
+        "MAX_CONTENT_BYTES",
+        "MAX_SEARCH_RESULTS",
+        "MAX_INDEX_RESULTS",
+        "MAX_SEARCH_FILE_BYTES",
+        "MAX_TOKEN_LENGTH",
+        "PathArgs",
+        "PageArgs",
+        "pathProperty",
+        "pageProperties",
+        "createRepositoryToolRegistry",
+        "definition",
+        "listDirectoryTool",
+        "readFileTool",
+        "readFileRangeTool",
+        "searchWorkspaceTool",
+        "findSymbolTool",
+        "findReferencesTool",
+        "fileSummaryTool",
+        "codebaseMapSectionTool",
+        "projectDependenciesTool",
+        "relatedTestsTool",
+        "relatedFilesTool",
+        "readRange",
+        "safePath",
+        "within",
+        "normalizeRequestedPath",
+        "safeStat",
+        "isBinary",
+        "loadIndex",
+        "indexedFile",
+        "indexedDirectoryEntries",
+        "pageOutput",
+        "fitItems",
+        "encodeToken",
+        "continuationOffset",
+        "extractMapSection",
+        "addReason",
+        "clip",
+        "clipBytes",
+        "escapeRegExp",
+        "fail"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/tools",
+      "module": "src"
+    },
+    {
+      "path": "src/tools/schema.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 3123,
+      "mtimeMs": 1787713183464.1672,
+      "hash": "8d0181b609a92509ec885c1b43fa08640ab91e95",
+      "imports": [
+        "./types.js"
+      ],
+      "exports": [
+        "ValidationIssue",
+        "validateSchema",
+        "isPlainObject"
+      ],
+      "symbols": [
+        "ValidationIssue",
+        "validateSchema",
+        "isPlainObject"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/tools",
+      "module": "src"
+    },
+    {
+      "path": "src/tools/types.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 3024,
+      "mtimeMs": 1787714778219.0962,
+      "hash": "df0864337d395af253f3dce099e00e0f1a030add",
+      "imports": [],
+      "exports": [
+        "JsonSchema",
+        "ToolPermission",
+        "ToolErrorCode",
+        "ToolError",
+        "ToolResultMetadata",
+        "ToolResult",
+        "ToolIdentity",
+        "ToolAuditRecord",
+        "ToolAuditSink",
+        "ToolExecutionContext",
+        "ToolExecutionOutput",
+        "ToolDefinition",
+        "ToolCall",
+        "READ_ONLY_WORKSPACE_PERMISSION",
+        "ToolFailure"
+      ],
+      "symbols": [
+        "JsonSchema",
+        "ToolPermission",
+        "ToolErrorCode",
+        "ToolError",
+        "ToolResultMetadata",
+        "ToolResult",
+        "ToolIdentity",
+        "ToolAuditRecord",
+        "ToolAuditSink",
+        "ToolExecutionContext",
+        "ToolExecutionOutput",
+        "ToolDefinition",
+        "ToolCall",
+        "READ_ONLY_WORKSPACE_PERMISSION",
+        "ToolFailure"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/tools",
+      "module": "src"
+    },
+    {
+      "path": "src/tools/workspace.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 461,
+      "mtimeMs": 1787714778326.0964,
+      "hash": "dac86bc352cbb8888df523afa41b70eabeba9679",
+      "imports": [
+        "./git.js",
+        "./repository.js",
+        "./framework.js"
+      ],
+      "exports": [
+        "createWorkspaceToolRegistry"
+      ],
+      "symbols": [
+        "createWorkspaceToolRegistry"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/tools",
+      "module": "src"
+    },
+    {
       "path": "src/webview/main.ts",
       "fileType": "ts",
       "language": "TypeScript",
@@ -647,7 +994,16 @@
         "app",
         "generating",
         "currentAssistant",
-        "history, input, send, stop, state, profile, model, thinking, approval, chats",
+        "history",
+        "input",
+        "send",
+        "stop",
+        "state",
+        "profile",
+        "model",
+        "thinking",
+        "approval",
+        "chats",
         "syncOptions",
         "add"
       ],
@@ -672,12 +1028,39 @@
       "module": "src"
     },
     {
+      "path": "test/git.test.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 10112,
+      "mtimeMs": 1787715032221.5662,
+      "hash": "743a543b89bc6bea2e88c3c5542160424a35ce01",
+      "imports": [
+        "node:child_process",
+        "node:fs",
+        "node:os",
+        "node:path",
+        "vitest",
+        "../src/tools/index.js"
+      ],
+      "exports": [],
+      "symbols": [
+        "git",
+        "repository",
+        "cleanup",
+        "call"
+      ],
+      "likelyTest": true,
+      "likelyDocumentation": false,
+      "directory": "test",
+      "module": "test"
+    },
+    {
       "path": "test/indexer.test.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 4433,
-      "mtimeMs": 1787712844192.819,
-      "hash": "2f21babca0b57827c3c00c28fa06f5f79f4155ce",
+      "size": 4860,
+      "mtimeMs": 1787713711447.06,
+      "hash": "f898e0ce4deb9edf062a1229853886c58e45f248",
       "imports": [
         "vitest",
         "node:fs",
@@ -759,6 +1142,32 @@
       "module": "test"
     },
     {
+      "path": "test/tools.test.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 9346,
+      "mtimeMs": 1787713874201.3765,
+      "hash": "ed2989459dab2babd1b083149acc7665f0dc1234",
+      "imports": [
+        "vitest",
+        "node:fs",
+        "node:os",
+        "node:path",
+        "../src/tools/index.js",
+        "../src/model/types.js"
+      ],
+      "exports": [],
+      "symbols": [
+        "fixture",
+        "cleanup",
+        "call"
+      ],
+      "likelyTest": true,
+      "likelyDocumentation": false,
+      "directory": "test",
+      "module": "test"
+    },
+    {
       "path": "tsconfig.json",
       "fileType": "json",
       "language": "JSON",
@@ -804,6 +1213,7 @@
         "src/model",
         "src/settings",
         "src/shared",
+        "src/tools",
         "src/webview",
         "test"
       ],
@@ -832,12 +1242,22 @@
         "src/settings/registry.ts",
         "src/shared/logger.ts",
         "src/shared/messages.ts",
+        "src/tools/framework.ts",
+        "src/tools/git.ts",
+        "src/tools/index.ts",
+        "src/tools/loop.ts",
+        "src/tools/repository.ts",
+        "src/tools/schema.ts",
+        "src/tools/types.ts",
+        "src/tools/workspace.ts",
         "src/webview/main.ts",
         "src/webview/styles.css",
+        "test/git.test.ts",
         "test/indexer.test.ts",
         "test/messages.test.ts",
         "test/settings.test.ts",
         "test/stream.test.ts",
+        "test/tools.test.ts",
         "tsconfig.json",
         "vitest.config.ts"
       ],
@@ -893,6 +1313,7 @@
           "src/model",
           "src/settings",
           "src/shared",
+          "src/tools",
           "src/webview"
         ],
         "files": [
@@ -911,6 +1332,14 @@
           "src/settings/registry.ts",
           "src/shared/logger.ts",
           "src/shared/messages.ts",
+          "src/tools/framework.ts",
+          "src/tools/git.ts",
+          "src/tools/index.ts",
+          "src/tools/loop.ts",
+          "src/tools/repository.ts",
+          "src/tools/schema.ts",
+          "src/tools/types.ts",
+          "src/tools/workspace.ts",
           "src/webview/main.ts",
           "src/webview/styles.css"
         ],
@@ -926,10 +1355,12 @@
           "test"
         ],
         "files": [
+          "test/git.test.ts",
           "test/indexer.test.ts",
           "test/messages.test.ts",
           "test/settings.test.ts",
-          "test/stream.test.ts"
+          "test/stream.test.ts",
+          "test/tools.test.ts"
         ],
         "entryPoints": []
       }
@@ -971,6 +1402,10 @@
     {
       "from": "src/extension.ts",
       "to": "src/settings/panel.ts"
+    },
+    {
+      "from": "src/extension.ts",
+      "to": "src/tools/index.ts"
     },
     {
       "from": "src/model/anthropic.ts",
@@ -1045,12 +1480,104 @@
       "to": "src/settings/configuration.ts"
     },
     {
+      "from": "src/tools/framework.ts",
+      "to": "src/tools/schema.ts"
+    },
+    {
+      "from": "src/tools/framework.ts",
+      "to": "src/tools/types.ts"
+    },
+    {
+      "from": "src/tools/git.ts",
+      "to": "src/tools/framework.ts"
+    },
+    {
+      "from": "src/tools/git.ts",
+      "to": "src/tools/types.ts"
+    },
+    {
+      "from": "src/tools/index.ts",
+      "to": "src/tools/types.ts"
+    },
+    {
+      "from": "src/tools/index.ts",
+      "to": "src/tools/schema.ts"
+    },
+    {
+      "from": "src/tools/index.ts",
+      "to": "src/tools/framework.ts"
+    },
+    {
+      "from": "src/tools/index.ts",
+      "to": "src/tools/repository.ts"
+    },
+    {
+      "from": "src/tools/index.ts",
+      "to": "src/tools/loop.ts"
+    },
+    {
+      "from": "src/tools/index.ts",
+      "to": "src/tools/git.ts"
+    },
+    {
+      "from": "src/tools/index.ts",
+      "to": "src/tools/workspace.ts"
+    },
+    {
+      "from": "src/tools/loop.ts",
+      "to": "src/model/backend.ts"
+    },
+    {
+      "from": "src/tools/loop.ts",
+      "to": "src/model/types.ts"
+    },
+    {
+      "from": "src/tools/loop.ts",
+      "to": "src/tools/framework.ts"
+    },
+    {
+      "from": "src/tools/loop.ts",
+      "to": "src/tools/types.ts"
+    },
+    {
+      "from": "src/tools/repository.ts",
+      "to": "src/intelligence/indexer.ts"
+    },
+    {
+      "from": "src/tools/repository.ts",
+      "to": "src/tools/framework.ts"
+    },
+    {
+      "from": "src/tools/repository.ts",
+      "to": "src/tools/types.ts"
+    },
+    {
+      "from": "src/tools/schema.ts",
+      "to": "src/tools/types.ts"
+    },
+    {
+      "from": "src/tools/workspace.ts",
+      "to": "src/tools/git.ts"
+    },
+    {
+      "from": "src/tools/workspace.ts",
+      "to": "src/tools/repository.ts"
+    },
+    {
+      "from": "src/tools/workspace.ts",
+      "to": "src/tools/framework.ts"
+    },
+    {
       "from": "src/webview/main.ts",
       "to": "src/webview/styles.css"
     },
     {
       "from": "src/webview/main.ts",
       "to": "src/shared/messages.ts"
+    },
+    {
+      "from": "test/git.test.ts",
+      "to": "src/tools/index.ts"
     },
     {
       "from": "test/indexer.test.ts",
@@ -1083,6 +1610,14 @@
     {
       "from": "test/stream.test.ts",
       "to": "src/model/backend.ts"
+    },
+    {
+      "from": "test/tools.test.ts",
+      "to": "src/tools/index.ts"
+    },
+    {
+      "from": "test/tools.test.ts",
+      "to": "src/model/types.ts"
     }
   ],
   "reverseDependencies": {
@@ -1109,7 +1644,9 @@
       "src/model/anthropic.ts",
       "src/model/backend.ts",
       "src/model/ollama.ts",
-      "src/model/openai.ts"
+      "src/model/openai.ts",
+      "src/tools/loop.ts",
+      "test/tools.test.ts"
     ],
     "src/model/backend.ts": [
       "src/extension.ts",
@@ -1118,10 +1655,12 @@
       "src/model/openai.ts",
       "src/model/profiles.ts",
       "src/model/registry.ts",
+      "src/tools/loop.ts",
       "test/stream.test.ts"
     ],
     "src/intelligence/indexer.ts": [
       "src/extension.ts",
+      "src/tools/repository.ts",
       "test/indexer.test.ts"
     ],
     "src/settings/configuration.ts": [
@@ -1131,6 +1670,11 @@
     ],
     "src/settings/panel.ts": [
       "src/extension.ts"
+    ],
+    "src/tools/index.ts": [
+      "src/extension.ts",
+      "test/git.test.ts",
+      "test/tools.test.ts"
     ],
     "src/model/anthropic.ts": [
       "src/model/profiles.ts"
@@ -1149,6 +1693,39 @@
       "src/settings/configuration.ts",
       "src/settings/defaults.ts",
       "test/settings.test.ts"
+    ],
+    "src/tools/schema.ts": [
+      "src/tools/framework.ts",
+      "src/tools/index.ts"
+    ],
+    "src/tools/types.ts": [
+      "src/tools/framework.ts",
+      "src/tools/git.ts",
+      "src/tools/index.ts",
+      "src/tools/loop.ts",
+      "src/tools/repository.ts",
+      "src/tools/schema.ts"
+    ],
+    "src/tools/framework.ts": [
+      "src/tools/git.ts",
+      "src/tools/index.ts",
+      "src/tools/loop.ts",
+      "src/tools/repository.ts",
+      "src/tools/workspace.ts"
+    ],
+    "src/tools/repository.ts": [
+      "src/tools/index.ts",
+      "src/tools/workspace.ts"
+    ],
+    "src/tools/loop.ts": [
+      "src/tools/index.ts"
+    ],
+    "src/tools/git.ts": [
+      "src/tools/index.ts",
+      "src/tools/workspace.ts"
+    ],
+    "src/tools/workspace.ts": [
+      "src/tools/index.ts"
     ],
     "src/webview/styles.css": [
       "src/webview/main.ts"
@@ -1182,12 +1759,11 @@
   "freshness": {
     "index": "current",
     "codebaseMap": "current",
-    "checkedAt": "2026-08-26T02:55:10.685Z",
+    "checkedAt": "2026-08-26T03:33:29.708Z",
     "staleEntries": []
   },
   "incremental": {
-    "reused": [],
-    "added": [
+    "reused": [
       ".gitignore",
       ".vscode/launch.json",
       ".vscode/tasks.json",
@@ -1212,16 +1788,28 @@
       "src/settings/registry.ts",
       "src/shared/logger.ts",
       "src/shared/messages.ts",
+      "src/tools/framework.ts",
+      "src/tools/index.ts",
+      "src/tools/loop.ts",
+      "src/tools/repository.ts",
+      "src/tools/schema.ts",
+      "src/tools/types.ts",
+      "src/tools/workspace.ts",
       "src/webview/main.ts",
       "src/webview/styles.css",
+      "test/git.test.ts",
       "test/indexer.test.ts",
       "test/messages.test.ts",
       "test/settings.test.ts",
       "test/stream.test.ts",
+      "test/tools.test.ts",
       "tsconfig.json",
       "vitest.config.ts"
     ],
-    "changed": [],
+    "added": [],
+    "changed": [
+      "src/tools/git.ts"
+    ],
     "removed": [],
     "renamed": []
   }

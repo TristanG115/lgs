@@ -1,12 +1,13 @@
 # LGS (Little Grad Student)
 
-LGS is a VS Code extension that will eventually orchestrate reliable software-engineering agents. Phase 1 adds provider-neutral model backends and real streaming chat. It intentionally does not add agent tools.
+LGS is a VS Code extension for reliable software-engineering agents. Phase 5 adds bounded Git intelligence and task baselines on top of provider-neutral model backends, deterministic Repository Intelligence, and read-only workspace tools.
 
 ## Repository structure
 
 - `src/extension.ts` — extension-host activation, command, and `WebviewViewProvider`.
 - `src/webview/` — browser-side UI and styles.
 - `src/intelligence/indexer.ts` — deterministic filesystem/source indexer and codebase-map generator.
+- `src/tools/` — typed tool contracts, validation, guarded execution, repository/Git tools, task baselines, audit records, and the model continuation loop.
 - `.lgs/index.json` — generated machine-readable repository index.
 - `.lgs/CODEBASE_MAP.md` — generated compact architecture guide.
 - `src/shared/messages.ts` — typed message contracts and runtime validation shared by both sides.
@@ -41,6 +42,28 @@ The webview posts only the `ClientMessage` union. The extension host receives `u
 Phase 3 maintains deterministic repository intelligence in `.lgs/`. Run **LGS: Rebuild Repository Index** to update file fingerprints, parse TypeScript/JavaScript imports, exports, and top-level symbols, collect manifests and dependencies, and regenerate both artifacts. The index is hierarchical (`repository → module → directory → file → symbol`) and also records local relationships, reverse dependencies, likely tests/documentation, and important entry points.
 
 Index updates reuse unchanged file entries and record added, changed, deleted, and hash-matched renamed files. The scanner respects `.gitignore` and excludes dependency, build, cache, `.git`, and generated `.lgs` directories. **LGS: Open Codebase Map** checks freshness and warns when the generated map needs rebuilding. The map is intentionally compact and does not reproduce source code.
+
+## Read-only workspace tools
+
+Phase 4 exposes `list_directory`, `read_file`, `read_file_range`, `search_workspace`, `find_symbol`, `find_references`, `get_file_summary`, `get_codebase_map_section`, `get_project_dependencies`, `get_related_tests`, and `get_related_files`. Metadata and relationship tools consult Repository Intelligence; content tools access the filesystem only after resolving and verifying a workspace-relative path.
+
+Each tool definition includes an ID, description, JSON-like argument schema, optional semantic validation, execution function, and explicit permission metadata (`read-only`, `workspace`, no network). `ToolExecutor` treats every model call as untrusted: the call envelope and all arguments are validated before dispatch, unknown properties are rejected, structured failures are normalized, cancellation is propagated, and a framework-level byte limit bounds even an incorrectly implemented tool.
+
+File reads default to 200 lines and allow at most 400 lines per request. Listings, searches, symbols, references, dependencies, and relationship queries are paginated. Results report byte and item counts, truncation, their intelligence/filesystem source, and an opaque continuation token when another page is available. Automatically selected related files include a short relevance reason.
+
+All repository tools reject absolute paths, `..` traversal, workspace escape, and symlinks whose resolved target leaves the workspace. Binary reads and malformed or mismatched continuation tokens produce structured errors. Tool audits include task/session and agent/model identity when known, redacted arguments, permission, status, duration, and bounded result metadata; the extension writes these records to the LGS output logger without API keys, authorization values, tokens, cookies, or passwords.
+
+The continuation lifecycle is model → tool-call envelope → schema validation → guarded execution → structured tool result → model. `runToolLoop` caps turns and total calls, and `BackendToolLoopModel` makes this loop available consistently across the existing OpenAI-compatible, Anthropic, and Ollama backends. Pressing Stop aborts both model generation and tool execution.
+
+## Git intelligence
+
+Phase 5 adds `git_status`, `git_diff`, `git_file_history`, `git_show_commit`, `git_blame_range`, and `git_log_search`. Recent file history and log searches return compact commit, date, and summary records first. Older history uses continuation tokens; commit patches and blame ranges are returned only when explicitly requested. Diffs and patches are line-paginated and byte-bounded.
+
+Before the first model turn in a chat task, `GitBaselineStore` captures the branch, HEAD, staged changes, unstaged changes, and all untracked files. Each dirty entry also receives a content or patch fingerprint. The baseline is retained for the task and persisted in VS Code global extension state, so later `git_status` calls can distinguish unchanged preexisting user work, later edits to an already-dirty path, newly introduced changes, and preexisting changes that are no longer present.
+
+Git execution uses `execFile` with argument arrays and an allowlist of read-only commands; no model input is interpolated into a shell command. Pagers, terminal prompts, optional index locks, external diffs, and text-conversion filters are disabled where applicable. User paths must remain workspace-relative, revisions are restricted to hexadecimal commit IDs, and nested workspaces scope status and history to their own paths. Git commands never stage, commit, reset, checkout, or otherwise mutate repository state.
+
+Workspaces outside a Git repository remain fully usable. `git_status` reports that Git is unavailable for that workspace, while history-specific requests return a structured `unsupported` result. The model guidance asks agents to inspect recent history for code relevant to a material behavior change without automatically loading history for every file.
 
 ## Settings and configuration
 

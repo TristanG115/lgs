@@ -204,9 +204,9 @@ function parseFile(root: string, filePath: string, stat: fs.Stats, hash: string)
       if (ts.isExportDeclaration(statement) && statement.moduleSpecifier && ts.isStringLiteral(statement.moduleSpecifier)) imports.push(statement.moduleSpecifier.text);
       if (ts.isExportDeclaration(statement) && statement.exportClause && ts.isNamedExports(statement.exportClause)) statement.exportClause.elements.forEach(element => exports.push(element.name.text));
       if (ts.isExportAssignment(statement)) exports.push('default');
-      const name = declarationName(statement);
-      if (name) symbols.push(name);
-      if (name && ts.canHaveModifiers(statement) && ts.getModifiers(statement)?.some(modifier => modifier.kind === ts.SyntaxKind.ExportKeyword)) exports.push(name);
+      const names = declarationNames(statement);
+      symbols.push(...names);
+      if (names.length && ts.canHaveModifiers(statement) && ts.getModifiers(statement)?.some(modifier => modifier.kind === ts.SyntaxKind.ExportKeyword)) exports.push(...names);
     }
     const requirePattern = /\brequire\s*\(\s*['"]([^'"]+)['"]\s*\)/g;
     let match: RegExpExecArray | null;
@@ -242,10 +242,10 @@ function detectEntryPoints(root: string, files: IndexedFile[], manifests: string
   return [...result].filter(entry => files.some(file => file.path === entry)).sort();
 }
 
-function declarationName(node: ts.Node): string | undefined {
-  if ((ts.isFunctionDeclaration(node) || ts.isClassDeclaration(node) || ts.isInterfaceDeclaration(node) || ts.isTypeAliasDeclaration(node) || ts.isEnumDeclaration(node) || ts.isModuleDeclaration(node)) && node.name) return node.name.text;
-  if (ts.isVariableStatement(node)) return node.declarationList.declarations.map(declaration => ts.isIdentifier(declaration.name) ? declaration.name.text : '').filter(Boolean).join(', ') || undefined;
-  return undefined;
+function declarationNames(node: ts.Node): string[] {
+  if ((ts.isFunctionDeclaration(node) || ts.isClassDeclaration(node) || ts.isInterfaceDeclaration(node) || ts.isTypeAliasDeclaration(node) || ts.isEnumDeclaration(node) || ts.isModuleDeclaration(node)) && node.name) return [node.name.text];
+  if (ts.isVariableStatement(node)) return node.declarationList.declarations.flatMap(declaration => ts.isIdentifier(declaration.name) ? [declaration.name.text] : []);
+  return [];
 }
 function resolveImport(from: string, request: string, files: string[]): string | undefined {
   if (!request.startsWith('.')) return undefined;

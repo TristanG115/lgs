@@ -1,6 +1,6 @@
 # LGS Codebase Map
 
-Generated: 2026-08-26T02:55:10.685Z
+Generated: 2026-08-26T03:33:29.708Z
 
 This map is generated deterministically from the filesystem, manifests, and source syntax. Source files remain authoritative.
 
@@ -12,8 +12,8 @@ This map is generated deterministically from the filesystem, manifests, and sour
 
 ## Repository shape
 
-- Files: 32
-- Directories: 9
+- Files: 42
+- Directories: 10
 - Modules: 4
 - Entry points: src/extension.ts
 - Manifests: package-lock.json, package.json, tsconfig.json
@@ -43,7 +43,7 @@ This map is generated deterministically from the filesystem, manifests, and sour
 
 ### src
 - Path: src
-- Files: 17; directories: 6
+- Files: 25; directories: 7
 - Entry points: `src/extension.ts`
   - `src/extension.ts` — TypeScript
     - Symbols: SavedChat, activate, deactivate, LgsViewProvider, getHtml, rebuildIndex, openCodebaseMap
@@ -75,19 +75,38 @@ This map is generated deterministically from the filesystem, manifests, and sour
     - Symbols: Logger
   - `src/shared/messages.ts` — TypeScript
     - Symbols: ChatOptions, ClientMessage, HostMessage, parseClientMessage, isHostMessage
+  - `src/tools/framework.ts` — TypeScript
+    - Symbols: DEFAULT_MAX_RESULT_BYTES, MAX_AUDIT_ARGUMENT_BYTES, SECRET_KEY, MemoryAuditSink, ToolRegistry, ToolExecutor, parseToolCall, boundData, errorResult, elapsed, toolError, throwIfCancelled
+  - `src/tools/git.ts` — TypeScript
+    - Symbols: GIT_COMMANDS, MAX_GIT_BUFFER, MAX_DIFF_LINES, MAX_HISTORY_PAGE, DEFAULT_HISTORY_PAGE, MAX_BLAME_LINES, MAX_TOKEN_LENGTH, GitChange, GitBaseline, GitCommandResult, GitCommandRunner, GitCommandError
+  - `src/tools/index.ts` — TypeScript
+  - `src/tools/loop.ts` — TypeScript
+    - Symbols: ToolModelTurn, ToolLoopModel, ToolLoopOutcome, runToolLoop, BackendToolLoopModel, parseModelTurn, toolInstructions
+  - `src/tools/repository.ts` — TypeScript
+    - Symbols: MAX_READ_LINES, DEFAULT_READ_LINES, MAX_CONTENT_BYTES, MAX_SEARCH_RESULTS, MAX_INDEX_RESULTS, MAX_SEARCH_FILE_BYTES, MAX_TOKEN_LENGTH, PathArgs, PageArgs, pathProperty, pageProperties, createRepositoryToolRegistry
+  - `src/tools/schema.ts` — TypeScript
+    - Symbols: ValidationIssue, validateSchema, isPlainObject
+  - `src/tools/types.ts` — TypeScript
+    - Symbols: JsonSchema, ToolPermission, ToolErrorCode, ToolError, ToolResultMetadata, ToolResult, ToolIdentity, ToolAuditRecord, ToolAuditSink, ToolExecutionContext, ToolExecutionOutput, ToolDefinition
+  - `src/tools/workspace.ts` — TypeScript
+    - Symbols: createWorkspaceToolRegistry
   - `src/webview/main.ts` — TypeScript
-    - Symbols: acquireVsCodeApi, vscode, app, generating, currentAssistant, history, input, send, stop, state, profile, model, thinking, approval, chats, syncOptions, add
+    - Symbols: acquireVsCodeApi, vscode, app, generating, currentAssistant, history, input, send, stop, state, profile, model
   - `src/webview/styles.css` — CSS
 
 ### test
 - Path: test
-- Files: 4; directories: 1
+- Files: 6; directories: 1
+  - `test/git.test.ts` — TypeScript (test)
+    - Symbols: git, repository, cleanup, call
   - `test/indexer.test.ts` — TypeScript (test)
     - Symbols: fixture, cleanup
   - `test/messages.test.ts` — TypeScript (test)
   - `test/settings.test.ts` — TypeScript (test)
     - Symbols: context
   - `test/stream.test.ts` — TypeScript (test)
+  - `test/tools.test.ts` — TypeScript (test)
+    - Symbols: fixture, cleanup, call
 
 ## Relationships
 
@@ -100,6 +119,7 @@ This map is generated deterministically from the filesystem, manifests, and sour
 - `src/extension.ts` → `src/intelligence/indexer.ts`
 - `src/extension.ts` → `src/settings/configuration.ts`
 - `src/extension.ts` → `src/settings/panel.ts`
+- `src/extension.ts` → `src/tools/index.ts`
 - `src/model/anthropic.ts` → `src/model/types.ts`
 - `src/model/anthropic.ts` → `src/model/backend.ts`
 - `src/model/backend.ts` → `src/model/types.ts`
@@ -118,8 +138,31 @@ This map is generated deterministically from the filesystem, manifests, and sour
 - `src/settings/defaults.ts` → `src/settings/registry.ts`
 - `src/settings/panel.ts` → `src/model/profiles.ts`
 - `src/settings/panel.ts` → `src/settings/configuration.ts`
+- `src/tools/framework.ts` → `src/tools/schema.ts`
+- `src/tools/framework.ts` → `src/tools/types.ts`
+- `src/tools/git.ts` → `src/tools/framework.ts`
+- `src/tools/git.ts` → `src/tools/types.ts`
+- `src/tools/index.ts` → `src/tools/types.ts`
+- `src/tools/index.ts` → `src/tools/schema.ts`
+- `src/tools/index.ts` → `src/tools/framework.ts`
+- `src/tools/index.ts` → `src/tools/repository.ts`
+- `src/tools/index.ts` → `src/tools/loop.ts`
+- `src/tools/index.ts` → `src/tools/git.ts`
+- `src/tools/index.ts` → `src/tools/workspace.ts`
+- `src/tools/loop.ts` → `src/model/backend.ts`
+- `src/tools/loop.ts` → `src/model/types.ts`
+- `src/tools/loop.ts` → `src/tools/framework.ts`
+- `src/tools/loop.ts` → `src/tools/types.ts`
+- `src/tools/repository.ts` → `src/intelligence/indexer.ts`
+- `src/tools/repository.ts` → `src/tools/framework.ts`
+- `src/tools/repository.ts` → `src/tools/types.ts`
+- `src/tools/schema.ts` → `src/tools/types.ts`
+- `src/tools/workspace.ts` → `src/tools/git.ts`
+- `src/tools/workspace.ts` → `src/tools/repository.ts`
+- `src/tools/workspace.ts` → `src/tools/framework.ts`
 - `src/webview/main.ts` → `src/webview/styles.css`
 - `src/webview/main.ts` → `src/shared/messages.ts`
+- `test/git.test.ts` → `src/tools/index.ts`
 - `test/indexer.test.ts` → `src/intelligence/indexer.ts`
 - `test/messages.test.ts` → `src/shared/messages.ts`
 - `test/settings.test.ts` → `src/settings/defaults.ts`
@@ -128,23 +171,33 @@ This map is generated deterministically from the filesystem, manifests, and sour
 - `test/settings.test.ts` → `src/model/registry.ts`
 - `test/settings.test.ts` → `src/model/profiles.ts`
 - `test/stream.test.ts` → `src/model/backend.ts`
+- `test/tools.test.ts` → `src/tools/index.ts`
+- `test/tools.test.ts` → `src/model/types.ts`
 
 ## Reverse dependencies
 
-- `src/intelligence/indexer.ts` ← `src/extension.ts`, `test/indexer.test.ts`
+- `src/intelligence/indexer.ts` ← `src/extension.ts`, `src/tools/repository.ts`, `test/indexer.test.ts`
 - `src/model/anthropic.ts` ← `src/model/profiles.ts`
-- `src/model/backend.ts` ← `src/extension.ts`, `src/model/anthropic.ts`, `src/model/ollama.ts`, `src/model/openai.ts`, `src/model/profiles.ts`, `src/model/registry.ts`, `test/stream.test.ts`
+- `src/model/backend.ts` ← `src/extension.ts`, `src/model/anthropic.ts`, `src/model/ollama.ts`, `src/model/openai.ts`, `src/model/profiles.ts`, `src/model/registry.ts`, `src/tools/loop.ts`, `test/stream.test.ts`
 - `src/model/ollama.ts` ← `src/model/profiles.ts`
 - `src/model/openai.ts` ← `src/model/profiles.ts`
 - `src/model/profiles.ts` ← `src/extension.ts`, `src/model/registry.ts`, `src/settings/panel.ts`, `test/settings.test.ts`
 - `src/model/registry.ts` ← `src/extension.ts`, `test/settings.test.ts`
-- `src/model/types.ts` ← `src/extension.ts`, `src/model/anthropic.ts`, `src/model/backend.ts`, `src/model/ollama.ts`, `src/model/openai.ts`
+- `src/model/types.ts` ← `src/extension.ts`, `src/model/anthropic.ts`, `src/model/backend.ts`, `src/model/ollama.ts`, `src/model/openai.ts`, `src/tools/loop.ts`, `test/tools.test.ts`
 - `src/settings/configuration.ts` ← `src/extension.ts`, `src/settings/panel.ts`, `test/settings.test.ts`
 - `src/settings/defaults.ts` ← `src/settings/configuration.ts`, `test/settings.test.ts`
 - `src/settings/panel.ts` ← `src/extension.ts`
 - `src/settings/registry.ts` ← `src/settings/configuration.ts`, `src/settings/defaults.ts`, `test/settings.test.ts`
 - `src/shared/logger.ts` ← `src/extension.ts`
 - `src/shared/messages.ts` ← `src/extension.ts`, `src/webview/main.ts`, `test/messages.test.ts`
+- `src/tools/framework.ts` ← `src/tools/git.ts`, `src/tools/index.ts`, `src/tools/loop.ts`, `src/tools/repository.ts`, `src/tools/workspace.ts`
+- `src/tools/git.ts` ← `src/tools/index.ts`, `src/tools/workspace.ts`
+- `src/tools/index.ts` ← `src/extension.ts`, `test/git.test.ts`, `test/tools.test.ts`
+- `src/tools/loop.ts` ← `src/tools/index.ts`
+- `src/tools/repository.ts` ← `src/tools/index.ts`, `src/tools/workspace.ts`
+- `src/tools/schema.ts` ← `src/tools/framework.ts`, `src/tools/index.ts`
+- `src/tools/types.ts` ← `src/tools/framework.ts`, `src/tools/git.ts`, `src/tools/index.ts`, `src/tools/loop.ts`, `src/tools/repository.ts`, `src/tools/schema.ts`
+- `src/tools/workspace.ts` ← `src/tools/index.ts`
 - `src/webview/styles.css` ← `src/webview/main.ts`
 
 ## Dependencies
@@ -162,9 +215,9 @@ This map is generated deterministically from the filesystem, manifests, and sour
 
 ## Incremental update
 
-- Reused: 0
-- Added: 32
-- Changed: 0
+- Reused: 41
+- Added: 0
+- Changed: 1
 - Removed: 0
 - Renamed: 0
 

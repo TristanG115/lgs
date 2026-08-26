@@ -52,6 +52,15 @@ describe('repository indexer', () => {
     cleanup(root);
   });
 
+  it('indexes each variable declaration as an individual symbol', () => {
+    const root = fixture();
+    fs.writeFileSync(path.join(root, 'src', 'variables.ts'), 'export const first = 1, second = 2;');
+    const file = indexRepository(root).files.find(x => x.path === 'src/variables.ts')!;
+    expect(file.symbols).toEqual(['first', 'second']);
+    expect(file.exports).toEqual(['first', 'second']);
+    cleanup(root);
+  });
+
   it('detects manifest entry points', () => {
     const root = fixture();
     fs.writeFileSync(path.join(root, 'package.json'), JSON.stringify({ main: 'src/a.ts' }));
