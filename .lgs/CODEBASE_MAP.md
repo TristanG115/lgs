@@ -1,6 +1,6 @@
 # LGS Codebase Map
 
-Generated: 2026-08-26T09:48:40.605Z
+Generated: 2026-08-26T15:05:31.616Z
 
 This map is generated deterministically from the filesystem, manifests, and source syntax. Source files remain authoritative.
 
@@ -12,8 +12,8 @@ This map is generated deterministically from the filesystem, manifests, and sour
 
 ## Repository shape
 
-- Files: 54
-- Directories: 12
+- Files: 62
+- Directories: 13
 - Modules: 4
 - Entry points: src/extension.ts
 - Manifests: package-lock.json, package.json, tsconfig.json
@@ -43,8 +43,21 @@ This map is generated deterministically from the filesystem, manifests, and sour
 
 ### src
 - Path: src
-- Files: 36; directories: 9
+- Files: 43; directories: 10
 - Entry points: `src/extension.ts`
+  - `src/completion/config.ts` — TypeScript
+    - Symbols: DEFAULT_GATES, DEFAULT_BUDGETS, parseCompletionConfiguration, record
+  - `src/completion/evidence.ts` — TypeScript
+    - Symbols: RECORDABLE_REQUIREMENTS, FileCompletionEvidenceStore, validTaskId, validateTaskId, unique, validEvidence
+  - `src/completion/failures.ts` — TypeScript
+    - Symbols: FailureBudgetTracker, errorFingerprint, failedExecution
+  - `src/completion/guard.ts` — TypeScript
+    - Symbols: LABELS, STEP_REQUIREMENT, CompletionGuard, renderCompletionBlocked, commandItem, unresolvedItem
+  - `src/completion/index.ts` — TypeScript
+  - `src/completion/tools.ts` — TypeScript
+    - Symbols: METADATA_PERMISSION, READ_PERMISSION, registerCompletionTools
+  - `src/completion/types.ts` — TypeScript
+    - Symbols: COMPLETION_REQUIREMENTS, CompletionRequirement, CompletionStatus, CompletionEvidenceSource, CompletionEvidence, CompletionChecklistItem, FailureBudgetConfiguration, CompletionGateConfiguration, CompletionConfiguration, FailureBudgetState, CompletionEvaluation, CompletionViewState
   - `src/execution/evidence.ts` — TypeScript
     - Symbols: TaskEvidenceSink, FileTaskEvidenceStore
   - `src/execution/index.ts` — TypeScript
@@ -90,23 +103,12 @@ This map is generated deterministically from the filesystem, manifests, and sour
     - Symbols: ChatOptions, ClientMessage, HostMessage, parseClientMessage, isHostMessage
   - `src/tools/framework.ts` — TypeScript
     - Symbols: DEFAULT_MAX_RESULT_BYTES, MAX_AUDIT_ARGUMENT_BYTES, SECRET_KEY, MemoryAuditSink, ToolRegistry, ToolExecutor, parseToolCall, boundData, errorResult, elapsed, toolError, throwIfCancelled
-  - `src/tools/git.ts` — TypeScript
-    - Symbols: GIT_COMMANDS, MAX_GIT_BUFFER, MAX_DIFF_LINES, MAX_HISTORY_PAGE, DEFAULT_HISTORY_PAGE, MAX_BLAME_LINES, MAX_TOKEN_LENGTH, GitChange, GitBaseline, GitCommandResult, GitCommandRunner, GitCommandError
-  - `src/tools/index.ts` — TypeScript
-  - `src/tools/loop.ts` — TypeScript
-    - Symbols: ToolModelTurn, ToolLoopModel, ToolLoopOutcome, runToolLoop, BackendToolLoopModel, parseModelTurn, toolInstructions
-  - `src/tools/repository.ts` — TypeScript
-    - Symbols: MAX_READ_LINES, DEFAULT_READ_LINES, MAX_CONTENT_BYTES, MAX_SEARCH_RESULTS, MAX_INDEX_RESULTS, MAX_SEARCH_FILE_BYTES, MAX_TOKEN_LENGTH, PathArgs, PageArgs, pathProperty, pageProperties, createRepositoryToolRegistry
-  - `src/tools/schema.ts` — TypeScript
-    - Symbols: ValidationIssue, validateSchema, isPlainObject
-  - `src/tools/types.ts` — TypeScript
-    - Symbols: JsonSchema, ToolPermission, ToolErrorCode, ToolError, ToolResultMetadata, ToolResult, ToolIdentity, ToolAuditRecord, ToolAuditSink, ToolExecutionContext, ToolExecutionOutput, ToolDefinition
-  - `src/tools/workspace.ts` — TypeScript
-    - Symbols: createWorkspaceToolRegistry
 
 ### test
 - Path: test
-- Files: 7; directories: 1
+- Files: 8; directories: 1
+  - `test/completion.test.ts` — TypeScript (test)
+    - Symbols: EvidenceEntry, fixture, cleanup, gates, execution, guard
   - `test/execution.test.ts` — TypeScript (test)
     - Symbols: fixture, cleanup, request
   - `test/git.test.ts` — TypeScript (test)
@@ -122,6 +124,28 @@ This map is generated deterministically from the filesystem, manifests, and sour
 
 ## Relationships
 
+- `src/completion/config.ts` → `src/completion/types.ts`
+- `src/completion/evidence.ts` → `src/completion/types.ts`
+- `src/completion/failures.ts` → `src/execution/types.ts`
+- `src/completion/failures.ts` → `src/completion/types.ts`
+- `src/completion/guard.ts` → `src/intelligence/indexer.ts`
+- `src/completion/guard.ts` → `src/execution/types.ts`
+- `src/completion/guard.ts` → `src/verification/config.ts`
+- `src/completion/guard.ts` → `src/completion/evidence.ts`
+- `src/completion/guard.ts` → `src/completion/failures.ts`
+- `src/completion/guard.ts` → `src/completion/types.ts`
+- `src/completion/index.ts` → `src/completion/types.ts`
+- `src/completion/index.ts` → `src/completion/config.ts`
+- `src/completion/index.ts` → `src/completion/evidence.ts`
+- `src/completion/index.ts` → `src/completion/failures.ts`
+- `src/completion/index.ts` → `src/completion/guard.ts`
+- `src/completion/index.ts` → `src/completion/tools.ts`
+- `src/completion/tools.ts` → `src/tools/types.ts`
+- `src/completion/tools.ts` → `src/tools/framework.ts`
+- `src/completion/tools.ts` → `src/completion/evidence.ts`
+- `src/completion/tools.ts` → `src/completion/guard.ts`
+- `src/completion/tools.ts` → `src/completion/types.ts`
+- `src/completion/types.ts` → `src/execution/types.ts`
 - `src/execution/evidence.ts` → `src/execution/types.ts`
 - `src/execution/index.ts` → `src/execution/types.ts`
 - `src/execution/index.ts` → `src/execution/permissions.ts`
@@ -162,9 +186,11 @@ This map is generated deterministically from the filesystem, manifests, and sour
 - `src/settings/configuration.ts` → `src/settings/defaults.ts`
 - `src/settings/configuration.ts` → `src/settings/registry.ts`
 - `src/settings/configuration.ts` → `src/verification/config.ts`
+- `src/settings/configuration.ts` → `src/completion/config.ts`
 - `src/settings/defaults.ts` → `src/settings/registry.ts`
 - `src/settings/panel.ts` → `src/model/profiles.ts`
 - `src/settings/panel.ts` → `src/settings/configuration.ts`
+- `src/shared/messages.ts` → `src/completion/types.ts`
 - `src/tools/framework.ts` → `src/tools/schema.ts`
 - `src/tools/framework.ts` → `src/tools/types.ts`
 - `src/tools/git.ts` → `src/tools/framework.ts`
@@ -178,10 +204,12 @@ This map is generated deterministically from the filesystem, manifests, and sour
 - `src/tools/index.ts` → `src/tools/workspace.ts`
 - `src/tools/index.ts` → `src/execution/index.ts`
 - `src/tools/index.ts` → `src/verification/index.ts`
+- `src/tools/index.ts` → `src/completion/index.ts`
 - `src/tools/loop.ts` → `src/model/backend.ts`
 - `src/tools/loop.ts` → `src/model/types.ts`
 - `src/tools/loop.ts` → `src/tools/framework.ts`
 - `src/tools/loop.ts` → `src/tools/types.ts`
+- `src/tools/loop.ts` → `src/completion/index.ts`
 - `src/tools/repository.ts` → `src/intelligence/indexer.ts`
 - `src/tools/repository.ts` → `src/tools/framework.ts`
 - `src/tools/repository.ts` → `src/tools/types.ts`
@@ -191,12 +219,16 @@ This map is generated deterministically from the filesystem, manifests, and sour
 - `src/tools/workspace.ts` → `src/tools/framework.ts`
 - `src/tools/workspace.ts` → `src/verification/index.ts`
 - `src/tools/workspace.ts` → `src/execution/index.ts`
+- `src/tools/workspace.ts` → `src/completion/index.ts`
 - `src/verification/config.ts` → `src/execution/types.ts`
+- `src/verification/config.ts` → `src/completion/config.ts`
+- `src/verification/config.ts` → `src/completion/types.ts`
 - `src/verification/index.ts` → `src/verification/config.ts`
 - `src/verification/index.ts` → `src/verification/runner.ts`
 - `src/verification/index.ts` → `src/verification/tools.ts`
 - `src/verification/runner.ts` → `src/execution/index.ts`
 - `src/verification/runner.ts` → `src/execution/types.ts`
+- `src/verification/runner.ts` → `src/completion/failures.ts`
 - `src/verification/runner.ts` → `src/verification/config.ts`
 - `src/verification/tools.ts` → `src/tools/framework.ts`
 - `src/verification/tools.ts` → `src/tools/types.ts`
@@ -205,51 +237,53 @@ This map is generated deterministically from the filesystem, manifests, and sour
 - `src/verification/tools.ts` → `src/verification/runner.ts`
 - `src/webview/main.ts` → `src/webview/styles.css`
 - `src/webview/main.ts` → `src/shared/messages.ts`
+- `test/completion.test.ts` → `src/tools/index.ts`
+- `test/completion.test.ts` → `src/model/types.ts`
+- `test/completion.test.ts` → `src/intelligence/indexer.ts`
 - `test/execution.test.ts` → `src/tools/index.ts`
 - `test/git.test.ts` → `src/tools/index.ts`
 - `test/indexer.test.ts` → `src/intelligence/indexer.ts`
 - `test/messages.test.ts` → `src/shared/messages.ts`
-- `test/settings.test.ts` → `src/settings/defaults.ts`
-- `test/settings.test.ts` → `src/settings/registry.ts`
-- `test/settings.test.ts` → `src/settings/configuration.ts`
-- `test/settings.test.ts` → `src/model/registry.ts`
-- `test/settings.test.ts` → `src/model/profiles.ts`
-- `test/stream.test.ts` → `src/model/backend.ts`
-- `test/tools.test.ts` → `src/tools/index.ts`
-- `test/tools.test.ts` → `src/model/types.ts`
 
 ## Reverse dependencies
 
+- `src/completion/config.ts` ← `src/completion/index.ts`, `src/settings/configuration.ts`, `src/verification/config.ts`
+- `src/completion/evidence.ts` ← `src/completion/guard.ts`, `src/completion/index.ts`, `src/completion/tools.ts`
+- `src/completion/failures.ts` ← `src/completion/guard.ts`, `src/completion/index.ts`, `src/verification/runner.ts`
+- `src/completion/guard.ts` ← `src/completion/index.ts`, `src/completion/tools.ts`
+- `src/completion/index.ts` ← `src/tools/index.ts`, `src/tools/loop.ts`, `src/tools/workspace.ts`
+- `src/completion/tools.ts` ← `src/completion/index.ts`
+- `src/completion/types.ts` ← `src/completion/config.ts`, `src/completion/evidence.ts`, `src/completion/failures.ts`, `src/completion/guard.ts`, `src/completion/index.ts`, `src/completion/tools.ts`, `src/shared/messages.ts`, `src/verification/config.ts`
 - `src/execution/evidence.ts` ← `src/execution/index.ts`, `src/execution/service.ts`
 - `src/execution/index.ts` ← `src/tools/index.ts`, `src/tools/workspace.ts`, `src/verification/runner.ts`
 - `src/execution/logs.ts` ← `src/execution/index.ts`, `src/execution/service.ts`, `src/verification/tools.ts`
 - `src/execution/normalize.ts` ← `src/execution/index.ts`, `src/execution/service.ts`
 - `src/execution/permissions.ts` ← `src/execution/index.ts`, `src/execution/service.ts`
 - `src/execution/service.ts` ← `src/execution/index.ts`
-- `src/execution/types.ts` ← `src/execution/evidence.ts`, `src/execution/index.ts`, `src/execution/normalize.ts`, `src/execution/permissions.ts`, `src/execution/service.ts`, `src/verification/config.ts`, `src/verification/runner.ts`
-- `src/intelligence/indexer.ts` ← `src/extension.ts`, `src/tools/repository.ts`, `test/indexer.test.ts`
+- `src/execution/types.ts` ← `src/completion/failures.ts`, `src/completion/guard.ts`, `src/completion/types.ts`, `src/execution/evidence.ts`, `src/execution/index.ts`, `src/execution/normalize.ts`, `src/execution/permissions.ts`, `src/execution/service.ts`, `src/verification/config.ts`, `src/verification/runner.ts`
+- `src/intelligence/indexer.ts` ← `src/completion/guard.ts`, `src/extension.ts`, `src/tools/repository.ts`, `test/completion.test.ts`, `test/indexer.test.ts`
 - `src/model/anthropic.ts` ← `src/model/profiles.ts`
 - `src/model/backend.ts` ← `src/extension.ts`, `src/model/anthropic.ts`, `src/model/ollama.ts`, `src/model/openai.ts`, `src/model/profiles.ts`, `src/model/registry.ts`, `src/tools/loop.ts`, `test/stream.test.ts`
 - `src/model/ollama.ts` ← `src/model/profiles.ts`
 - `src/model/openai.ts` ← `src/model/profiles.ts`
 - `src/model/profiles.ts` ← `src/extension.ts`, `src/model/registry.ts`, `src/settings/panel.ts`, `test/settings.test.ts`
 - `src/model/registry.ts` ← `src/extension.ts`, `test/settings.test.ts`
-- `src/model/types.ts` ← `src/extension.ts`, `src/model/anthropic.ts`, `src/model/backend.ts`, `src/model/ollama.ts`, `src/model/openai.ts`, `src/tools/loop.ts`, `test/tools.test.ts`
+- `src/model/types.ts` ← `src/extension.ts`, `src/model/anthropic.ts`, `src/model/backend.ts`, `src/model/ollama.ts`, `src/model/openai.ts`, `src/tools/loop.ts`, `test/completion.test.ts`, `test/tools.test.ts`
 - `src/settings/configuration.ts` ← `src/extension.ts`, `src/settings/panel.ts`, `test/settings.test.ts`
 - `src/settings/defaults.ts` ← `src/settings/configuration.ts`, `test/settings.test.ts`
 - `src/settings/panel.ts` ← `src/extension.ts`
 - `src/settings/registry.ts` ← `src/settings/configuration.ts`, `src/settings/defaults.ts`, `test/settings.test.ts`
 - `src/shared/logger.ts` ← `src/extension.ts`
 - `src/shared/messages.ts` ← `src/extension.ts`, `src/webview/main.ts`, `test/messages.test.ts`
-- `src/tools/framework.ts` ← `src/tools/git.ts`, `src/tools/index.ts`, `src/tools/loop.ts`, `src/tools/repository.ts`, `src/tools/workspace.ts`, `src/verification/tools.ts`
+- `src/tools/framework.ts` ← `src/completion/tools.ts`, `src/tools/git.ts`, `src/tools/index.ts`, `src/tools/loop.ts`, `src/tools/repository.ts`, `src/tools/workspace.ts`, `src/verification/tools.ts`
 - `src/tools/git.ts` ← `src/tools/index.ts`, `src/tools/workspace.ts`
-- `src/tools/index.ts` ← `src/extension.ts`, `test/execution.test.ts`, `test/git.test.ts`, `test/tools.test.ts`
+- `src/tools/index.ts` ← `src/extension.ts`, `test/completion.test.ts`, `test/execution.test.ts`, `test/git.test.ts`, `test/tools.test.ts`
 - `src/tools/loop.ts` ← `src/tools/index.ts`
 - `src/tools/repository.ts` ← `src/tools/index.ts`, `src/tools/workspace.ts`
 - `src/tools/schema.ts` ← `src/tools/framework.ts`, `src/tools/index.ts`
-- `src/tools/types.ts` ← `src/tools/framework.ts`, `src/tools/git.ts`, `src/tools/index.ts`, `src/tools/loop.ts`, `src/tools/repository.ts`, `src/tools/schema.ts`, `src/verification/tools.ts`
+- `src/tools/types.ts` ← `src/completion/tools.ts`, `src/tools/framework.ts`, `src/tools/git.ts`, `src/tools/index.ts`, `src/tools/loop.ts`, `src/tools/repository.ts`, `src/tools/schema.ts`, `src/verification/tools.ts`
 - `src/tools/workspace.ts` ← `src/tools/index.ts`
-- `src/verification/config.ts` ← `src/settings/configuration.ts`, `src/verification/index.ts`, `src/verification/runner.ts`, `src/verification/tools.ts`
+- `src/verification/config.ts` ← `src/completion/guard.ts`, `src/settings/configuration.ts`, `src/verification/index.ts`, `src/verification/runner.ts`, `src/verification/tools.ts`
 - `src/verification/index.ts` ← `src/tools/index.ts`, `src/tools/workspace.ts`
 - `src/verification/runner.ts` ← `src/verification/index.ts`, `src/verification/tools.ts`
 - `src/verification/tools.ts` ← `src/verification/index.ts`
@@ -270,9 +304,9 @@ This map is generated deterministically from the filesystem, manifests, and sour
 
 ## Incremental update
 
-- Reused: 50
-- Added: 0
-- Changed: 4
+- Reused: 0
+- Added: 62
+- Changed: 0
 - Removed: 0
 - Renamed: 0
 

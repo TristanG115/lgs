@@ -1,0 +1,100 @@
+import * as fs from 'node:fs';
+import * as path from 'node:path';
+import { getFreshness, type RepositoryIndex } from '../intelligence/indexer.js';
+import type { ExecutionResult } from '../execution/types.js';
+import type { VerificationStep } from '../verification/config.js';
+import { FileCompletionEvidenceStore } from './evidence.js';
+import { FailureBudgetTracker } from './failures.js';
+import type { CompletionChecklistItem, CompletionConfiguration, CompletionEvaluation, CompletionEvidence, CompletionRequirement, ExecutionEvidenceReader } from './types.js';
+
+const LABELS: Record<CompletionRequirement, string> = {
+  acceptance_criteria_addressed: 'Acceptance criteria addressed', implementation_complete: 'Implementation complete',
+  relevant_tests_added_or_updated: 'Relevant tests added or updated', targeted_tests_pass: 'Targeted tests pass',
+  full_tests_pass: 'Full tests pass', typecheck_passes: 'Typecheck passes', lint_passes: 'Lint passes',
+  build_succeeds: 'Build succeeds', documentation_current: 'Documentation current', codebase_map_current: 'CODEBASE_MAP current',
+  runtime_verification_passes: 'Runtime verification passes', independent_review_passes: 'Independent review passes',
+  no_unresolved_task_failures: 'No unresolved task failures'
+};
+const STEP_REQUIREMENT: Partial<Record<CompletionRequirement, VerificationStep>> = {
+  targeted_tests_pass: 'targetedTest', full_tests_pass: 'test', typecheck_passes: 'typecheck', lint_passes: 'lint', build_succeeds: 'build', runtime_verification_passes: 'start'
+};
+
+export class CompletionGuard {
+  readonly failures: FailureBudgetTracker;
+  constructor(
+    private readonly workspaceRoot: string,
+    private readonly configuration: CompletionConfiguration,
+    private readonly completionEvidence: FileCompletionEvidenceStore,
+    private readonly executions: ExecutionEvidenceReader
+  ) { this.failures = new FailureBudgetTracker(executions, configuration.failureBudgets); }
+
+  async attempt(taskId: string): Promise<CompletionEvaluation> { return this.evaluate(taskId); }
+
+  evaluate(taskId: string): CompletionEvaluation {
+    const recorded = this.completionEvidence.read(taskId);
+    const executions = this.executions.read(taskId);
+    const checklist = (Object.keys(this.configuration.gates) as CompletionRequirement[]).map(requirement => this.evaluateRequirement(requirement, this.configuration.gates[requirement], recorded, executions));
+    const failureBudget = this.failures.state(taskId);
+    const required = checklist.filter(item => item.required);
+    const outstanding = required.filter(item => !item.passed).map(item => item.detail);
+    if (failureBudget.exhausted) outstanding.push(failureBudget.reason ?? 'The task failure budget is exhausted.');
+    return {
+      taskId, status: outstanding.length ? 'blocked' : 'passed', progress: { passed: required.filter(item => item.passed).length, required: required.length },
+      checklist, outstanding, failureBudget, attemptedAt: new Date().toISOString()
+    };
+  }
+
+  private evaluateRequirement(requirement: CompletionRequirement, required: boolean, recorded: CompletionEvidence[], executions: { recordedAt: string; execution: ExecutionResult }[]): CompletionChecklistItem {
+    if (!required) return { requirement, label: LABELS[requirement], required, passed: true, detail: `${LABELS[requirement]} is not required.`, evidence: [] };
+    const step = STEP_REQUIREMENT[requirement];
+    if (step) return commandItem(requirement, step, executions);
+    if (requirement === 'codebase_map_current') return this.mapItem();
+    if (requirement === 'no_unresolved_task_failures') return unresolvedItem(executions);
+    const candidates = recorded.filter(entry => entry.requirement === requirement);
+    const current = [...candidates].reverse().find(entry => this.completionEvidence.isCurrent(entry));
+    return current
+      ? { requirement, label: LABELS[requirement], required, passed: true, detail: current.summary, evidence: [current] }
+      : { requirement, label: LABELS[requirement], required, passed: false, detail: candidates.length ? `${LABELS[requirement]} evidence is stale.` : `${LABELS[requirement]} lacks evidence.`, evidence: [] };
+  }
+
+  private mapItem(): CompletionChecklistItem {
+    const requirement: CompletionRequirement = 'codebase_map_current';
+    try {
+      const index = JSON.parse(fs.readFileSync(path.join(this.workspaceRoot, '.lgs', 'index.json'), 'utf8')) as RepositoryIndex;
+      const freshness = getFreshness(this.workspaceRoot, index);
+      const passed = freshness.index === 'current' && freshness.codebaseMap === 'current';
+      const evidence: CompletionEvidence = { id: `map-${index.generatedAt}`, requirement, summary: passed ? 'Repository index and CODEBASE_MAP match the workspace.' : `Stale entries: ${freshness.staleEntries.join(', ') || 'map metadata'}.`, recordedAt: freshness.checkedAt, source: 'repository-intelligence' };
+      return { requirement, label: LABELS[requirement], required: true, passed, detail: evidence.summary, evidence: [evidence] };
+    } catch { return { requirement, label: LABELS[requirement], required: true, passed: false, detail: 'CODEBASE_MAP current check could not find a valid repository index.', evidence: [] }; }
+  }
+}
+
+export function renderCompletionBlocked(evaluation: CompletionEvaluation): string {
+  return ['COMPLETION_BLOCKED', '', 'Outstanding:', '', ...evaluation.outstanding.map(item => `- ${item}`), '', 'Continue working.'].join('\n');
+}
+
+function commandItem(requirement: CompletionRequirement, step: VerificationStep, entries: { recordedAt: string; execution: ExecutionResult }[]): CompletionChecklistItem {
+  const relevant = entries.filter(entry => entry.execution.request.verificationStep === step);
+  const latest = relevant.at(-1);
+  const passed = latest?.execution.status === 'passed';
+  const evidence: CompletionEvidence[] = latest ? [{ id: latest.execution.id, requirement, summary: `${latest.execution.normalized.command} ${latest.execution.status} with exit code ${latest.execution.exitCode ?? 'none'}.`, recordedAt: latest.recordedAt, source: 'execution', executionId: latest.execution.id }] : [];
+  return { requirement, label: LABELS[requirement], required: true, passed, detail: passed ? evidence[0].summary : latest ? `${LABELS[requirement]} failed or was interrupted.` : `${LABELS[requirement]} have not run.`, evidence };
+}
+
+function unresolvedItem(entries: { recordedAt: string; execution: ExecutionResult }[]): CompletionChecklistItem {
+  const requirement: CompletionRequirement = 'no_unresolved_task_failures';
+  const unresolved: ExecutionResult[] = [];
+  for (const entry of entries) {
+    const execution = entry.execution;
+    const step = execution.request.verificationStep;
+    if (!step) continue;
+    if (execution.status === 'passed') {
+      for (let index = unresolved.length - 1; index >= 0; index--) if (unresolved[index].request.verificationStep === step) unresolved.splice(index, 1);
+    } else if (execution.status !== 'denied' && execution.status !== 'cancelled') unresolved.push(execution);
+  }
+  const detail = unresolved.length ? `${unresolved.length} task verification failure(s) remain unresolved.` : 'No unresolved task failures remain.';
+  const evidence: CompletionEvidence[] = unresolved.length
+    ? unresolved.map(execution => ({ id: execution.id, requirement, summary: `${execution.normalized.command} remains ${execution.status}.`, recordedAt: execution.completedAt, source: 'execution', executionId: execution.id }))
+    : [{ id: 'task-execution-history', requirement, summary: detail, recordedAt: entries.at(-1)?.recordedAt ?? new Date().toISOString(), source: 'execution' }];
+  return { requirement, label: LABELS[requirement], required: true, passed: !unresolved.length, detail, evidence };
+}

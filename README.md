@@ -1,6 +1,6 @@
 # LGS (Little Grad Student)
 
-LGS is a VS Code extension for reliable software-engineering agents. Phase 8 adds controlled, evidence-producing software verification on top of provider-neutral model backends, deterministic Repository Intelligence, and guarded workspace tools.
+LGS is a VS Code extension for reliable software-engineering agents. Phase 9 adds an evidence-backed Completion Guard on top of controlled software verification, provider-neutral model backends, deterministic Repository Intelligence, and guarded workspace tools.
 
 ## Repository structure
 
@@ -10,6 +10,7 @@ LGS is a VS Code extension for reliable software-engineering agents. Phase 8 add
 - `src/tools/` — typed tool contracts, validation, guarded execution, repository/Git tools, task baselines, audit records, and the model continuation loop.
 - `src/execution/` — structured process execution, command permissions, normalized output, raw logs, and persisted task evidence.
 - `src/verification/` — generic project verification configuration, targeted selection, and model-facing verification tools.
+- `src/completion/` — completion gates, durable evidence, failure budgets, and completion-attempt enforcement.
 - `.lgs/index.json` — generated machine-readable repository index.
 - `.lgs/CODEBASE_MAP.md` — generated compact architecture guide.
 - `src/shared/messages.ts` — typed message contracts and runtime validation shared by both sides.
@@ -111,3 +112,24 @@ permissions:
       test: always_allow
       dangerous: deny
 ```
+
+## Completion Guard
+
+Phase 9 makes completion an LGS decision rather than a model assertion. Whenever a model returns a final response, the tool loop evaluates the configured completion gates. If any required gate lacks current evidence, LGS sends a `COMPLETION_BLOCKED` report back into the loop and requires the agent to continue. The sidebar displays the same state as a collapsible progress checklist.
+
+Command-backed gates use persisted verification executions for targeted tests, full tests, typecheck, lint, build, and optional runtime verification. Repository Intelligence checks `.lgs/index.json` and `.lgs/CODEBASE_MAP.md` directly. The agent records file-fingerprinted evidence for implementation, relevant tests, and documentation, so later edits make that evidence stale. Acceptance-criteria and optional independent-review evidence are retained under `.lgs/tasks/<task-id>/completion-evidence.json`; runtime data remains ignored by Git.
+
+Completion defaults require acceptance criteria, implementation, relevant tests, targeted and full test runs, typecheck, lint, build, current documentation, a current CODEBASE_MAP, and no unresolved verification failures. Runtime verification and independent review are opt-in gates. Configure gates and loop limits in `.lgs/config.yaml`:
+
+```yaml
+completion:
+  gates:
+    runtime_verification_passes: true
+    independent_review_passes: true
+  failureBudgets:
+    same_error_retry_limit: 3
+    total_fix_attempt_limit: 12
+    escalation_threshold: 3
+```
+
+Substantially repeated errors are normalized into fingerprints so changing line numbers, IDs, or paths does not reset the retry count. When either retry limit is exhausted, LGS blocks further configured verification attempts and marks escalation as required when the escalation threshold is reached. A later passing run resolves prior failures for the same verification step, but does not erase failure-budget history.

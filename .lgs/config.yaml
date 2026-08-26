@@ -40,3 +40,22 @@ permissions:
       process: ask
       dangerous: deny
 
+completion:
+  gates:
+    acceptance_criteria_addressed: true
+    implementation_complete: true
+    relevant_tests_added_or_updated: true
+    targeted_tests_pass: true
+    full_tests_pass: true
+    typecheck_passes: true
+    lint_passes: true
+    build_succeeds: true
+    documentation_current: true
+    codebase_map_current: true
+    runtime_verification_passes: false
+    independent_review_passes: false
+    no_unresolved_task_failures: true
+  failureBudgets:
+    same_error_retry_limit: 3
+    total_fix_attempt_limit: 12
+    escalation_threshold: 3

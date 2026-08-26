@@ -1,23 +1,27 @@
 import * as path from 'node:path';
 import type { CommandExecutionService, ExecutionResult } from '../execution/index.js';
 import type { CommandDefinition } from '../execution/types.js';
+import type { FailureBudgetTracker } from '../completion/failures.js';
 import type { VerificationConfiguration, VerificationStep } from './config.js';
 
 export type VerificationRun = {
   step: VerificationStep;
   targets: string[];
-  status: 'passed' | 'failed' | 'not_configured' | 'cancelled';
+  status: 'passed' | 'failed' | 'not_configured' | 'cancelled' | 'budget_exhausted';
   executions: ExecutionResult[];
+  failureBudgetReason?: string;
 };
 
 export class VerificationRunner {
-  constructor(private readonly configuration: VerificationConfiguration, private readonly execution: CommandExecutionService) {}
+  constructor(private readonly configuration: VerificationConfiguration, private readonly execution: CommandExecutionService, private readonly failureBudget?: FailureBudgetTracker) {}
 
   async run(step: VerificationStep, options: { targets?: string[]; taskId?: string; signal?: AbortSignal } = {}): Promise<VerificationRun> {
     const targets = unique((options.targets ?? []).map(normalizeTarget));
     const configured = this.configuration[step] ?? [];
     const selected = step === 'targetedTest' && targets.length ? configured.filter(command => matchesTargets(command, targets)) : configured;
     if (!selected.length) return { step, targets, status: 'not_configured', executions: [] };
+    const budget = this.failureBudget?.canAttempt(options.taskId);
+    if (budget && !budget.allowed) return { step, targets, status: 'budget_exhausted', executions: [], failureBudgetReason: budget.state?.reason };
     const executions: ExecutionResult[] = [];
     for (const command of selected) {
       const definition = { ...command };

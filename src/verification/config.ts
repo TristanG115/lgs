@@ -2,6 +2,8 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { parse } from 'yaml';
 import { COMMAND_CATEGORIES, type CommandDefinition, type PermissionConfiguration, type PermissionPolicy } from '../execution/types.js';
+import { parseCompletionConfiguration } from '../completion/config.js';
+import type { CompletionConfiguration } from '../completion/types.js';
 
 export const VERIFICATION_STEPS = ['install', 'typecheck', 'lint', 'targetedTest', 'test', 'build', 'start'] as const;
 export type VerificationStep = typeof VERIFICATION_STEPS[number];
@@ -16,21 +18,22 @@ export type LoadedWorkspaceConfiguration = {
   settings: Record<string, unknown>;
   verification: VerificationConfiguration;
   permissions: PermissionConfiguration;
-  completion: Record<string, unknown>;
+  completion: CompletionConfiguration;
   errors: string[];
 };
 
 export function loadWorkspaceConfiguration(root: string): LoadedWorkspaceConfiguration {
-  const empty: LoadedWorkspaceConfiguration = { settings: {}, verification: {}, permissions: {}, completion: {}, errors: [] };
+  const empty: LoadedWorkspaceConfiguration = { settings: {}, verification: {}, permissions: {}, completion: parseCompletionConfiguration(), errors: [] };
   const file = path.join(root, '.lgs', 'config.yaml');
   if (!fs.existsSync(file)) return empty;
   try {
     const parsed = parse(fs.readFileSync(file, 'utf8')) as unknown;
     if (!record(parsed)) throw new Error('Workspace config must be a YAML object.');
     const settings = parsed.settings === undefined ? {} : requireRecord(parsed.settings, 'settings');
-    const completion = parsed.completion === undefined ? {} : requireRecord(parsed.completion, 'completion');
+    const rawCompletion = parsed.completion === undefined ? {} : requireRecord(parsed.completion, 'completion');
     const verification = parseVerification(parsed.verification, empty.errors);
     const permissions = parsePermissions(parsed.permissions, empty.errors);
+    const completion = parseCompletionConfiguration(rawCompletion, empty.errors);
     return { settings, verification, permissions, completion, errors: empty.errors };
   } catch (error) {
     empty.errors.push(error instanceof Error ? error.message : 'Malformed workspace configuration.');

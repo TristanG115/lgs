@@ -1,11 +1,12 @@
 {
   "version": 2,
-  "generatedAt": "2026-08-26T09:48:40.605Z",
+  "generatedAt": "2026-08-26T15:05:31.616Z",
   "root": "/home/tristan/Documents/Github/lgs",
   "directories": [
     ".vscode",
     "media",
     "src",
+    "src/completion",
     "src/execution",
     "src/intelligence",
     "src/model",
@@ -66,9 +67,9 @@
       "path": "README.md",
       "fileType": "md",
       "language": "Markdown/Text",
-      "size": 13173,
-      "mtimeMs": 1787737603631.1797,
-      "hash": "8c227a0dad9d5c197bf1f2198a0125e3874ae452",
+      "size": 15231,
+      "mtimeMs": 1787756508798.421,
+      "hash": "6a14c0c6278a992c8453685705142614d4e51385",
       "imports": [],
       "exports": [],
       "symbols": [],
@@ -163,6 +164,213 @@
       "likelyDocumentation": false,
       "directory": "",
       "module": ""
+    },
+    {
+      "path": "src/completion/config.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 2368,
+      "mtimeMs": 1787756358731.703,
+      "hash": "41335b5c28ed3cc26dd931af32b5ef82c9ec347f",
+      "imports": [
+        "./types.js"
+      ],
+      "exports": [
+        "parseCompletionConfiguration"
+      ],
+      "symbols": [
+        "DEFAULT_GATES",
+        "DEFAULT_BUDGETS",
+        "parseCompletionConfiguration",
+        "record"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/completion",
+      "module": "src"
+    },
+    {
+      "path": "src/completion/evidence.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 4129,
+      "mtimeMs": 1787756568266.2598,
+      "hash": "03d14400835b584b921616dba1f0b87037ac076c",
+      "imports": [
+        "node:crypto",
+        "node:fs",
+        "node:path",
+        "./types.js"
+      ],
+      "exports": [
+        "RECORDABLE_REQUIREMENTS",
+        "FileCompletionEvidenceStore"
+      ],
+      "symbols": [
+        "RECORDABLE_REQUIREMENTS",
+        "FileCompletionEvidenceStore",
+        "validTaskId",
+        "validateTaskId",
+        "unique",
+        "validEvidence"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/completion",
+      "module": "src"
+    },
+    {
+      "path": "src/completion/failures.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 2401,
+      "mtimeMs": 1787737939255.8428,
+      "hash": "5539b02cec097bbf390a7f09369f60ff258a30fd",
+      "imports": [
+        "../execution/types.js",
+        "./types.js"
+      ],
+      "exports": [
+        "FailureBudgetTracker",
+        "errorFingerprint"
+      ],
+      "symbols": [
+        "FailureBudgetTracker",
+        "errorFingerprint",
+        "failedExecution"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/completion",
+      "module": "src"
+    },
+    {
+      "path": "src/completion/guard.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 7792,
+      "mtimeMs": 1787756498241.4585,
+      "hash": "820a8b670718ae788d2ddef56467be52ba135ece",
+      "imports": [
+        "node:fs",
+        "node:path",
+        "../intelligence/indexer.js",
+        "../execution/types.js",
+        "../verification/config.js",
+        "./evidence.js",
+        "./failures.js",
+        "./types.js"
+      ],
+      "exports": [
+        "CompletionGuard",
+        "renderCompletionBlocked"
+      ],
+      "symbols": [
+        "LABELS",
+        "STEP_REQUIREMENT",
+        "CompletionGuard",
+        "renderCompletionBlocked",
+        "commandItem",
+        "unresolvedItem"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/completion",
+      "module": "src"
+    },
+    {
+      "path": "src/completion/index.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 176,
+      "mtimeMs": 1787737939360.8428,
+      "hash": "1160a9f126a2d7aa8490edb199542fc9139f2505",
+      "imports": [
+        "./types.js",
+        "./config.js",
+        "./evidence.js",
+        "./failures.js",
+        "./guard.js",
+        "./tools.js"
+      ],
+      "exports": [],
+      "symbols": [],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/completion",
+      "module": "src"
+    },
+    {
+      "path": "src/completion/tools.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 2371,
+      "mtimeMs": 1787737939325.8428,
+      "hash": "26eb46296606d550b2f7fa89f40828cff1b6a300",
+      "imports": [
+        "../tools/types.js",
+        "../tools/framework.js",
+        "./evidence.js",
+        "./guard.js",
+        "./types.js"
+      ],
+      "exports": [
+        "registerCompletionTools"
+      ],
+      "symbols": [
+        "METADATA_PERMISSION",
+        "READ_PERMISSION",
+        "registerCompletionTools"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/completion",
+      "module": "src"
+    },
+    {
+      "path": "src/completion/types.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 2103,
+      "mtimeMs": 1787737939148.8428,
+      "hash": "8d04741b5649b8b96d650f117b5ef690823580e2",
+      "imports": [
+        "../execution/types.js"
+      ],
+      "exports": [
+        "COMPLETION_REQUIREMENTS",
+        "CompletionRequirement",
+        "CompletionStatus",
+        "CompletionEvidenceSource",
+        "CompletionEvidence",
+        "CompletionChecklistItem",
+        "FailureBudgetConfiguration",
+        "CompletionGateConfiguration",
+        "CompletionConfiguration",
+        "FailureBudgetState",
+        "CompletionEvaluation",
+        "CompletionViewState",
+        "ExecutionEvidenceReader"
+      ],
+      "symbols": [
+        "COMPLETION_REQUIREMENTS",
+        "CompletionRequirement",
+        "CompletionStatus",
+        "CompletionEvidenceSource",
+        "CompletionEvidence",
+        "CompletionChecklistItem",
+        "FailureBudgetConfiguration",
+        "CompletionGateConfiguration",
+        "CompletionConfiguration",
+        "FailureBudgetState",
+        "CompletionEvaluation",
+        "CompletionViewState",
+        "ExecutionEvidenceReader"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/completion",
+      "module": "src"
     },
     {
       "path": "src/execution/evidence.ts",
@@ -368,9 +576,9 @@
       "path": "src/extension.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 12305,
-      "mtimeMs": 1787737430542.3167,
-      "hash": "370c9443783ace9a87f3e2476c81297990069d00",
+      "size": 12686,
+      "mtimeMs": 1787756696468.965,
+      "hash": "1f9c8d49f6fdaab69f285fbf10500aa82a4f5819",
       "imports": [
         "vscode",
         "./shared/messages.js",
@@ -681,9 +889,9 @@
       "path": "src/settings/configuration.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 2741,
-      "mtimeMs": 1787737396936.4014,
-      "hash": "94e43316159b4e6e25257c2b8d71f6cdea1687de",
+      "size": 2839,
+      "mtimeMs": 1787756706637.9434,
+      "hash": "2c268d10224e225706563d7ae941365b4c02ab0d",
       "imports": [
         "node:fs",
         "node:path",
@@ -691,7 +899,8 @@
         "vscode",
         "./defaults.js",
         "./registry.js",
-        "../verification/config.js"
+        "../verification/config.js",
+        "../completion/config.js"
       ],
       "exports": [
         "SettingsManager"
@@ -809,10 +1018,12 @@
       "path": "src/shared/messages.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 2494,
-      "mtimeMs": 1787712031628.099,
-      "hash": "f152f7b06ddf2e3e889de9feb517c1186c48a1e2",
-      "imports": [],
+      "size": 2644,
+      "mtimeMs": 1787756358653.7031,
+      "hash": "b080a2721d05f782a82800a312cdfadb91890fca",
+      "imports": [
+        "../completion/types.js"
+      ],
       "exports": [
         "ChatOptions",
         "ClientMessage",
@@ -960,9 +1171,9 @@
       "path": "src/tools/index.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 288,
-      "mtimeMs": 1787737396900.4016,
-      "hash": "3205b183ddd714068bebce5737f5a69b0b1688b9",
+      "size": 328,
+      "mtimeMs": 1787737967325.8418,
+      "hash": "aff060f6a038ed4771cdbaacaf9a8a02626b876a",
       "imports": [
         "./types.js",
         "./schema.js",
@@ -972,7 +1183,8 @@
         "./git.js",
         "./workspace.js",
         "../execution/index.js",
-        "../verification/index.js"
+        "../verification/index.js",
+        "../completion/index.js"
       ],
       "exports": [],
       "symbols": [],
@@ -985,14 +1197,15 @@
       "path": "src/tools/loop.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 5203,
-      "mtimeMs": 1787737396865.4016,
-      "hash": "88a2a2bc9d59f2b567c667ef5817cf5b11a4c86e",
+      "size": 6421,
+      "mtimeMs": 1787737967361.8418,
+      "hash": "9b5a862be714560c3fa5645376febbd752a473a3",
       "imports": [
         "../model/backend.js",
         "../model/types.js",
         "./framework.js",
-        "./types.js"
+        "./types.js",
+        "../completion/index.js"
       ],
       "exports": [
         "ToolModelTurn",
@@ -1160,15 +1373,16 @@
       "path": "src/tools/workspace.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 874,
-      "mtimeMs": 1787737396830.4016,
-      "hash": "f5433f87bc056e2410bbf379a8923415a924e317",
+      "size": 1234,
+      "mtimeMs": 1787737967290.8418,
+      "hash": "c62e6cf4e2a805db6f6e74c954a0b4ebb3c95873",
       "imports": [
         "./git.js",
         "./repository.js",
         "./framework.js",
         "../verification/index.js",
-        "../execution/index.js"
+        "../execution/index.js",
+        "../completion/index.js"
       ],
       "exports": [
         "createWorkspaceToolRegistry"
@@ -1185,14 +1399,16 @@
       "path": "src/verification/config.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 6992,
-      "mtimeMs": 1787737686559.0708,
-      "hash": "b1887240246a606ece6d6b6293f238834ca77be5",
+      "size": 7248,
+      "mtimeMs": 1787756706602.9434,
+      "hash": "dc7b1b2afe1bbc8e222693ee412625959ab994ec",
       "imports": [
         "node:fs",
         "node:path",
         "yaml",
-        "../execution/types.js"
+        "../execution/types.js",
+        "../completion/config.js",
+        "../completion/types.js"
       ],
       "exports": [
         "VERIFICATION_STEPS",
@@ -1244,13 +1460,14 @@
       "path": "src/verification/runner.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 2988,
-      "mtimeMs": 1787737693743.0615,
-      "hash": "7af49e5fda8d758d9e150eb0d159c53811c2d95c",
+      "size": 3382,
+      "mtimeMs": 1787737967253.8418,
+      "hash": "dcd11a47067d06dcb5b7e5cd6f85a8c46bfde8a6",
       "imports": [
         "node:path",
         "../execution/index.js",
         "../execution/types.js",
+        "../completion/failures.js",
         "./config.js"
       ],
       "exports": [
@@ -1302,9 +1519,9 @@
       "path": "src/webview/main.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 4928,
-      "mtimeMs": 1787712031628.099,
-      "hash": "13dc050b34a36487082a8d1b0a17f388fca8434c",
+      "size": 6757,
+      "mtimeMs": 1787756568304.2595,
+      "hash": "edc1d658f3c4706e8105937a3b4937909506e0c8",
       "imports": [
         "./styles.css",
         "../shared/messages.js"
@@ -1326,8 +1543,13 @@
         "thinking",
         "approval",
         "chats",
+        "completion",
+        "completionProgress",
+        "completionChecklist",
+        "completionToggle",
         "syncOptions",
-        "add"
+        "add",
+        "renderCompletion"
       ],
       "likelyTest": false,
       "likelyDocumentation": false,
@@ -1338,9 +1560,9 @@
       "path": "src/webview/styles.css",
       "fileType": "css",
       "language": "CSS",
-      "size": 4353,
-      "mtimeMs": 1787712031643.099,
-      "hash": "6027ee069990abffc9c8cc39847aa0deeee93d7c",
+      "size": 5455,
+      "mtimeMs": 1787756410528.654,
+      "hash": "cf832273b2b28aa2d4eb428d6e1bcb5117affa43",
       "imports": [],
       "exports": [],
       "symbols": [],
@@ -1348,6 +1570,36 @@
       "likelyDocumentation": false,
       "directory": "src/webview",
       "module": "src"
+    },
+    {
+      "path": "test/completion.test.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 7145,
+      "mtimeMs": 1787756568343.2595,
+      "hash": "3713afd98d121564e1b40355cbf58b6560a9e351",
+      "imports": [
+        "vitest",
+        "node:fs",
+        "node:os",
+        "node:path",
+        "../src/tools/index.js",
+        "../src/model/types.js",
+        "../src/intelligence/indexer.js"
+      ],
+      "exports": [],
+      "symbols": [
+        "EvidenceEntry",
+        "fixture",
+        "cleanup",
+        "gates",
+        "execution",
+        "guard"
+      ],
+      "likelyTest": true,
+      "likelyDocumentation": false,
+      "directory": "test",
+      "module": "test"
     },
     {
       "path": "test/execution.test.ts",
@@ -1556,6 +1808,7 @@
         ".vscode",
         "media",
         "src",
+        "src/completion",
         "src/execution",
         "src/intelligence",
         "src/model",
@@ -1576,6 +1829,13 @@
         "media/lgs.svg",
         "package-lock.json",
         "package.json",
+        "src/completion/config.ts",
+        "src/completion/evidence.ts",
+        "src/completion/failures.ts",
+        "src/completion/guard.ts",
+        "src/completion/index.ts",
+        "src/completion/tools.ts",
+        "src/completion/types.ts",
         "src/execution/evidence.ts",
         "src/execution/index.ts",
         "src/execution/logs.ts",
@@ -1612,6 +1872,7 @@
         "src/verification/tools.ts",
         "src/webview/main.ts",
         "src/webview/styles.css",
+        "test/completion.test.ts",
         "test/execution.test.ts",
         "test/git.test.ts",
         "test/indexer.test.ts",
@@ -1670,6 +1931,7 @@
         "path": "src",
         "directories": [
           "src",
+          "src/completion",
           "src/execution",
           "src/intelligence",
           "src/model",
@@ -1680,6 +1942,13 @@
           "src/webview"
         ],
         "files": [
+          "src/completion/config.ts",
+          "src/completion/evidence.ts",
+          "src/completion/failures.ts",
+          "src/completion/guard.ts",
+          "src/completion/index.ts",
+          "src/completion/tools.ts",
+          "src/completion/types.ts",
           "src/execution/evidence.ts",
           "src/execution/index.ts",
           "src/execution/logs.ts",
@@ -1729,6 +1998,7 @@
           "test"
         ],
         "files": [
+          "test/completion.test.ts",
           "test/execution.test.ts",
           "test/git.test.ts",
           "test/indexer.test.ts",
@@ -1742,6 +2012,94 @@
     ]
   },
   "moduleRelationships": [
+    {
+      "from": "src/completion/config.ts",
+      "to": "src/completion/types.ts"
+    },
+    {
+      "from": "src/completion/evidence.ts",
+      "to": "src/completion/types.ts"
+    },
+    {
+      "from": "src/completion/failures.ts",
+      "to": "src/execution/types.ts"
+    },
+    {
+      "from": "src/completion/failures.ts",
+      "to": "src/completion/types.ts"
+    },
+    {
+      "from": "src/completion/guard.ts",
+      "to": "src/intelligence/indexer.ts"
+    },
+    {
+      "from": "src/completion/guard.ts",
+      "to": "src/execution/types.ts"
+    },
+    {
+      "from": "src/completion/guard.ts",
+      "to": "src/verification/config.ts"
+    },
+    {
+      "from": "src/completion/guard.ts",
+      "to": "src/completion/evidence.ts"
+    },
+    {
+      "from": "src/completion/guard.ts",
+      "to": "src/completion/failures.ts"
+    },
+    {
+      "from": "src/completion/guard.ts",
+      "to": "src/completion/types.ts"
+    },
+    {
+      "from": "src/completion/index.ts",
+      "to": "src/completion/types.ts"
+    },
+    {
+      "from": "src/completion/index.ts",
+      "to": "src/completion/config.ts"
+    },
+    {
+      "from": "src/completion/index.ts",
+      "to": "src/completion/evidence.ts"
+    },
+    {
+      "from": "src/completion/index.ts",
+      "to": "src/completion/failures.ts"
+    },
+    {
+      "from": "src/completion/index.ts",
+      "to": "src/completion/guard.ts"
+    },
+    {
+      "from": "src/completion/index.ts",
+      "to": "src/completion/tools.ts"
+    },
+    {
+      "from": "src/completion/tools.ts",
+      "to": "src/tools/types.ts"
+    },
+    {
+      "from": "src/completion/tools.ts",
+      "to": "src/tools/framework.ts"
+    },
+    {
+      "from": "src/completion/tools.ts",
+      "to": "src/completion/evidence.ts"
+    },
+    {
+      "from": "src/completion/tools.ts",
+      "to": "src/completion/guard.ts"
+    },
+    {
+      "from": "src/completion/tools.ts",
+      "to": "src/completion/types.ts"
+    },
+    {
+      "from": "src/completion/types.ts",
+      "to": "src/execution/types.ts"
+    },
     {
       "from": "src/execution/evidence.ts",
       "to": "src/execution/types.ts"
@@ -1903,6 +2261,10 @@
       "to": "src/verification/config.ts"
     },
     {
+      "from": "src/settings/configuration.ts",
+      "to": "src/completion/config.ts"
+    },
+    {
       "from": "src/settings/defaults.ts",
       "to": "src/settings/registry.ts"
     },
@@ -1913,6 +2275,10 @@
     {
       "from": "src/settings/panel.ts",
       "to": "src/settings/configuration.ts"
+    },
+    {
+      "from": "src/shared/messages.ts",
+      "to": "src/completion/types.ts"
     },
     {
       "from": "src/tools/framework.ts",
@@ -1967,6 +2333,10 @@
       "to": "src/verification/index.ts"
     },
     {
+      "from": "src/tools/index.ts",
+      "to": "src/completion/index.ts"
+    },
+    {
       "from": "src/tools/loop.ts",
       "to": "src/model/backend.ts"
     },
@@ -1981,6 +2351,10 @@
     {
       "from": "src/tools/loop.ts",
       "to": "src/tools/types.ts"
+    },
+    {
+      "from": "src/tools/loop.ts",
+      "to": "src/completion/index.ts"
     },
     {
       "from": "src/tools/repository.ts",
@@ -2019,8 +2393,20 @@
       "to": "src/execution/index.ts"
     },
     {
+      "from": "src/tools/workspace.ts",
+      "to": "src/completion/index.ts"
+    },
+    {
       "from": "src/verification/config.ts",
       "to": "src/execution/types.ts"
+    },
+    {
+      "from": "src/verification/config.ts",
+      "to": "src/completion/config.ts"
+    },
+    {
+      "from": "src/verification/config.ts",
+      "to": "src/completion/types.ts"
     },
     {
       "from": "src/verification/index.ts",
@@ -2041,6 +2427,10 @@
     {
       "from": "src/verification/runner.ts",
       "to": "src/execution/types.ts"
+    },
+    {
+      "from": "src/verification/runner.ts",
+      "to": "src/completion/failures.ts"
     },
     {
       "from": "src/verification/runner.ts",
@@ -2073,6 +2463,18 @@
     {
       "from": "src/webview/main.ts",
       "to": "src/shared/messages.ts"
+    },
+    {
+      "from": "test/completion.test.ts",
+      "to": "src/tools/index.ts"
+    },
+    {
+      "from": "test/completion.test.ts",
+      "to": "src/model/types.ts"
+    },
+    {
+      "from": "test/completion.test.ts",
+      "to": "src/intelligence/indexer.ts"
     },
     {
       "from": "test/execution.test.ts",
@@ -2124,7 +2526,20 @@
     }
   ],
   "reverseDependencies": {
+    "src/completion/types.ts": [
+      "src/completion/config.ts",
+      "src/completion/evidence.ts",
+      "src/completion/failures.ts",
+      "src/completion/guard.ts",
+      "src/completion/index.ts",
+      "src/completion/tools.ts",
+      "src/shared/messages.ts",
+      "src/verification/config.ts"
+    ],
     "src/execution/types.ts": [
+      "src/completion/failures.ts",
+      "src/completion/guard.ts",
+      "src/completion/types.ts",
       "src/execution/evidence.ts",
       "src/execution/index.ts",
       "src/execution/normalize.ts",
@@ -2132,6 +2547,61 @@
       "src/execution/service.ts",
       "src/verification/config.ts",
       "src/verification/runner.ts"
+    ],
+    "src/intelligence/indexer.ts": [
+      "src/completion/guard.ts",
+      "src/extension.ts",
+      "src/tools/repository.ts",
+      "test/completion.test.ts",
+      "test/indexer.test.ts"
+    ],
+    "src/verification/config.ts": [
+      "src/completion/guard.ts",
+      "src/settings/configuration.ts",
+      "src/verification/index.ts",
+      "src/verification/runner.ts",
+      "src/verification/tools.ts"
+    ],
+    "src/completion/evidence.ts": [
+      "src/completion/guard.ts",
+      "src/completion/index.ts",
+      "src/completion/tools.ts"
+    ],
+    "src/completion/failures.ts": [
+      "src/completion/guard.ts",
+      "src/completion/index.ts",
+      "src/verification/runner.ts"
+    ],
+    "src/completion/config.ts": [
+      "src/completion/index.ts",
+      "src/settings/configuration.ts",
+      "src/verification/config.ts"
+    ],
+    "src/completion/guard.ts": [
+      "src/completion/index.ts",
+      "src/completion/tools.ts"
+    ],
+    "src/completion/tools.ts": [
+      "src/completion/index.ts"
+    ],
+    "src/tools/types.ts": [
+      "src/completion/tools.ts",
+      "src/tools/framework.ts",
+      "src/tools/git.ts",
+      "src/tools/index.ts",
+      "src/tools/loop.ts",
+      "src/tools/repository.ts",
+      "src/tools/schema.ts",
+      "src/verification/tools.ts"
+    ],
+    "src/tools/framework.ts": [
+      "src/completion/tools.ts",
+      "src/tools/git.ts",
+      "src/tools/index.ts",
+      "src/tools/loop.ts",
+      "src/tools/repository.ts",
+      "src/tools/workspace.ts",
+      "src/verification/tools.ts"
     ],
     "src/execution/permissions.ts": [
       "src/execution/index.ts",
@@ -2178,6 +2648,7 @@
       "src/model/ollama.ts",
       "src/model/openai.ts",
       "src/tools/loop.ts",
+      "test/completion.test.ts",
       "test/tools.test.ts"
     ],
     "src/model/backend.ts": [
@@ -2190,11 +2661,6 @@
       "src/tools/loop.ts",
       "test/stream.test.ts"
     ],
-    "src/intelligence/indexer.ts": [
-      "src/extension.ts",
-      "src/tools/repository.ts",
-      "test/indexer.test.ts"
-    ],
     "src/settings/configuration.ts": [
       "src/extension.ts",
       "src/settings/panel.ts",
@@ -2205,6 +2671,7 @@
     ],
     "src/tools/index.ts": [
       "src/extension.ts",
+      "test/completion.test.ts",
       "test/execution.test.ts",
       "test/git.test.ts",
       "test/tools.test.ts"
@@ -2227,32 +2694,9 @@
       "src/settings/defaults.ts",
       "test/settings.test.ts"
     ],
-    "src/verification/config.ts": [
-      "src/settings/configuration.ts",
-      "src/verification/index.ts",
-      "src/verification/runner.ts",
-      "src/verification/tools.ts"
-    ],
     "src/tools/schema.ts": [
       "src/tools/framework.ts",
       "src/tools/index.ts"
-    ],
-    "src/tools/types.ts": [
-      "src/tools/framework.ts",
-      "src/tools/git.ts",
-      "src/tools/index.ts",
-      "src/tools/loop.ts",
-      "src/tools/repository.ts",
-      "src/tools/schema.ts",
-      "src/verification/tools.ts"
-    ],
-    "src/tools/framework.ts": [
-      "src/tools/git.ts",
-      "src/tools/index.ts",
-      "src/tools/loop.ts",
-      "src/tools/repository.ts",
-      "src/tools/workspace.ts",
-      "src/verification/tools.ts"
     ],
     "src/tools/repository.ts": [
       "src/tools/index.ts",
@@ -2275,6 +2719,11 @@
     ],
     "src/verification/index.ts": [
       "src/tools/index.ts",
+      "src/tools/workspace.ts"
+    ],
+    "src/completion/index.ts": [
+      "src/tools/index.ts",
+      "src/tools/loop.ts",
       "src/tools/workspace.ts"
     ],
     "src/verification/runner.ts": [
@@ -2318,11 +2767,12 @@
   "freshness": {
     "index": "current",
     "codebaseMap": "current",
-    "checkedAt": "2026-08-26T09:48:40.605Z",
+    "checkedAt": "2026-08-26T15:05:31.617Z",
     "staleEntries": []
   },
   "incremental": {
-    "reused": [
+    "reused": [],
+    "added": [
       ".gitignore",
       ".vscode/launch.json",
       ".vscode/tasks.json",
@@ -2332,11 +2782,19 @@
       "media/lgs.svg",
       "package-lock.json",
       "package.json",
+      "src/completion/config.ts",
+      "src/completion/evidence.ts",
+      "src/completion/failures.ts",
+      "src/completion/guard.ts",
+      "src/completion/index.ts",
+      "src/completion/tools.ts",
+      "src/completion/types.ts",
       "src/execution/evidence.ts",
       "src/execution/index.ts",
       "src/execution/logs.ts",
       "src/execution/normalize.ts",
       "src/execution/permissions.ts",
+      "src/execution/service.ts",
       "src/execution/types.ts",
       "src/extension.ts",
       "src/intelligence/indexer.ts",
@@ -2361,9 +2819,13 @@
       "src/tools/schema.ts",
       "src/tools/types.ts",
       "src/tools/workspace.ts",
+      "src/verification/config.ts",
       "src/verification/index.ts",
+      "src/verification/runner.ts",
+      "src/verification/tools.ts",
       "src/webview/main.ts",
       "src/webview/styles.css",
+      "test/completion.test.ts",
       "test/execution.test.ts",
       "test/git.test.ts",
       "test/indexer.test.ts",
@@ -2374,13 +2836,7 @@
       "tsconfig.json",
       "vitest.config.ts"
     ],
-    "added": [],
-    "changed": [
-      "src/execution/service.ts",
-      "src/verification/config.ts",
-      "src/verification/runner.ts",
-      "src/verification/tools.ts"
-    ],
+    "changed": [],
     "removed": [],
     "renamed": []
   }
