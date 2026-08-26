@@ -6,6 +6,9 @@ LGS is a VS Code extension that will eventually orchestrate reliable software-en
 
 - `src/extension.ts` — extension-host activation, command, and `WebviewViewProvider`.
 - `src/webview/` — browser-side UI and styles.
+- `src/intelligence/indexer.ts` — deterministic filesystem/source indexer and codebase-map generator.
+- `.lgs/index.json` — generated machine-readable repository index.
+- `.lgs/CODEBASE_MAP.md` — generated compact architecture guide.
 - `src/shared/messages.ts` — typed message contracts and runtime validation shared by both sides.
 - `src/shared/logger.ts` — small extension logging abstraction.
 - `test/` — Vitest tests for shared utilities.
@@ -32,3 +35,9 @@ The compact LGS webview has a compact header, chat history list, centered empty 
 Chat history is persisted in VS Code global extension state (up to 100 conversations) and is sent back to the selected model as normalized message history. API keys are never persisted with chats.
 
 The webview posts only the `ClientMessage` union. The extension host receives `unknown`, validates it with `parseClientMessage`, and responds only with the `HostMessage` union. The webview validates incoming events with `isHostMessage` before rendering them. Provider profiles are managed by `LgsViewProvider` and `SettingsPanel`; adding a provider means implementing `ModelBackend` and adding a `ProviderKind` mapping in `src/model/profiles.ts`. Approval levels are UI policy state for the future tool-execution phase; Phase 1 has no agent tools to approve.
+
+## Repository intelligence
+
+Phase 2 maintains deterministic repository intelligence in `.lgs/`. Run **LGS: Rebuild Repository Index** to scan the workspace, update file fingerprints, parse TypeScript/JavaScript imports, exports, and top-level symbols, collect manifests and dependencies, and regenerate both artifacts. Unchanged files are reused from the prior index; added, changed, removed, and hash-matched renamed files are tracked in the incremental summary. Dependency, build, cache, `.git`, and `.lgs` directories are ignored.
+
+Use **LGS: Open Codebase Map** to open the generated architecture guide in VS Code. The map is intentionally compact and does not reproduce source code.

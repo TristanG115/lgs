@@ -13,7 +13,9 @@
   ],
   "activationEvents": [
     "onView:lgs.sidebar",
-    "onCommand:lgs.open"
+    "onCommand:lgs.open",
+    "onCommand:lgs.rebuildIndex",
+    "onCommand:lgs.openCodebaseMap"
   ],
   "main": "./dist/extension.js",
   "contributes": {
@@ -25,6 +27,14 @@
       {
         "command": "lgs.settings",
         "title": "LGS: Configure Backend Profiles"
+      },
+      {
+        "command": "lgs.rebuildIndex",
+        "title": "LGS: Rebuild Repository Index"
+      },
+      {
+        "command": "lgs.openCodebaseMap",
+        "title": "LGS: Open Codebase Map"
       }
     ],
     "viewsContainers": {

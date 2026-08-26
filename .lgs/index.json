@@ -1,0 +1,733 @@
+{
+  "version": 1,
+  "generatedAt": "2026-08-26T02:27:05.084Z",
+  "root": "/home/tristan/Documents/Github/lgs",
+  "directories": [
+    ".vscode",
+    "media",
+    "src",
+    "src/intelligence",
+    "src/model",
+    "src/shared",
+    "src/webview",
+    "test"
+  ],
+  "files": [
+    {
+      "path": ".gitignore",
+      "fileType": "unknown",
+      "language": "",
+      "size": 26,
+      "mtimeMs": 1787704827840.3594,
+      "hash": "9c64a352444b83bd3f972cc1b5e62af3f1bd4d56",
+      "imports": [],
+      "exports": [],
+      "symbols": [],
+      "likelyTest": false,
+      "likelyDocumentation": false
+    },
+    {
+      "path": ".vscode/launch.json",
+      "fileType": "json",
+      "language": "JSON",
+      "size": 301,
+      "mtimeMs": 1787704903763.4976,
+      "hash": "b17f9891017884c5553198e3d3f3c6820b345451",
+      "imports": [],
+      "exports": [],
+      "symbols": [],
+      "likelyTest": false,
+      "likelyDocumentation": false
+    },
+    {
+      "path": ".vscode/tasks.json",
+      "fileType": "json",
+      "language": "JSON",
+      "size": 348,
+      "mtimeMs": 1787705654333.3655,
+      "hash": "50effa30746d0ac6162daf9660994c19522a5ec8",
+      "imports": [],
+      "exports": [],
+      "symbols": [],
+      "likelyTest": false,
+      "likelyDocumentation": false
+    },
+    {
+      "path": "README.md",
+      "fileType": "md",
+      "language": "Markdown/Text",
+      "size": 4262,
+      "mtimeMs": 1787711224881.6309,
+      "hash": "03ac0e6fb614502f9bc8dcaee88a2282c191f1d1",
+      "imports": [],
+      "exports": [],
+      "symbols": [],
+      "likelyTest": false,
+      "likelyDocumentation": true
+    },
+    {
+      "path": "esbuild.mjs",
+      "fileType": "mjs",
+      "language": "JavaScript",
+      "size": 789,
+      "mtimeMs": 1787704827839.2532,
+      "hash": "e31d33ad5351f82f2b2784adc60a447f387bc7d1",
+      "imports": [
+        "esbuild"
+      ],
+      "exports": [],
+      "symbols": [
+        "production",
+        "shared",
+        "extension",
+        "webview"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false
+    },
+    {
+      "path": "eslint.config.mjs",
+      "fileType": "mjs",
+      "language": "JavaScript",
+      "size": 305,
+      "mtimeMs": 1787706119543.2578,
+      "hash": "c04edf246189f68241358a171799cf40234521c6",
+      "imports": [
+        "@eslint/js",
+        "typescript-eslint"
+      ],
+      "exports": [
+        "default"
+      ],
+      "symbols": [],
+      "likelyTest": false,
+      "likelyDocumentation": false
+    },
+    {
+      "path": "media/lgs.svg",
+      "fileType": "svg",
+      "language": "SVG",
+      "size": 137,
+      "mtimeMs": 1787704827839.3442,
+      "hash": "2b5e82b1a7e3f00f952ffab2931d0fc49bfea067",
+      "imports": [],
+      "exports": [],
+      "symbols": [],
+      "likelyTest": false,
+      "likelyDocumentation": false
+    },
+    {
+      "path": "package-lock.json",
+      "fileType": "json",
+      "language": "JSON",
+      "size": 117252,
+      "mtimeMs": 1787705430366.0552,
+      "hash": "fe299c8d2db27cfa47f12afba9ebe363efb9727a",
+      "imports": [],
+      "exports": [],
+      "symbols": [],
+      "likelyTest": false,
+      "likelyDocumentation": false
+    },
+    {
+      "path": "package.json",
+      "fileType": "json",
+      "language": "JSON",
+      "size": 1726,
+      "mtimeMs": 1787711091239.5671,
+      "hash": "72c63860038192fad64e490db6dd0c154b2aace2",
+      "imports": [],
+      "exports": [],
+      "symbols": [],
+      "likelyTest": false,
+      "likelyDocumentation": false
+    },
+    {
+      "path": "src/extension.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 10897,
+      "mtimeMs": 1787711139579.59,
+      "hash": "fa0024bb9252c50d0dde475ae2c6781e4cddf919",
+      "imports": [
+        "vscode",
+        "./shared/messages.js",
+        "./shared/logger.js",
+        "./model/profiles.js",
+        "./model/registry.js",
+        "./model/types.js",
+        "./model/backend.js",
+        "./intelligence/indexer.js",
+        "node:fs",
+        "node:path"
+      ],
+      "exports": [
+        "activate",
+        "deactivate"
+      ],
+      "symbols": [
+        "SavedChat",
+        "SettingsMessage",
+        "activate",
+        "deactivate",
+        "LgsViewProvider",
+        "SettingsPanel",
+        "getHtml",
+        "rebuildIndex",
+        "openCodebaseMap"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false
+    },
+    {
+      "path": "src/intelligence/indexer.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 10048,
+      "mtimeMs": 1787711160335.6,
+      "hash": "02c5f95a51b26ccce78b84cb9a3415b8cc558083",
+      "imports": [
+        "node:fs",
+        "node:path",
+        "node:crypto",
+        "typescript"
+      ],
+      "exports": [
+        "IndexedFile",
+        "RepositoryIndex",
+        "discoverFiles",
+        "isIgnored",
+        "indexRepository",
+        "writeRepositoryIndex",
+        "renderCodebaseMap"
+      ],
+      "symbols": [
+        "IndexedFile",
+        "RepositoryIndex",
+        "IGNORED",
+        "SOURCE",
+        "DOCS",
+        "MANIFESTS",
+        "discoverFiles",
+        "isIgnored",
+        "indexRepository",
+        "writeRepositoryIndex",
+        "renderCodebaseMap",
+        "parseFile",
+        "declarationName",
+        "resolveImport",
+        "readDependencies",
+        "fileHash",
+        "relative",
+        "directoriesOf",
+        "languageFor"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false
+    },
+    {
+      "path": "src/model/anthropic.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 2748,
+      "mtimeMs": 1787706014605.7036,
+      "hash": "5e37525c94c62cd4c168f53b6f385cc10fbd4163",
+      "imports": [
+        "./types.js",
+        "./backend.js"
+      ],
+      "exports": [
+        "AnthropicBackend"
+      ],
+      "symbols": [
+        "AnthropicBackend"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false
+    },
+    {
+      "path": "src/model/backend.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 1715,
+      "mtimeMs": 1787706207241.0881,
+      "hash": "e50078b07e0172f21e59ef96a46dfb1ec3c237aa",
+      "imports": [
+        "./types.js"
+      ],
+      "exports": [
+        "BackendConfig",
+        "ModelBackend",
+        "httpError",
+        "jsonResponse",
+        "lines",
+        "authHeaders"
+      ],
+      "symbols": [
+        "BackendConfig",
+        "ModelBackend",
+        "httpError",
+        "jsonResponse",
+        "lines",
+        "authHeaders"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false
+    },
+    {
+      "path": "src/model/ollama.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 2281,
+      "mtimeMs": 1787706029437.6099,
+      "hash": "35153bcbd19b5026b9b64bf0f45e39db6371f478",
+      "imports": [
+        "./types.js",
+        "./backend.js"
+      ],
+      "exports": [
+        "OllamaBackend"
+      ],
+      "symbols": [
+        "OllamaBackend"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false
+    },
+    {
+      "path": "src/model/openai.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 2731,
+      "mtimeMs": 1787706014605.7036,
+      "hash": "9e3c9612e1cd22f38957a461bb68a85792499325",
+      "imports": [
+        "./types.js",
+        "./backend.js"
+      ],
+      "exports": [
+        "OpenAICompatibleBackend"
+      ],
+      "symbols": [
+        "OpenAICompatibleBackend"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false
+    },
+    {
+      "path": "src/model/profiles.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 1229,
+      "mtimeMs": 1787707949556.9338,
+      "hash": "48c474806aa37d0b8439f6c14bf3c20b02b741d8",
+      "imports": [
+        "./backend.js",
+        "./anthropic.js",
+        "./ollama.js",
+        "./openai.js"
+      ],
+      "exports": [
+        "ProviderKind",
+        "BackendProfile",
+        "defaultProfiles",
+        "createBackend"
+      ],
+      "symbols": [
+        "ProviderKind",
+        "BackendProfile",
+        "defaultProfiles",
+        "createBackend"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false
+    },
+    {
+      "path": "src/model/registry.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 367,
+      "mtimeMs": 1787707949556.9338,
+      "hash": "973d0c629aaf1d4f2753f4ebea9f51d80e9e5514",
+      "imports": [
+        "./backend.js",
+        "./profiles.js"
+      ],
+      "exports": [
+        "BackendId",
+        "createBackends"
+      ],
+      "symbols": [
+        "BackendId",
+        "createBackends"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false
+    },
+    {
+      "path": "src/model/types.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 1874,
+      "mtimeMs": 1787705882345.3635,
+      "hash": "e37247d9175a07e1bb99c9338536e27d88d98dd9",
+      "imports": [],
+      "exports": [
+        "Role",
+        "TextContent",
+        "ImageContent",
+        "Content",
+        "LgsMessage",
+        "GenerationOptions",
+        "ModelInfo",
+        "ModelCapabilities",
+        "ConnectionState",
+        "Usage",
+        "TokenInformation",
+        "BackendErrorCode",
+        "BackendError",
+        "StreamEvent",
+        "textMessage",
+        "textFromMessage",
+        "backendError"
+      ],
+      "symbols": [
+        "Role",
+        "TextContent",
+        "ImageContent",
+        "Content",
+        "LgsMessage",
+        "GenerationOptions",
+        "ModelInfo",
+        "ModelCapabilities",
+        "ConnectionState",
+        "Usage",
+        "TokenInformation",
+        "BackendErrorCode",
+        "BackendError",
+        "StreamEvent",
+        "textMessage",
+        "textFromMessage",
+        "backendError"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false
+    },
+    {
+      "path": "src/shared/logger.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 313,
+      "mtimeMs": 1787704827839.7832,
+      "hash": "a370a2e24510fa75a764a88114c1120e6bce05e9",
+      "imports": [],
+      "exports": [
+        "Logger"
+      ],
+      "symbols": [
+        "Logger"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false
+    },
+    {
+      "path": "src/shared/messages.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 2436,
+      "mtimeMs": 1787707949556.9338,
+      "hash": "5ffd20660069352f6144b7e45d10bfea9e9d8f07",
+      "imports": [],
+      "exports": [
+        "ChatOptions",
+        "ClientMessage",
+        "HostMessage",
+        "parseClientMessage",
+        "isHostMessage"
+      ],
+      "symbols": [
+        "ChatOptions",
+        "ClientMessage",
+        "HostMessage",
+        "parseClientMessage",
+        "isHostMessage"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false
+    },
+    {
+      "path": "src/webview/main.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 4852,
+      "mtimeMs": 1787709701958.0308,
+      "hash": "70f1ba70edd51fd28c6c9ba7a26cf0992a4a6410",
+      "imports": [
+        "./styles.css",
+        "../shared/messages.js"
+      ],
+      "exports": [],
+      "symbols": [
+        "acquireVsCodeApi",
+        "vscode",
+        "app",
+        "generating",
+        "currentAssistant",
+        "history, input, send, stop, state, profile, model, thinking, approval, chats",
+        "syncOptions",
+        "add"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false
+    },
+    {
+      "path": "src/webview/styles.css",
+      "fileType": "css",
+      "language": "CSS",
+      "size": 3227,
+      "mtimeMs": 1787708060676.9404,
+      "hash": "a39cf8a7acee924b12647160a63468019bb01a35",
+      "imports": [],
+      "exports": [],
+      "symbols": [],
+      "likelyTest": false,
+      "likelyDocumentation": false
+    },
+    {
+      "path": "test/indexer.test.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 2628,
+      "mtimeMs": 1787711111908.577,
+      "hash": "ff4aedd5a30d55b427cc0ad937217e3038157ada",
+      "imports": [
+        "vitest",
+        "node:fs",
+        "node:os",
+        "node:path",
+        "../src/intelligence/indexer.js"
+      ],
+      "exports": [],
+      "symbols": [
+        "fixture"
+      ],
+      "likelyTest": true,
+      "likelyDocumentation": false
+    },
+    {
+      "path": "test/messages.test.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 960,
+      "mtimeMs": 1787706140735.2168,
+      "hash": "25647091fe7090b44ec309fe535e4746a09decb2",
+      "imports": [
+        "vitest",
+        "../src/shared/messages.js"
+      ],
+      "exports": [],
+      "symbols": [],
+      "likelyTest": true,
+      "likelyDocumentation": false
+    },
+    {
+      "path": "test/stream.test.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 591,
+      "mtimeMs": 1787706179920.141,
+      "hash": "87155909686663c6e9de27ad0213b61fc5fdacae",
+      "imports": [
+        "vitest",
+        "../src/model/backend.js"
+      ],
+      "exports": [],
+      "symbols": [],
+      "likelyTest": true,
+      "likelyDocumentation": false
+    },
+    {
+      "path": "tsconfig.json",
+      "fileType": "json",
+      "language": "JSON",
+      "size": 383,
+      "mtimeMs": 1787704827839.0576,
+      "hash": "9ec3edc4fc2aac9ce9a72a28dc0f49dd2652d097",
+      "imports": [],
+      "exports": [],
+      "symbols": [],
+      "likelyTest": false,
+      "likelyDocumentation": false
+    },
+    {
+      "path": "vitest.config.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 122,
+      "mtimeMs": 1787704827839.1394,
+      "hash": "bca19a915a0155e408667b0eda08fe2fdd7f84a3",
+      "imports": [
+        "vitest/config"
+      ],
+      "exports": [
+        "default"
+      ],
+      "symbols": [],
+      "likelyTest": false,
+      "likelyDocumentation": false
+    }
+  ],
+  "moduleRelationships": [
+    {
+      "from": "src/extension.ts",
+      "to": "src/shared/messages.ts"
+    },
+    {
+      "from": "src/extension.ts",
+      "to": "src/shared/logger.ts"
+    },
+    {
+      "from": "src/extension.ts",
+      "to": "src/model/profiles.ts"
+    },
+    {
+      "from": "src/extension.ts",
+      "to": "src/model/registry.ts"
+    },
+    {
+      "from": "src/extension.ts",
+      "to": "src/model/types.ts"
+    },
+    {
+      "from": "src/extension.ts",
+      "to": "src/model/backend.ts"
+    },
+    {
+      "from": "src/extension.ts",
+      "to": "src/intelligence/indexer.ts"
+    },
+    {
+      "from": "src/model/anthropic.ts",
+      "to": "src/model/types.ts"
+    },
+    {
+      "from": "src/model/anthropic.ts",
+      "to": "src/model/backend.ts"
+    },
+    {
+      "from": "src/model/backend.ts",
+      "to": "src/model/types.ts"
+    },
+    {
+      "from": "src/model/ollama.ts",
+      "to": "src/model/types.ts"
+    },
+    {
+      "from": "src/model/ollama.ts",
+      "to": "src/model/backend.ts"
+    },
+    {
+      "from": "src/model/openai.ts",
+      "to": "src/model/types.ts"
+    },
+    {
+      "from": "src/model/openai.ts",
+      "to": "src/model/backend.ts"
+    },
+    {
+      "from": "src/model/profiles.ts",
+      "to": "src/model/backend.ts"
+    },
+    {
+      "from": "src/model/profiles.ts",
+      "to": "src/model/anthropic.ts"
+    },
+    {
+      "from": "src/model/profiles.ts",
+      "to": "src/model/ollama.ts"
+    },
+    {
+      "from": "src/model/profiles.ts",
+      "to": "src/model/openai.ts"
+    },
+    {
+      "from": "src/model/registry.ts",
+      "to": "src/model/backend.ts"
+    },
+    {
+      "from": "src/model/registry.ts",
+      "to": "src/model/profiles.ts"
+    },
+    {
+      "from": "src/webview/main.ts",
+      "to": "src/webview/styles.css"
+    },
+    {
+      "from": "src/webview/main.ts",
+      "to": "src/shared/messages.ts"
+    },
+    {
+      "from": "test/indexer.test.ts",
+      "to": "src/intelligence/indexer.ts"
+    },
+    {
+      "from": "test/messages.test.ts",
+      "to": "src/shared/messages.ts"
+    },
+    {
+      "from": "test/stream.test.ts",
+      "to": "src/model/backend.ts"
+    }
+  ],
+  "manifests": [
+    "package-lock.json",
+    "package.json",
+    "tsconfig.json"
+  ],
+  "dependencies": {
+    "@types/node": "^22.0.0",
+    "@types/vscode": "^1.85.0",
+    "@typescript-eslint/eslint-plugin": "^8.0.0",
+    "@typescript-eslint/parser": "^8.0.0",
+    "typescript-eslint": "^8.0.0",
+    "esbuild": "^0.24.0",
+    "eslint": "^9.0.0",
+    "typescript": "^5.6.0",
+    "vitest": "^2.1.0"
+  },
+  "incremental": {
+    "reused": [],
+    "added": [
+      ".gitignore",
+      ".vscode/launch.json",
+      ".vscode/tasks.json",
+      "README.md",
+      "esbuild.mjs",
+      "eslint.config.mjs",
+      "media/lgs.svg",
+      "package-lock.json",
+      "package.json",
+      "src/extension.ts",
+      "src/intelligence/indexer.ts",
+      "src/model/anthropic.ts",
+      "src/model/backend.ts",
+      "src/model/ollama.ts",
+      "src/model/openai.ts",
+      "src/model/profiles.ts",
+      "src/model/registry.ts",
+      "src/model/types.ts",
+      "src/shared/logger.ts",
+      "src/shared/messages.ts",
+      "src/webview/main.ts",
+      "src/webview/styles.css",
+      "test/indexer.test.ts",
+      "test/messages.test.ts",
+      "test/stream.test.ts",
+      "tsconfig.json",
+      "vitest.config.ts"
+    ],
+    "changed": [],
+    "removed": [],
+    "renamed": []
+  }
+}
