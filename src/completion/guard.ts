@@ -5,7 +5,7 @@ import type { ExecutionResult } from '../execution/types.js';
 import type { VerificationStep } from '../verification/config.js';
 import { FileCompletionEvidenceStore } from './evidence.js';
 import { FailureBudgetTracker } from './failures.js';
-import type { CompletionChecklistItem, CompletionConfiguration, CompletionEvaluation, CompletionEvidence, CompletionRequirement, DocumentationAuditReader, ExecutionEvidenceReader, IndependentReviewReader } from './types.js';
+import type { CompletionChecklistItem, CompletionConfiguration, CompletionEvaluation, CompletionEvidence, CompletionRequirement, DocumentationAuditReader, ExecutionEvidenceReader, IndependentReviewReader, RuntimeVerificationReader } from './types.js';
 
 const LABELS: Record<CompletionRequirement, string> = {
   acceptance_criteria_addressed: 'Acceptance criteria addressed', implementation_complete: 'Implementation complete',
@@ -16,7 +16,7 @@ const LABELS: Record<CompletionRequirement, string> = {
   no_unresolved_task_failures: 'No unresolved task failures'
 };
 const STEP_REQUIREMENT: Partial<Record<CompletionRequirement, VerificationStep>> = {
-  targeted_tests_pass: 'targetedTest', full_tests_pass: 'test', typecheck_passes: 'typecheck', lint_passes: 'lint', build_succeeds: 'build', runtime_verification_passes: 'start'
+  targeted_tests_pass: 'targetedTest', full_tests_pass: 'test', typecheck_passes: 'typecheck', lint_passes: 'lint', build_succeeds: 'build'
 };
 
 export class CompletionGuard {
@@ -27,7 +27,7 @@ export class CompletionGuard {
     private readonly completionEvidence: FileCompletionEvidenceStore,
     private readonly executions: ExecutionEvidenceReader,
     private readonly documentationAudits?: DocumentationAuditReader,
-    private readonly independentReviews?: IndependentReviewReader
+    private readonly independentReviews?: IndependentReviewReader, private readonly runtimeVerifications?: RuntimeVerificationReader
   ) { this.failures = new FailureBudgetTracker(executions, configuration.failureBudgets); }
 
   async attempt(taskId: string): Promise<CompletionEvaluation> { return this.evaluate(taskId); }
@@ -52,6 +52,7 @@ export class CompletionGuard {
     if (step) return commandItem(requirement, step, executions);
     if (requirement === 'documentation_current' && this.documentationAudits) return this.documentationItem(taskId);
     if (requirement === 'independent_review_passes' && this.independentReviews) return this.independentReviewItem(taskId);
+    if (requirement === 'runtime_verification_passes' && this.runtimeVerifications) return this.runtimeItem(taskId);
     if (requirement === 'codebase_map_current') return this.mapItem();
     if (requirement === 'no_unresolved_task_failures') return unresolvedItem(executions);
     const candidates = recorded.filter(entry => entry.requirement === requirement);
@@ -94,6 +95,12 @@ export class CompletionGuard {
       : `Independent review iteration ${review.iteration} requested changes.`;
     const evidence: CompletionEvidence = { id: review.id, requirement, summary, recordedAt: review.evaluatedAt ?? review.createdAt, source: 'independent-review', reviewId: review.id };
     return { requirement, label: LABELS[requirement], required: true, passed, detail: summary, evidence: [evidence] };
+  }
+  private runtimeItem(taskId: string): CompletionChecklistItem {
+    const requirement: CompletionRequirement = 'runtime_verification_passes'; const runtime = this.runtimeVerifications?.latest(taskId);
+    if (!runtime) return { requirement, label: LABELS[requirement], required: true, passed: false, detail: 'Runtime verification has not run.', evidence: [] };
+    const evidence: CompletionEvidence = { id: runtime.id, requirement, summary: runtime.summary, recordedAt: runtime.createdAt, source: 'execution' };
+    return { requirement, label: LABELS[requirement], required: true, passed: runtime.status === 'passed', detail: runtime.summary, evidence: [evidence] };
   }
 }
 

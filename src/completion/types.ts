@@ -1,6 +1,7 @@
 import type { ExecutionResult } from '../execution/types.js';
 import type { DocumentationAuditReader } from '../documentation/types.js';
 import type { IndependentReviewReader } from '../review/types.js';
+import type { RuntimeVerificationReader } from '../runtime/types.js';
 
 export const COMPLETION_REQUIREMENTS = [
   'acceptance_criteria_addressed', 'implementation_complete', 'relevant_tests_added_or_updated',
@@ -77,3 +78,4 @@ export interface EscalationEvidenceReader {
 
 export type { DocumentationAuditReader };
 export type { IndependentReviewReader };
+export type { RuntimeVerificationReader };

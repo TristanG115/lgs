@@ -247,3 +247,31 @@ Review freshness is mechanical. Its fingerprint covers the workspace and CODEBAS
 Set `completion.gates.independent_review_passes: true` in `.lgs/config.yaml` when independent approval is mandatory. Completion Guard then blocks when review has not run, findings await Manager evaluation, changes were requested, or the latest approval is stale. When the gate is disabled, the tools remain available for risk-based review.
 
 The Reviewer uses `agents.roleModels.reviewer`. If no Reviewer-specific mapping exists, it shares the Manager provider connection and model through a separate logical request with a fresh context; no model or provider is hardcoded.
+
+## Runtime and browser verification
+
+Phase 15 adds generic, opt-in runtime checks. `start_runtime` launches the configured command as an LGS-owned process and tracks its LGS process ID, operating-system PID, command, owning task, startup and readiness state, bounded output, raw output artifact, and crash/exit state. LGS never terminates a process it merely discovers: `stop_runtime` accepts only an LGS-managed process ID.
+
+```yaml
+runtime:
+  start:
+    command: npm
+    args: [run, dev]
+  healthcheck:
+    url: http://localhost:3000
+    expectedStatus: 200
+  acceptance:
+    - type: browser_open
+      url: http://localhost:3000
+    - type: browser_get_text
+      selector: "#login-button"
+      expectedText: Log in
+    - type: browser_console
+      expectedErrors: 0
+    - type: browser_network_errors
+      expectedErrors: 0
+```
+
+The supported browser tools are `browser_open`, `browser_click`, `browser_type`, `browser_get_text`, `browser_wait_for`, `browser_screenshot`, `browser_console`, and `browser_network_errors`. They use an isolated Playwright Chromium session. Screenshots and complete process output live in ignored `.lgs/runtime/` artifacts; concise failures and artifact paths are persisted for the Debugger. Install a compatible browser on a development machine with `npx playwright install chromium`.
+
+`run_runtime_verification` runs the configured startup, health check, and acceptance sequence, returning concise check results. Set `completion.gates.runtime_verification_passes: true` only for tasks that require runtime or browser evidence. Projects without a runtime configuration are not forced into browser automation.

@@ -21,12 +21,18 @@ export class CommandExecutionService {
     private readonly prompt?: PermissionPrompt
   ) {}
 
+  /** Performs the same validation and permission prompt used by one-shot commands. */
+  async authorize(request: ExecutionRequest): Promise<boolean> {
+    validateRequest(this.workspaceRoot, request);
+    const permission = this.permissions.resolve(request);
+    return permission.policy !== 'deny' && (permission.policy !== 'ask' || Boolean(await this.prompt?.(request)));
+  }
+
   async execute(request: ExecutionRequest, signal: AbortSignal = new AbortController().signal): Promise<ExecutionResult> {
     const validated = validateRequest(this.workspaceRoot, request);
     const startedAt = new Date();
     const id = randomUUID();
-    const permission = this.permissions.resolve(request);
-    if (permission.policy === 'deny' || permission.policy === 'ask' && !(await this.prompt?.(request))) {
+    if (!(await this.authorize(request))) {
       return await this.finish(id, request, startedAt, 'denied', null, null, false, '', '', undefined);
     }
     if (signal.aborted) return await this.finish(id, request, startedAt, 'cancelled', null, null, false, '', '', undefined);

@@ -10,6 +10,8 @@ import { parseWatchdogConfiguration } from '../watchdog/config.js';
 import type { WatchdogConfiguration } from '../watchdog/types.js';
 import { parseResearchConfiguration } from '../research/config.js';
 import type { ResearchConfiguration } from '../research/types.js';
+import { parseRuntimeConfiguration } from '../runtime/config.js';
+import type { RuntimeConfiguration } from '../runtime/types.js';
 
 export const VERIFICATION_STEPS = ['install', 'typecheck', 'lint', 'targetedTest', 'test', 'build', 'start'] as const;
 export type VerificationStep = typeof VERIFICATION_STEPS[number];
@@ -22,6 +24,7 @@ export type WorkspaceConfiguration = {
   agents?: Record<string, unknown>;
   watchdog?: Record<string, unknown>;
   research?: Record<string, unknown>;
+  runtime?: Record<string, unknown>;
 };
 export type LoadedWorkspaceConfiguration = {
   settings: Record<string, unknown>;
@@ -31,11 +34,12 @@ export type LoadedWorkspaceConfiguration = {
   agents: OrchestrationConfiguration;
   watchdog: WatchdogConfiguration;
   research: ResearchConfiguration;
+  runtime: RuntimeConfiguration;
   errors: string[];
 };
 
 export function loadWorkspaceConfiguration(root: string): LoadedWorkspaceConfiguration {
-  const empty: LoadedWorkspaceConfiguration = { settings: {}, verification: {}, permissions: {}, completion: parseCompletionConfiguration(), agents: parseOrchestrationConfiguration(), watchdog: parseWatchdogConfiguration(), research: parseResearchConfiguration(), errors: [] };
+  const empty: LoadedWorkspaceConfiguration = { settings: {}, verification: {}, permissions: {}, completion: parseCompletionConfiguration(), agents: parseOrchestrationConfiguration(), watchdog: parseWatchdogConfiguration(), research: parseResearchConfiguration(), runtime: parseRuntimeConfiguration(), errors: [] };
   const file = path.join(root, '.lgs', 'config.yaml');
   if (!fs.existsSync(file)) return empty;
   try {
@@ -46,13 +50,15 @@ export function loadWorkspaceConfiguration(root: string): LoadedWorkspaceConfigu
     const rawAgents = parsed.agents === undefined ? {} : requireRecord(parsed.agents, 'agents');
     const rawWatchdog = parsed.watchdog === undefined ? {} : requireRecord(parsed.watchdog, 'watchdog');
     const rawResearch = parsed.research === undefined ? {} : requireRecord(parsed.research, 'research');
+    const rawRuntime = parsed.runtime;
     const verification = parseVerification(parsed.verification, empty.errors);
     const permissions = parsePermissions(parsed.permissions, empty.errors);
     const completion = parseCompletionConfiguration(rawCompletion, empty.errors);
     const agents = parseOrchestrationConfiguration(rawAgents, empty.errors);
     const watchdog = parseWatchdogConfiguration(rawWatchdog, empty.errors);
     const research = parseResearchConfiguration(rawResearch, empty.errors);
-    return { settings, verification, permissions, completion, agents, watchdog, research, errors: empty.errors };
+    const runtime = parseRuntimeConfiguration(rawRuntime, empty.errors);
+    return { settings, verification, permissions, completion, agents, watchdog, research, runtime, errors: empty.errors };
   } catch (error) {
     empty.errors.push(error instanceof Error ? error.message : 'Malformed workspace configuration.');
     return empty;

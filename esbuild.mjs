@@ -6,7 +6,8 @@ const shared = {
   sourcemap: !production,
   minify: production,
   platform: "node",
-  external: ["vscode"],
+  // Playwright dynamically loads optional protocol implementations; retain it as a runtime dependency.
+  external: ["vscode", "playwright"],
   logLevel: "info",
 };
 
