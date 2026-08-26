@@ -4,6 +4,8 @@ import { parse } from 'yaml';
 import { COMMAND_CATEGORIES, type CommandDefinition, type PermissionConfiguration, type PermissionPolicy } from '../execution/types.js';
 import { parseCompletionConfiguration } from '../completion/config.js';
 import type { CompletionConfiguration } from '../completion/types.js';
+import { parseOrchestrationConfiguration } from '../orchestration/config.js';
+import type { OrchestrationConfiguration } from '../orchestration/types.js';
 
 export const VERIFICATION_STEPS = ['install', 'typecheck', 'lint', 'targetedTest', 'test', 'build', 'start'] as const;
 export type VerificationStep = typeof VERIFICATION_STEPS[number];
@@ -13,17 +15,19 @@ export type WorkspaceConfiguration = {
   verification?: Record<string, unknown>;
   permissions?: { commands?: PermissionConfiguration };
   completion?: Record<string, unknown>;
+  agents?: Record<string, unknown>;
 };
 export type LoadedWorkspaceConfiguration = {
   settings: Record<string, unknown>;
   verification: VerificationConfiguration;
   permissions: PermissionConfiguration;
   completion: CompletionConfiguration;
+  agents: OrchestrationConfiguration;
   errors: string[];
 };
 
 export function loadWorkspaceConfiguration(root: string): LoadedWorkspaceConfiguration {
-  const empty: LoadedWorkspaceConfiguration = { settings: {}, verification: {}, permissions: {}, completion: parseCompletionConfiguration(), errors: [] };
+  const empty: LoadedWorkspaceConfiguration = { settings: {}, verification: {}, permissions: {}, completion: parseCompletionConfiguration(), agents: parseOrchestrationConfiguration(), errors: [] };
   const file = path.join(root, '.lgs', 'config.yaml');
   if (!fs.existsSync(file)) return empty;
   try {
@@ -31,10 +35,12 @@ export function loadWorkspaceConfiguration(root: string): LoadedWorkspaceConfigu
     if (!record(parsed)) throw new Error('Workspace config must be a YAML object.');
     const settings = parsed.settings === undefined ? {} : requireRecord(parsed.settings, 'settings');
     const rawCompletion = parsed.completion === undefined ? {} : requireRecord(parsed.completion, 'completion');
+    const rawAgents = parsed.agents === undefined ? {} : requireRecord(parsed.agents, 'agents');
     const verification = parseVerification(parsed.verification, empty.errors);
     const permissions = parsePermissions(parsed.permissions, empty.errors);
     const completion = parseCompletionConfiguration(rawCompletion, empty.errors);
-    return { settings, verification, permissions, completion, errors: empty.errors };
+    const agents = parseOrchestrationConfiguration(rawAgents, empty.errors);
+    return { settings, verification, permissions, completion, agents, errors: empty.errors };
   } catch (error) {
     empty.errors.push(error instanceof Error ? error.message : 'Malformed workspace configuration.');
     return empty;

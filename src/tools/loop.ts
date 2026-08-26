@@ -106,6 +106,7 @@ function toolInstructions(tools: ReturnType<ToolRegistry['specifications']>): st
     'Before materially changing established behavior, inspect compact recent Git history for the relevant code. Do not fetch history for every file automatically; request older history, full diffs, or blame only when needed.',
     'During development, run targetedTest with the changed paths when it is configured. Before claiming completion, run the configured full verification steps and rely on their execution evidence, never assumptions.',
     'LGS, not you, determines completion. Record concrete file-backed evidence with record_completion_evidence, inspect get_completion_state when useful, and address every COMPLETION_BLOCKED item before returning a final response.',
+    'Use delegate_subtasks for bounded independent exploration, research, implementation planning, testing analysis, documentation, review, debugging, or verification. Consume only the compact worker reports returned by LGS.',
     'When you have enough evidence, reply normally to the user. Do not wrap the final answer in the tool-call envelope.',
     'Available tools:', JSON.stringify(tools)
   ].join('\n');

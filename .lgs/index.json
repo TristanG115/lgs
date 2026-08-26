@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "generatedAt": "2026-08-26T15:05:31.616Z",
+  "generatedAt": "2026-08-26T15:15:53.655Z",
   "root": "/home/tristan/Documents/Github/lgs",
   "directories": [
     ".vscode",
@@ -10,6 +10,7 @@
     "src/execution",
     "src/intelligence",
     "src/model",
+    "src/orchestration",
     "src/settings",
     "src/shared",
     "src/tools",
@@ -67,9 +68,9 @@
       "path": "README.md",
       "fileType": "md",
       "language": "Markdown/Text",
-      "size": 15231,
-      "mtimeMs": 1787756508798.421,
-      "hash": "6a14c0c6278a992c8453685705142614d4e51385",
+      "size": 17357,
+      "mtimeMs": 1787757270342.1052,
+      "hash": "005063ace39858ce6099b028e5f1685af14b8263",
       "imports": [],
       "exports": [],
       "symbols": [],
@@ -576,9 +577,9 @@
       "path": "src/extension.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 12686,
-      "mtimeMs": 1787756696468.965,
-      "hash": "1f9c8d49f6fdaab69f285fbf10500aa82a4f5819",
+      "size": 13356,
+      "mtimeMs": 1787757325127.2407,
+      "hash": "1f0ad1d15b201dd28200f14fe533f574c073b6f7",
       "imports": [
         "vscode",
         "./shared/messages.js",
@@ -886,12 +887,250 @@
       "module": "src"
     },
     {
+      "path": "src/orchestration/config.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 2911,
+      "mtimeMs": 1787756991371.2922,
+      "hash": "1f81b67321e36983e1f1159cf88c15be341d7b6d",
+      "imports": [
+        "./types.js"
+      ],
+      "exports": [
+        "parseOrchestrationConfiguration"
+      ],
+      "symbols": [
+        "DEFAULT_CONFIGURATION",
+        "parseOrchestrationConfiguration",
+        "parseModel",
+        "integerSetting",
+        "record"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/orchestration",
+      "module": "src"
+    },
+    {
+      "path": "src/orchestration/index.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 213,
+      "mtimeMs": 1787757077738.3704,
+      "hash": "44798610a86c105978b34863d17daf7b3b0d5830",
+      "imports": [
+        "./types.js",
+        "./config.js",
+        "./scheduler.js",
+        "./report.js",
+        "./inference.js",
+        "./orchestrator.js",
+        "./tools.js"
+      ],
+      "exports": [],
+      "symbols": [],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/orchestration",
+      "module": "src"
+    },
+    {
+      "path": "src/orchestration/inference.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 2075,
+      "mtimeMs": 1787757046531.342,
+      "hash": "01506485f27a45747245f62719b3877a08f74513",
+      "imports": [
+        "../model/backend.js",
+        "../model/types.js",
+        "./types.js"
+      ],
+      "exports": [
+        "AgentBackendResolver",
+        "BackendAgentInference"
+      ],
+      "symbols": [
+        "AgentBackendResolver",
+        "BackendAgentInference",
+        "agentInstructions"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/orchestration",
+      "module": "src"
+    },
+    {
+      "path": "src/orchestration/orchestrator.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 8136,
+      "mtimeMs": 1787757046569.342,
+      "hash": "fd257a48f843f7b15771ad6b8fc36c1b59296024",
+      "imports": [
+        "node:crypto",
+        "../model/types.js",
+        "./report.js",
+        "./scheduler.js",
+        "./types.js"
+      ],
+      "exports": [
+        "Orchestrator"
+      ],
+      "symbols": [
+        "AgentSession",
+        "DEFAULT_ACCESS",
+        "Orchestrator",
+        "descriptor",
+        "cloneMessages",
+        "cloneReport",
+        "modelKey",
+        "boundedError",
+        "isAbort",
+        "abortError"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/orchestration",
+      "module": "src"
+    },
+    {
+      "path": "src/orchestration/report.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 2156,
+      "mtimeMs": 1787757270304.105,
+      "hash": "bcb79e907ee6ae1cfc2246162ef9d7248eede078",
+      "imports": [
+        "./types.js"
+      ],
+      "exports": [
+        "parseWorkerReport",
+        "compactWorkerReports",
+        "emptyReport"
+      ],
+      "symbols": [
+        "ARRAY_FIELDS",
+        "parseWorkerReport",
+        "compactWorkerReports",
+        "emptyReport",
+        "parseObject",
+        "strings",
+        "bounded",
+        "record"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/orchestration",
+      "module": "src"
+    },
+    {
+      "path": "src/orchestration/scheduler.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 2136,
+      "mtimeMs": 1787757228666.9395,
+      "hash": "fb85643b94c69067eefd3699323b32cf9fbeeb4a",
+      "imports": [
+        "./types.js"
+      ],
+      "exports": [
+        "InferenceScheduler"
+      ],
+      "symbols": [
+        "InferenceScheduler",
+        "Semaphore",
+        "abortError"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/orchestration",
+      "module": "src"
+    },
+    {
+      "path": "src/orchestration/tools.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 3932,
+      "mtimeMs": 1787757077699.3704,
+      "hash": "85d4388607280cca92e65c3df172d50b509ce3da",
+      "imports": [
+        "../model/types.js",
+        "../tools/types.js",
+        "../tools/framework.js",
+        "./orchestrator.js",
+        "./types.js"
+      ],
+      "exports": [
+        "registerOrchestrationTools"
+      ],
+      "symbols": [
+        "ORCHESTRATION_PERMISSION",
+        "STATUS_PERMISSION",
+        "WORKER_ROLES",
+        "registerOrchestrationTools"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/orchestration",
+      "module": "src"
+    },
+    {
+      "path": "src/orchestration/types.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 2012,
+      "mtimeMs": 1787756991333.2922,
+      "hash": "0f27ce5836fbf28121253cb765bef1a8e47d0acb",
+      "imports": [
+        "../model/types.js"
+      ],
+      "exports": [
+        "AGENT_ROLES",
+        "AgentRole",
+        "AgentAccess",
+        "AgentState",
+        "AgentModelIdentity",
+        "ConfiguredAgentModel",
+        "OrchestrationConfiguration",
+        "WorkerReport",
+        "AgentDescriptor",
+        "CreateAgentRequest",
+        "AgentSubtask",
+        "DelegatedSubtask",
+        "DelegatedResult",
+        "AgentInferenceRequest",
+        "AgentInference"
+      ],
+      "symbols": [
+        "AGENT_ROLES",
+        "AgentRole",
+        "AgentAccess",
+        "AgentState",
+        "AgentModelIdentity",
+        "ConfiguredAgentModel",
+        "OrchestrationConfiguration",
+        "WorkerReport",
+        "AgentDescriptor",
+        "CreateAgentRequest",
+        "AgentSubtask",
+        "DelegatedSubtask",
+        "DelegatedResult",
+        "AgentInferenceRequest",
+        "AgentInference"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/orchestration",
+      "module": "src"
+    },
+    {
       "path": "src/settings/configuration.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 2839,
-      "mtimeMs": 1787756706637.9434,
-      "hash": "2c268d10224e225706563d7ae941365b4c02ab0d",
+      "size": 2956,
+      "mtimeMs": 1787757120922.4534,
+      "hash": "7958944cd23dca1c0667c34425bc4adda685b055",
       "imports": [
         "node:fs",
         "node:path",
@@ -900,7 +1139,8 @@
         "./defaults.js",
         "./registry.js",
         "../verification/config.js",
-        "../completion/config.js"
+        "../completion/config.js",
+        "../orchestration/config.js"
       ],
       "exports": [
         "SettingsManager"
@@ -1171,9 +1411,9 @@
       "path": "src/tools/index.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 328,
-      "mtimeMs": 1787737967325.8418,
-      "hash": "aff060f6a038ed4771cdbaacaf9a8a02626b876a",
+      "size": 371,
+      "mtimeMs": 1787757077778.3704,
+      "hash": "d373057366666509c37d250810edb2706c4a013b",
       "imports": [
         "./types.js",
         "./schema.js",
@@ -1184,7 +1424,8 @@
         "./workspace.js",
         "../execution/index.js",
         "../verification/index.js",
-        "../completion/index.js"
+        "../completion/index.js",
+        "../orchestration/index.js"
       ],
       "exports": [],
       "symbols": [],
@@ -1197,9 +1438,9 @@
       "path": "src/tools/loop.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 6421,
-      "mtimeMs": 1787737967361.8418,
-      "hash": "9b5a862be714560c3fa5645376febbd752a473a3",
+      "size": 6648,
+      "mtimeMs": 1787757120959.4536,
+      "hash": "0eb31312d0250fe6855ff89c3ab6a36c77daee05",
       "imports": [
         "../model/backend.js",
         "../model/types.js",
@@ -1373,16 +1614,17 @@
       "path": "src/tools/workspace.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 1234,
-      "mtimeMs": 1787737967290.8418,
-      "hash": "c62e6cf4e2a805db6f6e74c954a0b4ebb3c95873",
+      "size": 1517,
+      "mtimeMs": 1787757077820.3704,
+      "hash": "fba9db9e804624a7c38102520b0053ba1e4bfbfc",
       "imports": [
         "./git.js",
         "./repository.js",
         "./framework.js",
         "../verification/index.js",
         "../execution/index.js",
-        "../completion/index.js"
+        "../completion/index.js",
+        "../orchestration/index.js"
       ],
       "exports": [
         "createWorkspaceToolRegistry"
@@ -1399,16 +1641,18 @@
       "path": "src/verification/config.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 7248,
-      "mtimeMs": 1787756706602.9434,
-      "hash": "dc7b1b2afe1bbc8e222693ee412625959ab994ec",
+      "size": 7702,
+      "mtimeMs": 1787757120886.4531,
+      "hash": "936475cf3c795d427a6ed0f293c60fad5ed59343",
       "imports": [
         "node:fs",
         "node:path",
         "yaml",
         "../execution/types.js",
         "../completion/config.js",
-        "../completion/types.js"
+        "../completion/types.js",
+        "../orchestration/config.js",
+        "../orchestration/types.js"
       ],
       "exports": [
         "VERIFICATION_STEPS",
@@ -1696,6 +1940,31 @@
       "module": "test"
     },
     {
+      "path": "test/orchestration.test.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 7350,
+      "mtimeMs": 1787757208452.859,
+      "hash": "f26e5f41bd26ba4fcc193ea4347e9f7224681a19",
+      "imports": [
+        "vitest",
+        "../src/model/backend.js",
+        "../src/model/types.js",
+        "../src/orchestration/index.js"
+      ],
+      "exports": [],
+      "symbols": [
+        "REPORT",
+        "RecordingInference",
+        "configuration",
+        "manager"
+      ],
+      "likelyTest": true,
+      "likelyDocumentation": false,
+      "directory": "test",
+      "module": "test"
+    },
+    {
       "path": "test/settings.test.ts",
       "fileType": "ts",
       "language": "TypeScript",
@@ -1812,6 +2081,7 @@
         "src/execution",
         "src/intelligence",
         "src/model",
+        "src/orchestration",
         "src/settings",
         "src/shared",
         "src/tools",
@@ -1852,6 +2122,14 @@
         "src/model/profiles.ts",
         "src/model/registry.ts",
         "src/model/types.ts",
+        "src/orchestration/config.ts",
+        "src/orchestration/index.ts",
+        "src/orchestration/inference.ts",
+        "src/orchestration/orchestrator.ts",
+        "src/orchestration/report.ts",
+        "src/orchestration/scheduler.ts",
+        "src/orchestration/tools.ts",
+        "src/orchestration/types.ts",
         "src/settings/configuration.ts",
         "src/settings/defaults.ts",
         "src/settings/panel.ts",
@@ -1877,6 +2155,7 @@
         "test/git.test.ts",
         "test/indexer.test.ts",
         "test/messages.test.ts",
+        "test/orchestration.test.ts",
         "test/settings.test.ts",
         "test/stream.test.ts",
         "test/tools.test.ts",
@@ -1935,6 +2214,7 @@
           "src/execution",
           "src/intelligence",
           "src/model",
+          "src/orchestration",
           "src/settings",
           "src/shared",
           "src/tools",
@@ -1965,6 +2245,14 @@
           "src/model/profiles.ts",
           "src/model/registry.ts",
           "src/model/types.ts",
+          "src/orchestration/config.ts",
+          "src/orchestration/index.ts",
+          "src/orchestration/inference.ts",
+          "src/orchestration/orchestrator.ts",
+          "src/orchestration/report.ts",
+          "src/orchestration/scheduler.ts",
+          "src/orchestration/tools.ts",
+          "src/orchestration/types.ts",
           "src/settings/configuration.ts",
           "src/settings/defaults.ts",
           "src/settings/panel.ts",
@@ -2003,6 +2291,7 @@
           "test/git.test.ts",
           "test/indexer.test.ts",
           "test/messages.test.ts",
+          "test/orchestration.test.ts",
           "test/settings.test.ts",
           "test/stream.test.ts",
           "test/tools.test.ts"
@@ -2249,6 +2538,98 @@
       "to": "src/model/profiles.ts"
     },
     {
+      "from": "src/orchestration/config.ts",
+      "to": "src/orchestration/types.ts"
+    },
+    {
+      "from": "src/orchestration/index.ts",
+      "to": "src/orchestration/types.ts"
+    },
+    {
+      "from": "src/orchestration/index.ts",
+      "to": "src/orchestration/config.ts"
+    },
+    {
+      "from": "src/orchestration/index.ts",
+      "to": "src/orchestration/scheduler.ts"
+    },
+    {
+      "from": "src/orchestration/index.ts",
+      "to": "src/orchestration/report.ts"
+    },
+    {
+      "from": "src/orchestration/index.ts",
+      "to": "src/orchestration/inference.ts"
+    },
+    {
+      "from": "src/orchestration/index.ts",
+      "to": "src/orchestration/orchestrator.ts"
+    },
+    {
+      "from": "src/orchestration/index.ts",
+      "to": "src/orchestration/tools.ts"
+    },
+    {
+      "from": "src/orchestration/inference.ts",
+      "to": "src/model/backend.ts"
+    },
+    {
+      "from": "src/orchestration/inference.ts",
+      "to": "src/model/types.ts"
+    },
+    {
+      "from": "src/orchestration/inference.ts",
+      "to": "src/orchestration/types.ts"
+    },
+    {
+      "from": "src/orchestration/orchestrator.ts",
+      "to": "src/model/types.ts"
+    },
+    {
+      "from": "src/orchestration/orchestrator.ts",
+      "to": "src/orchestration/report.ts"
+    },
+    {
+      "from": "src/orchestration/orchestrator.ts",
+      "to": "src/orchestration/scheduler.ts"
+    },
+    {
+      "from": "src/orchestration/orchestrator.ts",
+      "to": "src/orchestration/types.ts"
+    },
+    {
+      "from": "src/orchestration/report.ts",
+      "to": "src/orchestration/types.ts"
+    },
+    {
+      "from": "src/orchestration/scheduler.ts",
+      "to": "src/orchestration/types.ts"
+    },
+    {
+      "from": "src/orchestration/tools.ts",
+      "to": "src/model/types.ts"
+    },
+    {
+      "from": "src/orchestration/tools.ts",
+      "to": "src/tools/types.ts"
+    },
+    {
+      "from": "src/orchestration/tools.ts",
+      "to": "src/tools/framework.ts"
+    },
+    {
+      "from": "src/orchestration/tools.ts",
+      "to": "src/orchestration/orchestrator.ts"
+    },
+    {
+      "from": "src/orchestration/tools.ts",
+      "to": "src/orchestration/types.ts"
+    },
+    {
+      "from": "src/orchestration/types.ts",
+      "to": "src/model/types.ts"
+    },
+    {
       "from": "src/settings/configuration.ts",
       "to": "src/settings/defaults.ts"
     },
@@ -2263,6 +2644,10 @@
     {
       "from": "src/settings/configuration.ts",
       "to": "src/completion/config.ts"
+    },
+    {
+      "from": "src/settings/configuration.ts",
+      "to": "src/orchestration/config.ts"
     },
     {
       "from": "src/settings/defaults.ts",
@@ -2337,6 +2722,10 @@
       "to": "src/completion/index.ts"
     },
     {
+      "from": "src/tools/index.ts",
+      "to": "src/orchestration/index.ts"
+    },
+    {
       "from": "src/tools/loop.ts",
       "to": "src/model/backend.ts"
     },
@@ -2397,6 +2786,10 @@
       "to": "src/completion/index.ts"
     },
     {
+      "from": "src/tools/workspace.ts",
+      "to": "src/orchestration/index.ts"
+    },
+    {
       "from": "src/verification/config.ts",
       "to": "src/execution/types.ts"
     },
@@ -2407,6 +2800,14 @@
     {
       "from": "src/verification/config.ts",
       "to": "src/completion/types.ts"
+    },
+    {
+      "from": "src/verification/config.ts",
+      "to": "src/orchestration/config.ts"
+    },
+    {
+      "from": "src/verification/config.ts",
+      "to": "src/orchestration/types.ts"
     },
     {
       "from": "src/verification/index.ts",
@@ -2491,6 +2892,18 @@
     {
       "from": "test/messages.test.ts",
       "to": "src/shared/messages.ts"
+    },
+    {
+      "from": "test/orchestration.test.ts",
+      "to": "src/model/backend.ts"
+    },
+    {
+      "from": "test/orchestration.test.ts",
+      "to": "src/model/types.ts"
+    },
+    {
+      "from": "test/orchestration.test.ts",
+      "to": "src/orchestration/index.ts"
     },
     {
       "from": "test/settings.test.ts",
@@ -2586,6 +2999,7 @@
     ],
     "src/tools/types.ts": [
       "src/completion/tools.ts",
+      "src/orchestration/tools.ts",
       "src/tools/framework.ts",
       "src/tools/git.ts",
       "src/tools/index.ts",
@@ -2596,6 +3010,7 @@
     ],
     "src/tools/framework.ts": [
       "src/completion/tools.ts",
+      "src/orchestration/tools.ts",
       "src/tools/git.ts",
       "src/tools/index.ts",
       "src/tools/loop.ts",
@@ -2647,8 +3062,13 @@
       "src/model/backend.ts",
       "src/model/ollama.ts",
       "src/model/openai.ts",
+      "src/orchestration/inference.ts",
+      "src/orchestration/orchestrator.ts",
+      "src/orchestration/tools.ts",
+      "src/orchestration/types.ts",
       "src/tools/loop.ts",
       "test/completion.test.ts",
+      "test/orchestration.test.ts",
       "test/tools.test.ts"
     ],
     "src/model/backend.ts": [
@@ -2658,7 +3078,9 @@
       "src/model/openai.ts",
       "src/model/profiles.ts",
       "src/model/registry.ts",
+      "src/orchestration/inference.ts",
       "src/tools/loop.ts",
+      "test/orchestration.test.ts",
       "test/stream.test.ts"
     ],
     "src/settings/configuration.ts": [
@@ -2684,6 +3106,39 @@
     ],
     "src/model/openai.ts": [
       "src/model/profiles.ts"
+    ],
+    "src/orchestration/types.ts": [
+      "src/orchestration/config.ts",
+      "src/orchestration/index.ts",
+      "src/orchestration/inference.ts",
+      "src/orchestration/orchestrator.ts",
+      "src/orchestration/report.ts",
+      "src/orchestration/scheduler.ts",
+      "src/orchestration/tools.ts",
+      "src/verification/config.ts"
+    ],
+    "src/orchestration/config.ts": [
+      "src/orchestration/index.ts",
+      "src/settings/configuration.ts",
+      "src/verification/config.ts"
+    ],
+    "src/orchestration/scheduler.ts": [
+      "src/orchestration/index.ts",
+      "src/orchestration/orchestrator.ts"
+    ],
+    "src/orchestration/report.ts": [
+      "src/orchestration/index.ts",
+      "src/orchestration/orchestrator.ts"
+    ],
+    "src/orchestration/inference.ts": [
+      "src/orchestration/index.ts"
+    ],
+    "src/orchestration/orchestrator.ts": [
+      "src/orchestration/index.ts",
+      "src/orchestration/tools.ts"
+    ],
+    "src/orchestration/tools.ts": [
+      "src/orchestration/index.ts"
     ],
     "src/settings/defaults.ts": [
       "src/settings/configuration.ts",
@@ -2726,6 +3181,11 @@
       "src/tools/loop.ts",
       "src/tools/workspace.ts"
     ],
+    "src/orchestration/index.ts": [
+      "src/tools/index.ts",
+      "src/tools/workspace.ts",
+      "test/orchestration.test.ts"
+    ],
     "src/verification/runner.ts": [
       "src/verification/index.ts",
       "src/verification/tools.ts"
@@ -2767,7 +3227,7 @@
   "freshness": {
     "index": "current",
     "codebaseMap": "current",
-    "checkedAt": "2026-08-26T15:05:31.617Z",
+    "checkedAt": "2026-08-26T15:15:53.655Z",
     "staleEntries": []
   },
   "incremental": {
@@ -2805,6 +3265,14 @@
       "src/model/profiles.ts",
       "src/model/registry.ts",
       "src/model/types.ts",
+      "src/orchestration/config.ts",
+      "src/orchestration/index.ts",
+      "src/orchestration/inference.ts",
+      "src/orchestration/orchestrator.ts",
+      "src/orchestration/report.ts",
+      "src/orchestration/scheduler.ts",
+      "src/orchestration/tools.ts",
+      "src/orchestration/types.ts",
       "src/settings/configuration.ts",
       "src/settings/defaults.ts",
       "src/settings/panel.ts",
@@ -2830,6 +3298,7 @@
       "test/git.test.ts",
       "test/indexer.test.ts",
       "test/messages.test.ts",
+      "test/orchestration.test.ts",
       "test/settings.test.ts",
       "test/stream.test.ts",
       "test/tools.test.ts",

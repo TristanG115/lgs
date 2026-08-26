@@ -59,3 +59,8 @@ completion:
     same_error_retry_limit: 3
     total_fix_attempt_limit: 12
     escalation_threshold: 3
+
+agents:
+  readOnlyConcurrency: 2
+  maxWorkersPerBatch: 6
+  maxContextMessages: 30

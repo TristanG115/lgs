@@ -1,6 +1,6 @@
 # LGS (Little Grad Student)
 
-LGS is a VS Code extension for reliable software-engineering agents. Phase 9 adds an evidence-backed Completion Guard on top of controlled software verification, provider-neutral model backends, deterministic Repository Intelligence, and guarded workspace tools.
+LGS is a VS Code extension for reliable software-engineering agents. Phase 10 adds manager-and-worker orchestration on top of the evidence-backed Completion Guard, controlled software verification, provider-neutral model backends, deterministic Repository Intelligence, and guarded workspace tools.
 
 ## Repository structure
 
@@ -11,6 +11,7 @@ LGS is a VS Code extension for reliable software-engineering agents. Phase 9 add
 - `src/execution/` — structured process execution, command permissions, normalized output, raw logs, and persisted task evidence.
 - `src/verification/` — generic project verification configuration, targeted selection, and model-facing verification tools.
 - `src/completion/` — completion gates, durable evidence, failure budgets, and completion-attempt enforcement.
+- `src/orchestration/` — logical agent sessions, role/model routing, inference scheduling, lifecycle control, and compact worker reports.
 - `.lgs/index.json` — generated machine-readable repository index.
 - `.lgs/CODEBASE_MAP.md` — generated compact architecture guide.
 - `src/shared/messages.ts` — typed message contracts and runtime validation shared by both sides.
@@ -133,3 +134,29 @@ completion:
 ```
 
 Substantially repeated errors are normalized into fingerprints so changing line numbers, IDs, or paths does not reset the retry count. When either retry limit is exhausted, LGS blocks further configured verification attempts and marks escalation as required when the escalation threshold is reached. A later passing run resolves prior failures for the same verification step, but does not erase failure-budget history.
+
+## Manager and worker agents
+
+Phase 10 lets the Manager delegate bounded batches through `delegate_subtasks`. The professional logical roles are Manager, Explorer, Researcher, Implementer, Test Engineer, Documentation Agent, Reviewer, Debugger, and Verifier. Each worker receives a copied, isolated message context and produces only a compact structured report containing findings, relevant files, work performed, risks, unresolved questions, and a recommendation. Raw worker transcripts are neither returned to the Manager nor exposed by agent-status tools.
+
+Logical sessions do not create separate model installations or VRAM copies. `BackendAgentInference` caches one backend per provider connection, while every worker retains its own identity, context, cancellation controller, lifecycle state, and report. Provider connection and model name together form the inference identity. Read-only workers can share configured inference slots; write-capable workers are globally serialized. The Manager can inspect lifecycle metadata, cancel active sessions, and destroy terminal sessions. Batch delegation gathers successful reports, contains individual failures, and destroys worker sessions after returning their results.
+
+Role mappings are workspace configuration, never hardcoded. A string selects a model on the Manager's current provider connection; an object can select both a provider profile and model:
+
+```yaml
+agents:
+  readOnlyConcurrency: 2
+  maxWorkersPerBatch: 6
+  maxContextMessages: 30
+  roleModels:
+    manager:
+      profileId: local-ollama
+      model: gpt-oss:20b
+    explorer: qwen3.5:9b
+    implementer:
+      profileId: workstation-ollama
+      model: qwen3.5:27b
+    reviewer: qwen3.5:27b
+```
+
+Unmapped roles inherit the active Manager provider connection and model. This keeps configuration portable across Ollama, OpenAI-compatible, and Anthropic profiles and permits several logical workers to share a single loaded model.

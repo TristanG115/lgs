@@ -1,6 +1,6 @@
 # LGS Codebase Map
 
-Generated: 2026-08-26T15:05:31.616Z
+Generated: 2026-08-26T15:15:53.655Z
 
 This map is generated deterministically from the filesystem, manifests, and source syntax. Source files remain authoritative.
 
@@ -12,8 +12,8 @@ This map is generated deterministically from the filesystem, manifests, and sour
 
 ## Repository shape
 
-- Files: 62
-- Directories: 13
+- Files: 71
+- Directories: 14
 - Modules: 4
 - Entry points: src/extension.ts
 - Manifests: package-lock.json, package.json, tsconfig.json
@@ -43,7 +43,7 @@ This map is generated deterministically from the filesystem, manifests, and sour
 
 ### src
 - Path: src
-- Files: 43; directories: 10
+- Files: 51; directories: 11
 - Entry points: `src/extension.ts`
   - `src/completion/config.ts` — TypeScript
     - Symbols: DEFAULT_GATES, DEFAULT_BUDGETS, parseCompletionConfiguration, record
@@ -89,24 +89,23 @@ This map is generated deterministically from the filesystem, manifests, and sour
     - Symbols: BackendId, createBackends
   - `src/model/types.ts` — TypeScript
     - Symbols: Role, TextContent, ImageContent, Content, LgsMessage, GenerationOptions, ModelInfo, ModelCapabilities, ConnectionState, Usage, TokenInformation, BackendErrorCode
-  - `src/settings/configuration.ts` — TypeScript
-    - Symbols: SettingsManager
-  - `src/settings/defaults.ts` — TypeScript
-    - Symbols: SETTINGS_CATEGORIES, createDefaultRegistry, visibleSettings
-  - `src/settings/panel.ts` — TypeScript
-    - Symbols: PanelMessage, SettingsPanel, css, script
-  - `src/settings/registry.ts` — TypeScript
-    - Symbols: SettingScope, SettingType, SettingSource, SettingDefinition, EffectiveSetting, SettingsRegistry, resolveSetting
-  - `src/shared/logger.ts` — TypeScript
-    - Symbols: Logger
-  - `src/shared/messages.ts` — TypeScript
-    - Symbols: ChatOptions, ClientMessage, HostMessage, parseClientMessage, isHostMessage
-  - `src/tools/framework.ts` — TypeScript
-    - Symbols: DEFAULT_MAX_RESULT_BYTES, MAX_AUDIT_ARGUMENT_BYTES, SECRET_KEY, MemoryAuditSink, ToolRegistry, ToolExecutor, parseToolCall, boundData, errorResult, elapsed, toolError, throwIfCancelled
+  - `src/orchestration/config.ts` — TypeScript
+    - Symbols: DEFAULT_CONFIGURATION, parseOrchestrationConfiguration, parseModel, integerSetting, record
+  - `src/orchestration/index.ts` — TypeScript
+  - `src/orchestration/inference.ts` — TypeScript
+    - Symbols: AgentBackendResolver, BackendAgentInference, agentInstructions
+  - `src/orchestration/orchestrator.ts` — TypeScript
+    - Symbols: AgentSession, DEFAULT_ACCESS, Orchestrator, descriptor, cloneMessages, cloneReport, modelKey, boundedError, isAbort, abortError
+  - `src/orchestration/report.ts` — TypeScript
+    - Symbols: ARRAY_FIELDS, parseWorkerReport, compactWorkerReports, emptyReport, parseObject, strings, bounded, record
+  - `src/orchestration/scheduler.ts` — TypeScript
+    - Symbols: InferenceScheduler, Semaphore, abortError
+  - `src/orchestration/tools.ts` — TypeScript
+    - Symbols: ORCHESTRATION_PERMISSION, STATUS_PERMISSION, WORKER_ROLES, registerOrchestrationTools
 
 ### test
 - Path: test
-- Files: 8; directories: 1
+- Files: 9; directories: 1
   - `test/completion.test.ts` — TypeScript (test)
     - Symbols: EvidenceEntry, fixture, cleanup, gates, execution, guard
   - `test/execution.test.ts` — TypeScript (test)
@@ -116,6 +115,8 @@ This map is generated deterministically from the filesystem, manifests, and sour
   - `test/indexer.test.ts` — TypeScript (test)
     - Symbols: fixture, cleanup
   - `test/messages.test.ts` — TypeScript (test)
+  - `test/orchestration.test.ts` — TypeScript (test)
+    - Symbols: REPORT, RecordingInference, configuration, manager
   - `test/settings.test.ts` — TypeScript (test)
     - Symbols: context
   - `test/stream.test.ts` — TypeScript (test)
@@ -183,10 +184,34 @@ This map is generated deterministically from the filesystem, manifests, and sour
 - `src/model/profiles.ts` → `src/model/openai.ts`
 - `src/model/registry.ts` → `src/model/backend.ts`
 - `src/model/registry.ts` → `src/model/profiles.ts`
+- `src/orchestration/config.ts` → `src/orchestration/types.ts`
+- `src/orchestration/index.ts` → `src/orchestration/types.ts`
+- `src/orchestration/index.ts` → `src/orchestration/config.ts`
+- `src/orchestration/index.ts` → `src/orchestration/scheduler.ts`
+- `src/orchestration/index.ts` → `src/orchestration/report.ts`
+- `src/orchestration/index.ts` → `src/orchestration/inference.ts`
+- `src/orchestration/index.ts` → `src/orchestration/orchestrator.ts`
+- `src/orchestration/index.ts` → `src/orchestration/tools.ts`
+- `src/orchestration/inference.ts` → `src/model/backend.ts`
+- `src/orchestration/inference.ts` → `src/model/types.ts`
+- `src/orchestration/inference.ts` → `src/orchestration/types.ts`
+- `src/orchestration/orchestrator.ts` → `src/model/types.ts`
+- `src/orchestration/orchestrator.ts` → `src/orchestration/report.ts`
+- `src/orchestration/orchestrator.ts` → `src/orchestration/scheduler.ts`
+- `src/orchestration/orchestrator.ts` → `src/orchestration/types.ts`
+- `src/orchestration/report.ts` → `src/orchestration/types.ts`
+- `src/orchestration/scheduler.ts` → `src/orchestration/types.ts`
+- `src/orchestration/tools.ts` → `src/model/types.ts`
+- `src/orchestration/tools.ts` → `src/tools/types.ts`
+- `src/orchestration/tools.ts` → `src/tools/framework.ts`
+- `src/orchestration/tools.ts` → `src/orchestration/orchestrator.ts`
+- `src/orchestration/tools.ts` → `src/orchestration/types.ts`
+- `src/orchestration/types.ts` → `src/model/types.ts`
 - `src/settings/configuration.ts` → `src/settings/defaults.ts`
 - `src/settings/configuration.ts` → `src/settings/registry.ts`
 - `src/settings/configuration.ts` → `src/verification/config.ts`
 - `src/settings/configuration.ts` → `src/completion/config.ts`
+- `src/settings/configuration.ts` → `src/orchestration/config.ts`
 - `src/settings/defaults.ts` → `src/settings/registry.ts`
 - `src/settings/panel.ts` → `src/model/profiles.ts`
 - `src/settings/panel.ts` → `src/settings/configuration.ts`
@@ -205,6 +230,7 @@ This map is generated deterministically from the filesystem, manifests, and sour
 - `src/tools/index.ts` → `src/execution/index.ts`
 - `src/tools/index.ts` → `src/verification/index.ts`
 - `src/tools/index.ts` → `src/completion/index.ts`
+- `src/tools/index.ts` → `src/orchestration/index.ts`
 - `src/tools/loop.ts` → `src/model/backend.ts`
 - `src/tools/loop.ts` → `src/model/types.ts`
 - `src/tools/loop.ts` → `src/tools/framework.ts`
@@ -219,31 +245,6 @@ This map is generated deterministically from the filesystem, manifests, and sour
 - `src/tools/workspace.ts` → `src/tools/framework.ts`
 - `src/tools/workspace.ts` → `src/verification/index.ts`
 - `src/tools/workspace.ts` → `src/execution/index.ts`
-- `src/tools/workspace.ts` → `src/completion/index.ts`
-- `src/verification/config.ts` → `src/execution/types.ts`
-- `src/verification/config.ts` → `src/completion/config.ts`
-- `src/verification/config.ts` → `src/completion/types.ts`
-- `src/verification/index.ts` → `src/verification/config.ts`
-- `src/verification/index.ts` → `src/verification/runner.ts`
-- `src/verification/index.ts` → `src/verification/tools.ts`
-- `src/verification/runner.ts` → `src/execution/index.ts`
-- `src/verification/runner.ts` → `src/execution/types.ts`
-- `src/verification/runner.ts` → `src/completion/failures.ts`
-- `src/verification/runner.ts` → `src/verification/config.ts`
-- `src/verification/tools.ts` → `src/tools/framework.ts`
-- `src/verification/tools.ts` → `src/tools/types.ts`
-- `src/verification/tools.ts` → `src/execution/logs.ts`
-- `src/verification/tools.ts` → `src/verification/config.ts`
-- `src/verification/tools.ts` → `src/verification/runner.ts`
-- `src/webview/main.ts` → `src/webview/styles.css`
-- `src/webview/main.ts` → `src/shared/messages.ts`
-- `test/completion.test.ts` → `src/tools/index.ts`
-- `test/completion.test.ts` → `src/model/types.ts`
-- `test/completion.test.ts` → `src/intelligence/indexer.ts`
-- `test/execution.test.ts` → `src/tools/index.ts`
-- `test/git.test.ts` → `src/tools/index.ts`
-- `test/indexer.test.ts` → `src/intelligence/indexer.ts`
-- `test/messages.test.ts` → `src/shared/messages.ts`
 
 ## Reverse dependencies
 
@@ -263,25 +264,33 @@ This map is generated deterministically from the filesystem, manifests, and sour
 - `src/execution/types.ts` ← `src/completion/failures.ts`, `src/completion/guard.ts`, `src/completion/types.ts`, `src/execution/evidence.ts`, `src/execution/index.ts`, `src/execution/normalize.ts`, `src/execution/permissions.ts`, `src/execution/service.ts`, `src/verification/config.ts`, `src/verification/runner.ts`
 - `src/intelligence/indexer.ts` ← `src/completion/guard.ts`, `src/extension.ts`, `src/tools/repository.ts`, `test/completion.test.ts`, `test/indexer.test.ts`
 - `src/model/anthropic.ts` ← `src/model/profiles.ts`
-- `src/model/backend.ts` ← `src/extension.ts`, `src/model/anthropic.ts`, `src/model/ollama.ts`, `src/model/openai.ts`, `src/model/profiles.ts`, `src/model/registry.ts`, `src/tools/loop.ts`, `test/stream.test.ts`
+- `src/model/backend.ts` ← `src/extension.ts`, `src/model/anthropic.ts`, `src/model/ollama.ts`, `src/model/openai.ts`, `src/model/profiles.ts`, `src/model/registry.ts`, `src/orchestration/inference.ts`, `src/tools/loop.ts`, `test/orchestration.test.ts`, `test/stream.test.ts`
 - `src/model/ollama.ts` ← `src/model/profiles.ts`
 - `src/model/openai.ts` ← `src/model/profiles.ts`
 - `src/model/profiles.ts` ← `src/extension.ts`, `src/model/registry.ts`, `src/settings/panel.ts`, `test/settings.test.ts`
 - `src/model/registry.ts` ← `src/extension.ts`, `test/settings.test.ts`
-- `src/model/types.ts` ← `src/extension.ts`, `src/model/anthropic.ts`, `src/model/backend.ts`, `src/model/ollama.ts`, `src/model/openai.ts`, `src/tools/loop.ts`, `test/completion.test.ts`, `test/tools.test.ts`
+- `src/model/types.ts` ← `src/extension.ts`, `src/model/anthropic.ts`, `src/model/backend.ts`, `src/model/ollama.ts`, `src/model/openai.ts`, `src/orchestration/inference.ts`, `src/orchestration/orchestrator.ts`, `src/orchestration/tools.ts`, `src/orchestration/types.ts`, `src/tools/loop.ts`, `test/completion.test.ts`, `test/orchestration.test.ts`, `test/tools.test.ts`
+- `src/orchestration/config.ts` ← `src/orchestration/index.ts`, `src/settings/configuration.ts`, `src/verification/config.ts`
+- `src/orchestration/index.ts` ← `src/tools/index.ts`, `src/tools/workspace.ts`, `test/orchestration.test.ts`
+- `src/orchestration/inference.ts` ← `src/orchestration/index.ts`
+- `src/orchestration/orchestrator.ts` ← `src/orchestration/index.ts`, `src/orchestration/tools.ts`
+- `src/orchestration/report.ts` ← `src/orchestration/index.ts`, `src/orchestration/orchestrator.ts`
+- `src/orchestration/scheduler.ts` ← `src/orchestration/index.ts`, `src/orchestration/orchestrator.ts`
+- `src/orchestration/tools.ts` ← `src/orchestration/index.ts`
+- `src/orchestration/types.ts` ← `src/orchestration/config.ts`, `src/orchestration/index.ts`, `src/orchestration/inference.ts`, `src/orchestration/orchestrator.ts`, `src/orchestration/report.ts`, `src/orchestration/scheduler.ts`, `src/orchestration/tools.ts`, `src/verification/config.ts`
 - `src/settings/configuration.ts` ← `src/extension.ts`, `src/settings/panel.ts`, `test/settings.test.ts`
 - `src/settings/defaults.ts` ← `src/settings/configuration.ts`, `test/settings.test.ts`
 - `src/settings/panel.ts` ← `src/extension.ts`
 - `src/settings/registry.ts` ← `src/settings/configuration.ts`, `src/settings/defaults.ts`, `test/settings.test.ts`
 - `src/shared/logger.ts` ← `src/extension.ts`
 - `src/shared/messages.ts` ← `src/extension.ts`, `src/webview/main.ts`, `test/messages.test.ts`
-- `src/tools/framework.ts` ← `src/completion/tools.ts`, `src/tools/git.ts`, `src/tools/index.ts`, `src/tools/loop.ts`, `src/tools/repository.ts`, `src/tools/workspace.ts`, `src/verification/tools.ts`
+- `src/tools/framework.ts` ← `src/completion/tools.ts`, `src/orchestration/tools.ts`, `src/tools/git.ts`, `src/tools/index.ts`, `src/tools/loop.ts`, `src/tools/repository.ts`, `src/tools/workspace.ts`, `src/verification/tools.ts`
 - `src/tools/git.ts` ← `src/tools/index.ts`, `src/tools/workspace.ts`
 - `src/tools/index.ts` ← `src/extension.ts`, `test/completion.test.ts`, `test/execution.test.ts`, `test/git.test.ts`, `test/tools.test.ts`
 - `src/tools/loop.ts` ← `src/tools/index.ts`
 - `src/tools/repository.ts` ← `src/tools/index.ts`, `src/tools/workspace.ts`
 - `src/tools/schema.ts` ← `src/tools/framework.ts`, `src/tools/index.ts`
-- `src/tools/types.ts` ← `src/completion/tools.ts`, `src/tools/framework.ts`, `src/tools/git.ts`, `src/tools/index.ts`, `src/tools/loop.ts`, `src/tools/repository.ts`, `src/tools/schema.ts`, `src/verification/tools.ts`
+- `src/tools/types.ts` ← `src/completion/tools.ts`, `src/orchestration/tools.ts`, `src/tools/framework.ts`, `src/tools/git.ts`, `src/tools/index.ts`, `src/tools/loop.ts`, `src/tools/repository.ts`, `src/tools/schema.ts`, `src/verification/tools.ts`
 - `src/tools/workspace.ts` ← `src/tools/index.ts`
 - `src/verification/config.ts` ← `src/completion/guard.ts`, `src/settings/configuration.ts`, `src/verification/index.ts`, `src/verification/runner.ts`, `src/verification/tools.ts`
 - `src/verification/index.ts` ← `src/tools/index.ts`, `src/tools/workspace.ts`
@@ -305,7 +314,7 @@ This map is generated deterministically from the filesystem, manifests, and sour
 ## Incremental update
 
 - Reused: 0
-- Added: 62
+- Added: 71
 - Changed: 0
 - Removed: 0
 - Renamed: 0
