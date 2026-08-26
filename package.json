@@ -5,17 +5,45 @@
   "version": "0.0.1",
   "publisher": "lgs",
   "license": "MIT",
-  "engines": { "vscode": "^1.85.0" },
-  "categories": ["Other"],
-  "activationEvents": ["onView:lgs.sidebar", "onCommand:lgs.open"],
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onView:lgs.sidebar",
+    "onCommand:lgs.open"
+  ],
   "main": "./dist/extension.js",
   "contributes": {
-    "commands": [{ "command": "lgs.open", "title": "LGS: Open Sidebar" }],
+    "commands": [
+      {
+        "command": "lgs.open",
+        "title": "LGS: Open Sidebar"
+      },
+      {
+        "command": "lgs.settings",
+        "title": "LGS: Configure Backend Profiles"
+      }
+    ],
     "viewsContainers": {
-      "activitybar": [{ "id": "lgs", "title": "LGS", "icon": "media/lgs.svg" }]
+      "activitybar": [
+        {
+          "id": "lgs",
+          "title": "LGS",
+          "icon": "media/lgs.svg"
+        }
+      ]
     },
     "views": {
-      "lgs": [{ "type": "webview", "id": "lgs.sidebar", "name": "LGS" }]
+      "lgs": [
+        {
+          "type": "webview",
+          "id": "lgs.sidebar",
+          "name": "LGS"
+        }
+      ]
     }
   },
   "scripts": {
