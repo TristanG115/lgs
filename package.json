@@ -1,0 +1,39 @@
+{
+  "name": "lgs",
+  "displayName": "LGS",
+  "description": "Little Grad Student — an AI software-engineering orchestration system.",
+  "version": "0.0.1",
+  "publisher": "lgs",
+  "license": "MIT",
+  "engines": { "vscode": "^1.85.0" },
+  "categories": ["Other"],
+  "activationEvents": ["onView:lgs.sidebar", "onCommand:lgs.open"],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [{ "command": "lgs.open", "title": "LGS: Open Sidebar" }],
+    "viewsContainers": {
+      "activitybar": [{ "id": "lgs", "title": "LGS", "icon": "media/lgs.svg" }]
+    },
+    "views": {
+      "lgs": [{ "type": "webview", "id": "lgs.sidebar", "name": "LGS" }]
+    }
+  },
+  "scripts": {
+    "build": "node esbuild.mjs --production",
+    "dev": "node esbuild.mjs --watch",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@types/vscode": "^1.85.0",
+    "@typescript-eslint/eslint-plugin": "^8.0.0",
+    "@typescript-eslint/parser": "^8.0.0",
+    "typescript-eslint": "^8.0.0",
+    "esbuild": "^0.24.0",
+    "eslint": "^9.0.0",
+    "typescript": "^5.6.0",
+    "vitest": "^2.1.0"
+  }
+}

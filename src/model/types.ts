@@ -1,0 +1,9 @@
+export type Role = 'system' | 'user' | 'assistant';
+export type TextContent = { type: 'text'; text: string }; export type ImageContent = { type: 'image'; mediaType: string; data: string }; export type Content = TextContent | ImageContent;
+export type LgsMessage = { role: Role; content: Content[] }; export type GenerationOptions = { temperature?: number; maxTokens?: number; topP?: number; stop?: string[] };
+export type ModelInfo = { id: string; displayName?: string; contextWindow?: number }; export type ModelCapabilities = { streaming: boolean; multimodal: boolean; systemInstructions: boolean; cancellation: boolean; usage: boolean }; export type ConnectionState = 'disconnected'|'connecting'|'connected'|'error';
+export type Usage = { inputTokens?: number; outputTokens?: number; totalTokens?: number }; export type TokenInformation = { contextWindow?: number; inputTokens?: number; outputTokens?: number };
+export type BackendErrorCode = 'authentication'|'connection'|'invalid_request'|'rate_limit'|'server'|'cancelled'|'unknown'; export type BackendError = { code: BackendErrorCode; message: string; status?: number; retryable: boolean };
+export type StreamEvent = { type:'textDelta'; text:string } | { type:'usage'; usage:Usage; tokenInformation?:TokenInformation } | { type:'connected' } | { type:'done' } | { type:'error'; error:BackendError };
+export const textMessage = (role: Role, text: string): LgsMessage => ({ role, content: [{ type:'text', text }] }); export const textFromMessage = (m:LgsMessage) => m.content.filter((x):x is TextContent=>x.type==='text').map(x=>x.text).join('\\n');
+export const backendError = (e:unknown):BackendError => e instanceof Error && e.name==='AbortError' ? {code:'cancelled',message:'Generation cancelled.',retryable:false} : {code:'unknown',message:e instanceof Error?e.message:'The model backend failed.',retryable:true};
