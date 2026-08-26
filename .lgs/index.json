@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-08-26T02:27:05.084Z",
+  "generatedAt": "2026-08-26T02:42:38.224Z",
   "root": "/home/tristan/Documents/Github/lgs",
   "directories": [
     ".vscode",
@@ -8,6 +8,7 @@
     "src",
     "src/intelligence",
     "src/model",
+    "src/settings",
     "src/shared",
     "src/webview",
     "test"
@@ -56,9 +57,9 @@
       "path": "README.md",
       "fileType": "md",
       "language": "Markdown/Text",
-      "size": 4262,
-      "mtimeMs": 1787711224881.6309,
-      "hash": "03ac0e6fb614502f9bc8dcaee88a2282c191f1d1",
+      "size": 5746,
+      "mtimeMs": 1787712066276.1194,
+      "hash": "96afabda2b5c7ef96cba61b392d284c7347f5eba",
       "imports": [],
       "exports": [],
       "symbols": [],
@@ -120,9 +121,9 @@
       "path": "package-lock.json",
       "fileType": "json",
       "language": "JSON",
-      "size": 117252,
-      "mtimeMs": 1787705430366.0552,
-      "hash": "fe299c8d2db27cfa47f12afba9ebe363efb9727a",
+      "size": 117765,
+      "mtimeMs": 1787711568001.2795,
+      "hash": "962a7f2fb7ef8956e92decea7b8672011fc53476",
       "imports": [],
       "exports": [],
       "symbols": [],
@@ -133,9 +134,9 @@
       "path": "package.json",
       "fileType": "json",
       "language": "JSON",
-      "size": 1726,
-      "mtimeMs": 1787711091239.5671,
-      "hash": "72c63860038192fad64e490db6dd0c154b2aace2",
+      "size": 1759,
+      "mtimeMs": 1787711847348.9915,
+      "hash": "e730986191ed6676a5228ee736e66e66ca33dfa7",
       "imports": [],
       "exports": [],
       "symbols": [],
@@ -146,9 +147,9 @@
       "path": "src/extension.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 10897,
-      "mtimeMs": 1787711139579.59,
-      "hash": "fa0024bb9252c50d0dde475ae2c6781e4cddf919",
+      "size": 9446,
+      "mtimeMs": 1787712066278.4912,
+      "hash": "50d7fddb75fcc9dfe196301fa049c94db6acd987",
       "imports": [
         "vscode",
         "./shared/messages.js",
@@ -159,7 +160,9 @@
         "./model/backend.js",
         "./intelligence/indexer.js",
         "node:fs",
-        "node:path"
+        "node:path",
+        "./settings/configuration.js",
+        "./settings/panel.js"
       ],
       "exports": [
         "activate",
@@ -167,11 +170,9 @@
       ],
       "symbols": [
         "SavedChat",
-        "SettingsMessage",
         "activate",
         "deactivate",
         "LgsViewProvider",
-        "SettingsPanel",
         "getHtml",
         "rebuildIndex",
         "openCodebaseMap"
@@ -229,9 +230,9 @@
       "path": "src/model/anthropic.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 2748,
-      "mtimeMs": 1787706014605.7036,
-      "hash": "5e37525c94c62cd4c168f53b6f385cc10fbd4163",
+      "size": 2777,
+      "mtimeMs": 1787711658480.8813,
+      "hash": "1683fc0879b0fc3963ee7e30d294338b16e4fcd8",
       "imports": [
         "./types.js",
         "./backend.js"
@@ -249,9 +250,9 @@
       "path": "src/model/backend.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 1715,
-      "mtimeMs": 1787706207241.0881,
-      "hash": "e50078b07e0172f21e59ef96a46dfb1ec3c237aa",
+      "size": 1746,
+      "mtimeMs": 1787711658479.8813,
+      "hash": "32d007b9998e6eed4469db027dc1056545f0ae7b",
       "imports": [
         "./types.js"
       ],
@@ -278,9 +279,9 @@
       "path": "src/model/ollama.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 2281,
-      "mtimeMs": 1787706029437.6099,
-      "hash": "35153bcbd19b5026b9b64bf0f45e39db6371f478",
+      "size": 2310,
+      "mtimeMs": 1787711658480.8813,
+      "hash": "f1af191c4ea9092cae9c926a5ccb06726c100b5b",
       "imports": [
         "./types.js",
         "./backend.js"
@@ -298,9 +299,9 @@
       "path": "src/model/openai.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 2731,
-      "mtimeMs": 1787706014605.7036,
-      "hash": "9e3c9612e1cd22f38957a461bb68a85792499325",
+      "size": 2760,
+      "mtimeMs": 1787711658480.8813,
+      "hash": "755785ef9c0898a8d9efc03c212c1ec92f5eda23",
       "imports": [
         "./types.js",
         "./backend.js"
@@ -318,25 +319,32 @@
       "path": "src/model/profiles.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 1229,
-      "mtimeMs": 1787707949556.9338,
-      "hash": "48c474806aa37d0b8439f6c14bf3c20b02b741d8",
+      "size": 2959,
+      "mtimeMs": 1787711921338.0347,
+      "hash": "cc8e8421c6a773038e4b5a1fb2ff726a03875858",
       "imports": [
         "./backend.js",
         "./anthropic.js",
         "./ollama.js",
-        "./openai.js"
+        "./openai.js",
+        "vscode"
       ],
       "exports": [
         "ProviderKind",
         "BackendProfile",
         "defaultProfiles",
+        "normalizeProfile",
+        "loadProfiles",
+        "saveProfiles",
         "createBackend"
       ],
       "symbols": [
         "ProviderKind",
         "BackendProfile",
         "defaultProfiles",
+        "normalizeProfile",
+        "loadProfiles",
+        "saveProfiles",
         "createBackend"
       ],
       "likelyTest": false,
@@ -346,9 +354,9 @@
       "path": "src/model/registry.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 367,
-      "mtimeMs": 1787707949556.9338,
-      "hash": "973d0c629aaf1d4f2753f4ebea9f51d80e9e5514",
+      "size": 476,
+      "mtimeMs": 1787711921338.0347,
+      "hash": "48ec023af7108243f9842e1638b7b287ec679328",
       "imports": [
         "./backend.js",
         "./profiles.js"
@@ -414,6 +422,108 @@
       "likelyDocumentation": false
     },
     {
+      "path": "src/settings/configuration.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 2989,
+      "mtimeMs": 1787712093733.1355,
+      "hash": "553f33da7d56cd990a600e0e1b47e90373abf904",
+      "imports": [
+        "node:fs",
+        "node:path",
+        "yaml",
+        "vscode",
+        "./defaults.js",
+        "./registry.js"
+      ],
+      "exports": [
+        "WorkspaceConfiguration",
+        "SettingsManager"
+      ],
+      "symbols": [
+        "WorkspaceConfiguration",
+        "SettingsManager"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false
+    },
+    {
+      "path": "src/settings/defaults.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 2332,
+      "mtimeMs": 1787711624410.2932,
+      "hash": "80d72858f060b13ea2b5d53ec2378b3bb3a1b0cd",
+      "imports": [
+        "./registry.js"
+      ],
+      "exports": [
+        "SETTINGS_CATEGORIES",
+        "createDefaultRegistry",
+        "visibleSettings"
+      ],
+      "symbols": [
+        "SETTINGS_CATEGORIES",
+        "createDefaultRegistry",
+        "visibleSettings"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false
+    },
+    {
+      "path": "src/settings/panel.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 11614,
+      "mtimeMs": 1787712147454.1667,
+      "hash": "97889fa92a23e01bcf7f0f98b3a440bbf799d06b",
+      "imports": [
+        "vscode",
+        "../model/profiles.js",
+        "./configuration.js"
+      ],
+      "exports": [
+        "SettingsPanel"
+      ],
+      "symbols": [
+        "PanelMessage",
+        "SettingsPanel",
+        "css",
+        "script"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false
+    },
+    {
+      "path": "src/settings/registry.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 1551,
+      "mtimeMs": 1787711624409.8616,
+      "hash": "34f6b2b79671ff676a01c1b0f4b6bc89d5463d66",
+      "imports": [],
+      "exports": [
+        "SettingScope",
+        "SettingType",
+        "SettingSource",
+        "SettingDefinition",
+        "EffectiveSetting",
+        "SettingsRegistry",
+        "resolveSetting"
+      ],
+      "symbols": [
+        "SettingScope",
+        "SettingType",
+        "SettingSource",
+        "SettingDefinition",
+        "EffectiveSetting",
+        "SettingsRegistry",
+        "resolveSetting"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false
+    },
+    {
       "path": "src/shared/logger.ts",
       "fileType": "ts",
       "language": "TypeScript",
@@ -434,9 +544,9 @@
       "path": "src/shared/messages.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 2436,
-      "mtimeMs": 1787707949556.9338,
-      "hash": "5ffd20660069352f6144b7e45d10bfea9e9d8f07",
+      "size": 2494,
+      "mtimeMs": 1787712031628.099,
+      "hash": "f152f7b06ddf2e3e889de9feb517c1186c48a1e2",
       "imports": [],
       "exports": [
         "ChatOptions",
@@ -459,9 +569,9 @@
       "path": "src/webview/main.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 4852,
-      "mtimeMs": 1787709701958.0308,
-      "hash": "70f1ba70edd51fd28c6c9ba7a26cf0992a4a6410",
+      "size": 4928,
+      "mtimeMs": 1787712031628.099,
+      "hash": "13dc050b34a36487082a8d1b0a17f388fca8434c",
       "imports": [
         "./styles.css",
         "../shared/messages.js"
@@ -484,9 +594,9 @@
       "path": "src/webview/styles.css",
       "fileType": "css",
       "language": "CSS",
-      "size": 3227,
-      "mtimeMs": 1787708060676.9404,
-      "hash": "a39cf8a7acee924b12647160a63468019bb01a35",
+      "size": 4353,
+      "mtimeMs": 1787712031643.099,
+      "hash": "6027ee069990abffc9c8cc39847aa0deeee93d7c",
       "imports": [],
       "exports": [],
       "symbols": [],
@@ -527,6 +637,31 @@
       ],
       "exports": [],
       "symbols": [],
+      "likelyTest": true,
+      "likelyDocumentation": false
+    },
+    {
+      "path": "test/settings.test.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 2330,
+      "mtimeMs": 1787711994771.0776,
+      "hash": "e38096df072723e9efd43f5127a9668365f1e653",
+      "imports": [
+        "vitest",
+        "node:fs",
+        "node:os",
+        "node:path",
+        "../src/settings/defaults.js",
+        "../src/settings/registry.js",
+        "../src/settings/configuration.js",
+        "../src/model/registry.js",
+        "../src/model/profiles.js"
+      ],
+      "exports": [],
+      "symbols": [
+        "context"
+      ],
       "likelyTest": true,
       "likelyDocumentation": false
     },
@@ -607,6 +742,14 @@
       "to": "src/intelligence/indexer.ts"
     },
     {
+      "from": "src/extension.ts",
+      "to": "src/settings/configuration.ts"
+    },
+    {
+      "from": "src/extension.ts",
+      "to": "src/settings/panel.ts"
+    },
+    {
       "from": "src/model/anthropic.ts",
       "to": "src/model/types.ts"
     },
@@ -659,6 +802,26 @@
       "to": "src/model/profiles.ts"
     },
     {
+      "from": "src/settings/configuration.ts",
+      "to": "src/settings/defaults.ts"
+    },
+    {
+      "from": "src/settings/configuration.ts",
+      "to": "src/settings/registry.ts"
+    },
+    {
+      "from": "src/settings/defaults.ts",
+      "to": "src/settings/registry.ts"
+    },
+    {
+      "from": "src/settings/panel.ts",
+      "to": "src/model/profiles.ts"
+    },
+    {
+      "from": "src/settings/panel.ts",
+      "to": "src/settings/configuration.ts"
+    },
+    {
       "from": "src/webview/main.ts",
       "to": "src/webview/styles.css"
     },
@@ -675,6 +838,26 @@
       "to": "src/shared/messages.ts"
     },
     {
+      "from": "test/settings.test.ts",
+      "to": "src/settings/defaults.ts"
+    },
+    {
+      "from": "test/settings.test.ts",
+      "to": "src/settings/registry.ts"
+    },
+    {
+      "from": "test/settings.test.ts",
+      "to": "src/settings/configuration.ts"
+    },
+    {
+      "from": "test/settings.test.ts",
+      "to": "src/model/registry.ts"
+    },
+    {
+      "from": "test/settings.test.ts",
+      "to": "src/model/profiles.ts"
+    },
+    {
       "from": "test/stream.test.ts",
       "to": "src/model/backend.ts"
     }
@@ -685,14 +868,15 @@
     "tsconfig.json"
   ],
   "dependencies": {
+    "yaml": "^2.9.0",
     "@types/node": "^22.0.0",
     "@types/vscode": "^1.85.0",
     "@typescript-eslint/eslint-plugin": "^8.0.0",
     "@typescript-eslint/parser": "^8.0.0",
-    "typescript-eslint": "^8.0.0",
     "esbuild": "^0.24.0",
     "eslint": "^9.0.0",
     "typescript": "^5.6.0",
+    "typescript-eslint": "^8.0.0",
     "vitest": "^2.1.0"
   },
   "incremental": {
@@ -716,12 +900,17 @@
       "src/model/profiles.ts",
       "src/model/registry.ts",
       "src/model/types.ts",
+      "src/settings/configuration.ts",
+      "src/settings/defaults.ts",
+      "src/settings/panel.ts",
+      "src/settings/registry.ts",
       "src/shared/logger.ts",
       "src/shared/messages.ts",
       "src/webview/main.ts",
       "src/webview/styles.css",
       "test/indexer.test.ts",
       "test/messages.test.ts",
+      "test/settings.test.ts",
       "test/stream.test.ts",
       "tsconfig.json",
       "vitest.config.ts"

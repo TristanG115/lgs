@@ -1,13 +1,13 @@
 # LGS Codebase Map
 
-Generated: 2026-08-26T02:27:05.084Z
+Generated: 2026-08-26T02:42:38.224Z
 
 This map is generated deterministically from the filesystem, manifests, and source syntax. Source files remain authoritative.
 
 ## Repository shape
 
-- Files: 27
-- Directories: 8
+- Files: 32
+- Directories: 9
 - Manifests: package-lock.json, package.json, tsconfig.json
 
 ## Directories and important files
@@ -32,7 +32,7 @@ This map is generated deterministically from the filesystem, manifests, and sour
 
 ### src
 - `src/extension.ts` — TypeScript
-  - Symbols: SavedChat, SettingsMessage, activate, deactivate, LgsViewProvider, SettingsPanel, getHtml, rebuildIndex, openCodebaseMap
+  - Symbols: SavedChat, activate, deactivate, LgsViewProvider, getHtml, rebuildIndex, openCodebaseMap
 
 ### src/intelligence
 - `src/intelligence/indexer.ts` — TypeScript
@@ -48,11 +48,21 @@ This map is generated deterministically from the filesystem, manifests, and sour
 - `src/model/openai.ts` — TypeScript
   - Symbols: OpenAICompatibleBackend
 - `src/model/profiles.ts` — TypeScript
-  - Symbols: ProviderKind, BackendProfile, defaultProfiles, createBackend
+  - Symbols: ProviderKind, BackendProfile, defaultProfiles, normalizeProfile, loadProfiles, saveProfiles, createBackend
 - `src/model/registry.ts` — TypeScript
   - Symbols: BackendId, createBackends
 - `src/model/types.ts` — TypeScript
   - Symbols: Role, TextContent, ImageContent, Content, LgsMessage, GenerationOptions, ModelInfo, ModelCapabilities, ConnectionState, Usage, TokenInformation, BackendErrorCode
+
+### src/settings
+- `src/settings/configuration.ts` — TypeScript
+  - Symbols: WorkspaceConfiguration, SettingsManager
+- `src/settings/defaults.ts` — TypeScript
+  - Symbols: SETTINGS_CATEGORIES, createDefaultRegistry, visibleSettings
+- `src/settings/panel.ts` — TypeScript
+  - Symbols: PanelMessage, SettingsPanel, css, script
+- `src/settings/registry.ts` — TypeScript
+  - Symbols: SettingScope, SettingType, SettingSource, SettingDefinition, EffectiveSetting, SettingsRegistry, resolveSetting
 
 ### src/shared
 - `src/shared/logger.ts` — TypeScript
@@ -69,6 +79,8 @@ This map is generated deterministically from the filesystem, manifests, and sour
 - `test/indexer.test.ts` — TypeScript (test)
   - Symbols: fixture
 - `test/messages.test.ts` — TypeScript (test)
+- `test/settings.test.ts` — TypeScript (test)
+  - Symbols: context
 - `test/stream.test.ts` — TypeScript (test)
 
 ## Module relationships
@@ -80,6 +92,8 @@ This map is generated deterministically from the filesystem, manifests, and sour
 - `src/extension.ts` → `src/model/types.ts`
 - `src/extension.ts` → `src/model/backend.ts`
 - `src/extension.ts` → `src/intelligence/indexer.ts`
+- `src/extension.ts` → `src/settings/configuration.ts`
+- `src/extension.ts` → `src/settings/panel.ts`
 - `src/model/anthropic.ts` → `src/model/types.ts`
 - `src/model/anthropic.ts` → `src/model/backend.ts`
 - `src/model/backend.ts` → `src/model/types.ts`
@@ -93,10 +107,20 @@ This map is generated deterministically from the filesystem, manifests, and sour
 - `src/model/profiles.ts` → `src/model/openai.ts`
 - `src/model/registry.ts` → `src/model/backend.ts`
 - `src/model/registry.ts` → `src/model/profiles.ts`
+- `src/settings/configuration.ts` → `src/settings/defaults.ts`
+- `src/settings/configuration.ts` → `src/settings/registry.ts`
+- `src/settings/defaults.ts` → `src/settings/registry.ts`
+- `src/settings/panel.ts` → `src/model/profiles.ts`
+- `src/settings/panel.ts` → `src/settings/configuration.ts`
 - `src/webview/main.ts` → `src/webview/styles.css`
 - `src/webview/main.ts` → `src/shared/messages.ts`
 - `test/indexer.test.ts` → `src/intelligence/indexer.ts`
 - `test/messages.test.ts` → `src/shared/messages.ts`
+- `test/settings.test.ts` → `src/settings/defaults.ts`
+- `test/settings.test.ts` → `src/settings/registry.ts`
+- `test/settings.test.ts` → `src/settings/configuration.ts`
+- `test/settings.test.ts` → `src/model/registry.ts`
+- `test/settings.test.ts` → `src/model/profiles.ts`
 - `test/stream.test.ts` → `src/model/backend.ts`
 
 ## Dependencies
@@ -110,11 +134,12 @@ This map is generated deterministically from the filesystem, manifests, and sour
 - `typescript`: ^5.6.0
 - `typescript-eslint`: ^8.0.0
 - `vitest`: ^2.1.0
+- `yaml`: ^2.9.0
 
 ## Incremental update
 
 - Reused: 0
-- Added: 27
+- Added: 32
 - Changed: 0
 - Removed: 0
 - Renamed: 0

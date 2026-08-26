@@ -26,7 +26,7 @@
       },
       {
         "command": "lgs.settings",
-        "title": "LGS: Configure Backend Profiles"
+        "title": "LGS: Open Settings"
       },
       {
         "command": "lgs.rebuildIndex",
@@ -68,10 +68,13 @@
     "@types/vscode": "^1.85.0",
     "@typescript-eslint/eslint-plugin": "^8.0.0",
     "@typescript-eslint/parser": "^8.0.0",
-    "typescript-eslint": "^8.0.0",
     "esbuild": "^0.24.0",
     "eslint": "^9.0.0",
     "typescript": "^5.6.0",
+    "typescript-eslint": "^8.0.0",
     "vitest": "^2.1.0"
+  },
+  "dependencies": {
+    "yaml": "^2.9.0"
   }
 }

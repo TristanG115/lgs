@@ -41,3 +41,13 @@ The webview posts only the `ClientMessage` union. The extension host receives `u
 Phase 2 maintains deterministic repository intelligence in `.lgs/`. Run **LGS: Rebuild Repository Index** to scan the workspace, update file fingerprints, parse TypeScript/JavaScript imports, exports, and top-level symbols, collect manifests and dependencies, and regenerate both artifacts. Unchanged files are reused from the prior index; added, changed, removed, and hash-matched renamed files are tracked in the incremental summary. Dependency, build, cache, `.git`, and `.lgs` directories are ignored.
 
 Use **LGS: Open Codebase Map** to open the generated architecture guide in VS Code. The map is intentionally compact and does not reproduce source code.
+
+## Settings and configuration
+
+LGS Settings is a dedicated webview opened with **LGS: Open Settings** or the gear button in the chat. Settings are registered through `SettingsRegistry` definitions containing an ID, category, label, description, type, default, scope, validation, and optional visibility condition. Future subsystems should register definitions instead of adding monolithic page logic.
+
+Configuration precedence is built-in default → user setting → workspace setting. User values are stored in VS Code extension global state. Workspace values are stored in `.lgs/config.yaml` under `settings:` and override user values. Malformed workspace YAML is reported in the Settings page and falls back safely.
+
+Provider connections are independent profiles, so multiple OpenAI-compatible endpoints can coexist. Profiles support enablement, ordinary headers, secret custom headers, model aliases, capability overrides, connection testing, and model discovery. API keys and secret header values remain in VS Code SecretStorage; the Settings webview receives only metadata such as whether a secret exists.
+
+The General, Appearance, Models & Providers, Agents, Integrations, Context, Verification, Git, Usage & Budgets, Memory, Skills, Permissions, and Advanced sections are navigable. Unimplemented sections show explicit placeholders rather than nonfunctional controls. Appearance supports Follow VS Code plus initial LGS light and dark semantic palettes.
