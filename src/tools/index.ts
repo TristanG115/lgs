@@ -14,3 +14,4 @@ export * from '../research/index.js';
 export * from '../documentation/index.js';
 export * from '../review/index.js';
 export * from '../runtime/index.js';
+export * from '../commit/index.js';

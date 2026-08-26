@@ -20,13 +20,14 @@ export class FileTaskStateStore {
     catch { return; }
   }
 
-  update(taskId: string, patch: Partial<Pick<TaskState, 'acceptanceCriteria' | 'currentPlan' | 'completedWork' | 'remainingWork' | 'recentModifications' | 'explicitUncertainty'>>): TaskState {
+  update(taskId: string, patch: Partial<Pick<TaskState, 'acceptanceCriteria' | 'currentPlan' | 'completedWork' | 'remainingWork' | 'recentModifications' | 'commitSha' | 'explicitUncertainty'>>): TaskState {
     const current = this.read(taskId);
     if (!current) throw new Error('Task state was not initialized.');
     for (const key of ['acceptanceCriteria', 'currentPlan', 'completedWork', 'remainingWork', 'recentModifications'] as const) {
       const candidate = patch[key];
       if (candidate !== undefined) current[key] = boundedList(candidate);
     }
+    if ('commitSha' in patch) current.commitSha = patch.commitSha ? validateCommitSha(patch.commitSha) : undefined;
     if ('explicitUncertainty' in patch) current.explicitUncertainty = patch.explicitUncertainty ? bounded(patch.explicitUncertainty, 2_000) : undefined;
     current.revision++; current.updatedAt = new Date().toISOString(); this.write(current); return clone(current);
   }
@@ -40,6 +41,11 @@ function boundedList(values: string[]): string[] {
   return [...new Set(values.map(value => bounded(value, 1_000)).filter(Boolean))].slice(0, 100);
 }
 function bounded(value: string, maximum: number): string { return String(value).trim().slice(0, maximum); }
+function validateCommitSha(value: string): string {
+  const sha = bounded(value, 64);
+  if (!/^[0-9a-f]{40}$/i.test(sha)) throw new Error('Commit SHA must be a 40-character hexadecimal Git object ID.');
+  return sha;
+}
 function validTaskId(value: string): boolean { return /^[a-zA-Z0-9._-]{1,128}$/.test(value); }
 function validateTaskId(value: string): void { if (!validTaskId(value)) throw new Error('Task ID contains unsupported characters.'); }
 function clone(state: TaskState): TaskState { return { ...state, acceptanceCriteria: [...state.acceptanceCriteria], currentPlan: [...state.currentPlan], completedWork: [...state.completedWork], remainingWork: [...state.remainingWork], recentModifications: [...state.recentModifications] }; }
@@ -47,5 +53,6 @@ function validState(value: unknown): value is TaskState {
   if (typeof value !== 'object' || value === null || Array.isArray(value)) return false;
   const state = value as Record<string, unknown>;
   return typeof state.taskId === 'string' && typeof state.objective === 'string' && Number.isInteger(state.revision)
+    && (state.commitSha === undefined || (typeof state.commitSha === 'string' && /^[0-9a-f]{40}$/i.test(state.commitSha)))
     && ['acceptanceCriteria', 'currentPlan', 'completedWork', 'remainingWork', 'recentModifications'].every(key => Array.isArray(state[key]) && (state[key] as unknown[]).every(item => typeof item === 'string'));
 }

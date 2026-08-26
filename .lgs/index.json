@@ -1,11 +1,12 @@
 {
   "version": 2,
-  "generatedAt": "2026-08-26T21:30:15.955Z",
+  "generatedAt": "2026-08-26T23:30:56.172Z",
   "root": "/home/tristan/Documents/Github/lgs",
   "directories": [
     ".vscode",
     "media",
     "src",
+    "src/commit",
     "src/completion",
     "src/documentation",
     "src/execution",
@@ -73,9 +74,9 @@
       "path": "README.md",
       "fileType": "md",
       "language": "Markdown/Text",
-      "size": 30989,
-      "mtimeMs": 1787779770671.4197,
-      "hash": "a40a5fec6243bc6286aaf67d3622cf18b77ae13e",
+      "size": 31487,
+      "mtimeMs": 1787785997375.6714,
+      "hash": "3e9e392ac5f128e098d222cbed3b5602a90ead5d",
       "imports": [],
       "exports": [],
       "symbols": [],
@@ -170,6 +171,79 @@
       "likelyDocumentation": false,
       "directory": "",
       "module": ""
+    },
+    {
+      "path": "src/commit/index.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 58,
+      "mtimeMs": 1787785981581.608,
+      "hash": "a30ee71cfd63971986f98079d57749518a4b2031",
+      "imports": [
+        "./service.js",
+        "./tools.js"
+      ],
+      "exports": [],
+      "symbols": [],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/commit",
+      "module": "src"
+    },
+    {
+      "path": "src/commit/service.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 4852,
+      "mtimeMs": 1787787048299.9626,
+      "hash": "26e566ee33bba62f8a29ad449abfdd52986352c1",
+      "imports": [
+        "node:child_process",
+        "node:fs",
+        "node:path",
+        "node:util",
+        "../completion/guard.js",
+        "../tools/git.js",
+        "../watchdog/state.js"
+      ],
+      "exports": [
+        "VerifiedCommitInput",
+        "VerifiedCommitService"
+      ],
+      "symbols": [
+        "run",
+        "SECRET",
+        "VerifiedCommitInput",
+        "VerifiedCommitService"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/commit",
+      "module": "src"
+    },
+    {
+      "path": "src/commit/tools.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 1414,
+      "mtimeMs": 1787786894137.5872,
+      "hash": "9085133fd1d16565714fe9b889107fc2e710a9eb",
+      "imports": [
+        "../tools/framework.js",
+        "../tools/types.js",
+        "./service.js"
+      ],
+      "exports": [
+        "registerCommitTools"
+      ],
+      "symbols": [
+        "PERMISSION",
+        "registerCommitTools"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/commit",
+      "module": "src"
     },
     {
       "path": "src/completion/config.ts",
@@ -809,7 +883,7 @@
       "fileType": "ts",
       "language": "TypeScript",
       "size": 15954,
-      "mtimeMs": 1787779751850.3684,
+      "mtimeMs": 1787786973471.7803,
       "hash": "e843690e1676ce02d755f3c2a9b2052dce253c42",
       "imports": [
         "vscode",
@@ -2305,9 +2379,9 @@
       "path": "src/tools/index.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 563,
-      "mtimeMs": 1787779488472.652,
-      "hash": "c6f83582b7ec708fe255af9b76eebec24e4e530c",
+      "size": 599,
+      "mtimeMs": 1787785981621.6082,
+      "hash": "241d22c5573069461e65d690ccda42a4b3fc95c9",
       "imports": [
         "./types.js",
         "./schema.js",
@@ -2324,7 +2398,8 @@
         "../research/index.js",
         "../documentation/index.js",
         "../review/index.js",
-        "../runtime/index.js"
+        "../runtime/index.js",
+        "../commit/index.js"
       ],
       "exports": [],
       "symbols": [],
@@ -2519,9 +2594,9 @@
       "path": "src/tools/workspace.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 3204,
-      "mtimeMs": 1787779488431.652,
-      "hash": "f48372921a927b009b59cf7694b84ef5c8a3ce4d",
+      "size": 3659,
+      "mtimeMs": 1787786941186.702,
+      "hash": "09c7c1148c271d216cebabde947fbcfdc7c9a1dc",
       "imports": [
         "./git.js",
         "./repository.js",
@@ -2534,7 +2609,8 @@
         "../research/index.js",
         "../documentation/index.js",
         "../review/index.js",
-        "../runtime/index.js"
+        "../runtime/index.js",
+        "../commit/index.js"
       ],
       "exports": [
         "createWorkspaceToolRegistry"
@@ -2847,9 +2923,9 @@
       "path": "src/watchdog/state.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 3532,
-      "mtimeMs": 1787758128372.6204,
-      "hash": "9afa182eae9ca5c74dd79f6f74dfd464812edea5",
+      "size": 4004,
+      "mtimeMs": 1787786767949.28,
+      "hash": "8464da37795638387aca26d9da67276bb91b884d",
       "imports": [
         "node:fs",
         "node:path",
@@ -2862,6 +2938,7 @@
         "FileTaskStateStore",
         "boundedList",
         "bounded",
+        "validateCommitSha",
         "validTaskId",
         "validateTaskId",
         "clone",
@@ -2927,9 +3004,9 @@
       "path": "src/watchdog/types.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 2427,
-      "mtimeMs": 1787757656455.4912,
-      "hash": "ade5c77b7190380a5980e72a06c139ac249799ef",
+      "size": 2449,
+      "mtimeMs": 1787786767906.28,
+      "hash": "c9af0336735fcb92a865171b8365aefecf4e9968",
       "imports": [
         "../completion/types.js",
         "../orchestration/types.js"
@@ -3026,6 +3103,31 @@
       "likelyDocumentation": false,
       "directory": "src/webview",
       "module": "src"
+    },
+    {
+      "path": "test/commit.test.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 3023,
+      "mtimeMs": 1787786147634.2744,
+      "hash": "7cc0908a2e51cd8641cce6f6cbf733ed578c91dc",
+      "imports": [
+        "vitest",
+        "node:fs",
+        "node:os",
+        "node:path",
+        "node:child_process",
+        "../src/tools/index.js"
+      ],
+      "exports": [],
+      "symbols": [
+        "root",
+        "baseline"
+      ],
+      "likelyTest": true,
+      "likelyDocumentation": false,
+      "directory": "test",
+      "module": "test"
     },
     {
       "path": "test/completion.test.ts",
@@ -3423,6 +3525,7 @@
         ".vscode",
         "media",
         "src",
+        "src/commit",
         "src/completion",
         "src/documentation",
         "src/execution",
@@ -3450,6 +3553,9 @@
         "media/lgs.svg",
         "package-lock.json",
         "package.json",
+        "src/commit/index.ts",
+        "src/commit/service.ts",
+        "src/commit/tools.ts",
         "src/completion/config.ts",
         "src/completion/evidence.ts",
         "src/completion/failures.ts",
@@ -3540,6 +3646,7 @@
         "src/watchdog/types.ts",
         "src/webview/main.ts",
         "src/webview/styles.css",
+        "test/commit.test.ts",
         "test/completion.test.ts",
         "test/documentation.test.ts",
         "test/execution.test.ts",
@@ -3605,6 +3712,7 @@
         "path": "src",
         "directories": [
           "src",
+          "src/commit",
           "src/completion",
           "src/documentation",
           "src/execution",
@@ -3622,6 +3730,9 @@
           "src/webview"
         ],
         "files": [
+          "src/commit/index.ts",
+          "src/commit/service.ts",
+          "src/commit/tools.ts",
           "src/completion/config.ts",
           "src/completion/evidence.ts",
           "src/completion/failures.ts",
@@ -3725,6 +3836,7 @@
           "test"
         ],
         "files": [
+          "test/commit.test.ts",
           "test/completion.test.ts",
           "test/documentation.test.ts",
           "test/execution.test.ts",
@@ -3745,6 +3857,38 @@
     ]
   },
   "moduleRelationships": [
+    {
+      "from": "src/commit/index.ts",
+      "to": "src/commit/service.ts"
+    },
+    {
+      "from": "src/commit/index.ts",
+      "to": "src/commit/tools.ts"
+    },
+    {
+      "from": "src/commit/service.ts",
+      "to": "src/completion/guard.ts"
+    },
+    {
+      "from": "src/commit/service.ts",
+      "to": "src/tools/git.ts"
+    },
+    {
+      "from": "src/commit/service.ts",
+      "to": "src/watchdog/state.ts"
+    },
+    {
+      "from": "src/commit/tools.ts",
+      "to": "src/tools/framework.ts"
+    },
+    {
+      "from": "src/commit/tools.ts",
+      "to": "src/tools/types.ts"
+    },
+    {
+      "from": "src/commit/tools.ts",
+      "to": "src/commit/service.ts"
+    },
     {
       "from": "src/completion/config.ts",
       "to": "src/completion/types.ts"
@@ -4622,6 +4766,10 @@
       "to": "src/runtime/index.ts"
     },
     {
+      "from": "src/tools/index.ts",
+      "to": "src/commit/index.ts"
+    },
+    {
       "from": "src/tools/loop.ts",
       "to": "src/model/backend.ts"
     },
@@ -4724,6 +4872,10 @@
     {
       "from": "src/tools/workspace.ts",
       "to": "src/runtime/index.ts"
+    },
+    {
+      "from": "src/tools/workspace.ts",
+      "to": "src/commit/index.ts"
     },
     {
       "from": "src/verification/config.ts",
@@ -4970,6 +5122,10 @@
       "to": "src/shared/messages.ts"
     },
     {
+      "from": "test/commit.test.ts",
+      "to": "src/tools/index.ts"
+    },
+    {
       "from": "test/completion.test.ts",
       "to": "src/tools/index.ts"
     },
@@ -5075,6 +5231,73 @@
     }
   ],
   "reverseDependencies": {
+    "src/commit/service.ts": [
+      "src/commit/index.ts",
+      "src/commit/tools.ts"
+    ],
+    "src/commit/tools.ts": [
+      "src/commit/index.ts"
+    ],
+    "src/completion/guard.ts": [
+      "src/commit/service.ts",
+      "src/completion/index.ts",
+      "src/completion/tools.ts"
+    ],
+    "src/tools/git.ts": [
+      "src/commit/service.ts",
+      "src/documentation/agent.ts",
+      "src/documentation/context.ts",
+      "src/review/context.ts",
+      "src/review/reviewer.ts",
+      "src/tools/index.ts",
+      "src/tools/workspace.ts"
+    ],
+    "src/watchdog/state.ts": [
+      "src/commit/service.ts",
+      "src/documentation/agent.ts",
+      "src/documentation/store.ts",
+      "src/review/context.ts",
+      "src/review/reviewer.ts",
+      "src/watchdog/escalation.ts",
+      "src/watchdog/index.ts",
+      "src/watchdog/service.ts",
+      "src/watchdog/tools.ts"
+    ],
+    "src/tools/framework.ts": [
+      "src/commit/tools.ts",
+      "src/completion/tools.ts",
+      "src/documentation/tools.ts",
+      "src/orchestration/tools.ts",
+      "src/research/tools.ts",
+      "src/review/tools.ts",
+      "src/runtime/tools.ts",
+      "src/tools/git.ts",
+      "src/tools/index.ts",
+      "src/tools/loop.ts",
+      "src/tools/repository.ts",
+      "src/tools/workspace.ts",
+      "src/verification/tools.ts",
+      "src/watchdog/escalation.ts",
+      "src/watchdog/tools.ts"
+    ],
+    "src/tools/types.ts": [
+      "src/commit/tools.ts",
+      "src/completion/tools.ts",
+      "src/documentation/tools.ts",
+      "src/orchestration/tools.ts",
+      "src/research/tools.ts",
+      "src/review/tools.ts",
+      "src/runtime/tools.ts",
+      "src/tools/framework.ts",
+      "src/tools/git.ts",
+      "src/tools/index.ts",
+      "src/tools/loop.ts",
+      "src/tools/repository.ts",
+      "src/tools/schema.ts",
+      "src/verification/tools.ts",
+      "src/watchdog/tools.ts",
+      "src/watchdog/triggers.ts"
+    ],
     "src/completion/types.ts": [
       "src/completion/config.ts",
       "src/completion/evidence.ts",
@@ -5136,45 +5359,8 @@
       "src/settings/configuration.ts",
       "src/verification/config.ts"
     ],
-    "src/completion/guard.ts": [
-      "src/completion/index.ts",
-      "src/completion/tools.ts"
-    ],
     "src/completion/tools.ts": [
       "src/completion/index.ts"
-    ],
-    "src/tools/types.ts": [
-      "src/completion/tools.ts",
-      "src/documentation/tools.ts",
-      "src/orchestration/tools.ts",
-      "src/research/tools.ts",
-      "src/review/tools.ts",
-      "src/runtime/tools.ts",
-      "src/tools/framework.ts",
-      "src/tools/git.ts",
-      "src/tools/index.ts",
-      "src/tools/loop.ts",
-      "src/tools/repository.ts",
-      "src/tools/schema.ts",
-      "src/verification/tools.ts",
-      "src/watchdog/tools.ts",
-      "src/watchdog/triggers.ts"
-    ],
-    "src/tools/framework.ts": [
-      "src/completion/tools.ts",
-      "src/documentation/tools.ts",
-      "src/orchestration/tools.ts",
-      "src/research/tools.ts",
-      "src/review/tools.ts",
-      "src/runtime/tools.ts",
-      "src/tools/git.ts",
-      "src/tools/index.ts",
-      "src/tools/loop.ts",
-      "src/tools/repository.ts",
-      "src/tools/workspace.ts",
-      "src/verification/tools.ts",
-      "src/watchdog/escalation.ts",
-      "src/watchdog/tools.ts"
     ],
     "src/documentation/types.ts": [
       "src/completion/types.ts",
@@ -5202,24 +5388,6 @@
       "src/runtime/processes.ts",
       "src/runtime/service.ts",
       "src/verification/config.ts"
-    ],
-    "src/tools/git.ts": [
-      "src/documentation/agent.ts",
-      "src/documentation/context.ts",
-      "src/review/context.ts",
-      "src/review/reviewer.ts",
-      "src/tools/index.ts",
-      "src/tools/workspace.ts"
-    ],
-    "src/watchdog/state.ts": [
-      "src/documentation/agent.ts",
-      "src/documentation/store.ts",
-      "src/review/context.ts",
-      "src/review/reviewer.ts",
-      "src/watchdog/escalation.ts",
-      "src/watchdog/index.ts",
-      "src/watchdog/service.ts",
-      "src/watchdog/tools.ts"
     ],
     "src/documentation/context.ts": [
       "src/documentation/agent.ts",
@@ -5346,6 +5514,7 @@
     ],
     "src/tools/index.ts": [
       "src/extension.ts",
+      "test/commit.test.ts",
       "test/completion.test.ts",
       "test/documentation.test.ts",
       "test/execution.test.ts",
@@ -5549,6 +5718,10 @@
       "src/tools/index.ts",
       "src/tools/workspace.ts"
     ],
+    "src/commit/index.ts": [
+      "src/tools/index.ts",
+      "src/tools/workspace.ts"
+    ],
     "src/watchdog/triggers.ts": [
       "src/tools/loop.ts",
       "src/watchdog/index.ts"
@@ -5616,7 +5789,7 @@
   "freshness": {
     "index": "current",
     "codebaseMap": "current",
-    "checkedAt": "2026-08-26T21:30:15.955Z",
+    "checkedAt": "2026-08-26T23:30:56.172Z",
     "staleEntries": []
   },
   "incremental": {
@@ -5631,6 +5804,9 @@
       "media/lgs.svg",
       "package-lock.json",
       "package.json",
+      "src/commit/index.ts",
+      "src/commit/service.ts",
+      "src/commit/tools.ts",
       "src/completion/config.ts",
       "src/completion/evidence.ts",
       "src/completion/failures.ts",
@@ -5721,6 +5897,7 @@
       "src/watchdog/types.ts",
       "src/webview/main.ts",
       "src/webview/styles.css",
+      "test/commit.test.ts",
       "test/completion.test.ts",
       "test/documentation.test.ts",
       "test/execution.test.ts",

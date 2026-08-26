@@ -15,6 +15,7 @@ export type TaskState = {
   completedWork: string[];
   remainingWork: string[];
   recentModifications: string[];
+  commitSha?: string;
   explicitUncertainty?: string;
   revision: number;
   createdAt: string;

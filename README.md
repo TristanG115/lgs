@@ -275,3 +275,7 @@ runtime:
 The supported browser tools are `browser_open`, `browser_click`, `browser_type`, `browser_get_text`, `browser_wait_for`, `browser_screenshot`, `browser_console`, and `browser_network_errors`. They use an isolated Playwright Chromium session. Screenshots and complete process output live in ignored `.lgs/runtime/` artifacts; concise failures and artifact paths are persisted for the Debugger. Install a compatible browser on a development machine with `npx playwright install chromium`.
 
 `run_runtime_verification` runs the configured startup, health check, and acceptance sequence, returning concise check results. Set `completion.gates.runtime_verification_passes: true` only for tasks that require runtime or browser evidence. Projects without a runtime configuration are not forced into browser automation.
+
+## Verified commits
+
+Phase 16 exposes `create_verified_commit` after every required Completion Guard gate passes. It stages only task-tracked modifications that did not exist in the task-start Git baseline, inspects the staged diff, blocks obvious secret-like values, and refuses mixed files that overlap preexisting user work (which require manual hunk separation). The detailed commit body records Goal, Changes, Documentation, Verification, Files, and `LGS-Task` for future history inspection.
