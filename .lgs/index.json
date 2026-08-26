@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "generatedAt": "2026-08-26T15:15:53.655Z",
+  "generatedAt": "2026-08-26T15:31:16.385Z",
   "root": "/home/tristan/Documents/Github/lgs",
   "directories": [
     ".vscode",
@@ -15,6 +15,7 @@
     "src/shared",
     "src/tools",
     "src/verification",
+    "src/watchdog",
     "src/webview",
     "test"
   ],
@@ -68,9 +69,9 @@
       "path": "README.md",
       "fileType": "md",
       "language": "Markdown/Text",
-      "size": 17357,
-      "mtimeMs": 1787757270342.1052,
-      "hash": "005063ace39858ce6099b028e5f1685af14b8263",
+      "size": 20561,
+      "mtimeMs": 1787758254163.6462,
+      "hash": "4cb5933f2f0deb1f1bb94ead001e3c48134692c2",
       "imports": [],
       "exports": [],
       "symbols": [],
@@ -224,9 +225,9 @@
       "path": "src/completion/failures.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 2401,
-      "mtimeMs": 1787737939255.8428,
-      "hash": "5539b02cec097bbf390a7f09369f60ff258a30fd",
+      "size": 2769,
+      "mtimeMs": 1787758226339.6406,
+      "hash": "0a3aa6ed65ebc109c7fa1c4b5b8b7e11f04ed0bd",
       "imports": [
         "../execution/types.js",
         "./types.js"
@@ -332,9 +333,9 @@
       "path": "src/completion/types.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 2103,
-      "mtimeMs": 1787737939148.8428,
-      "hash": "8d04741b5649b8b96d650f117b5ef690823580e2",
+      "size": 2212,
+      "mtimeMs": 1787758226302.6406,
+      "hash": "d69dff879442ddc479077b29930da3ad75ec39ce",
       "imports": [
         "../execution/types.js"
       ],
@@ -351,7 +352,8 @@
         "FailureBudgetState",
         "CompletionEvaluation",
         "CompletionViewState",
-        "ExecutionEvidenceReader"
+        "ExecutionEvidenceReader",
+        "EscalationEvidenceReader"
       ],
       "symbols": [
         "COMPLETION_REQUIREMENTS",
@@ -366,7 +368,8 @@
         "FailureBudgetState",
         "CompletionEvaluation",
         "CompletionViewState",
-        "ExecutionEvidenceReader"
+        "ExecutionEvidenceReader",
+        "EscalationEvidenceReader"
       ],
       "likelyTest": false,
       "likelyDocumentation": false,
@@ -577,9 +580,9 @@
       "path": "src/extension.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 13356,
-      "mtimeMs": 1787757325127.2407,
-      "hash": "1f0ad1d15b201dd28200f14fe533f574c073b6f7",
+      "size": 14440,
+      "mtimeMs": 1787758226376.6406,
+      "hash": "d39ac896da2046e6c521cd8e14ef8524aefafa89",
       "imports": [
         "vscode",
         "./shared/messages.js",
@@ -1128,9 +1131,9 @@
       "path": "src/settings/configuration.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 2956,
-      "mtimeMs": 1787757120922.4534,
-      "hash": "7958944cd23dca1c0667c34425bc4adda685b055",
+      "size": 3060,
+      "mtimeMs": 1787757822596.5764,
+      "hash": "8fe5896b4fa377721de4bfe674ed698f9ab93d54",
       "imports": [
         "node:fs",
         "node:path",
@@ -1140,7 +1143,8 @@
         "./registry.js",
         "../verification/config.js",
         "../completion/config.js",
-        "../orchestration/config.js"
+        "../orchestration/config.js",
+        "../watchdog/config.js"
       ],
       "exports": [
         "SettingsManager"
@@ -1411,9 +1415,9 @@
       "path": "src/tools/index.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 371,
-      "mtimeMs": 1787757077778.3704,
-      "hash": "d373057366666509c37d250810edb2706c4a013b",
+      "size": 409,
+      "mtimeMs": 1787757822634.5764,
+      "hash": "5396dade36e84359988f3b800ef6e11b3eff1149",
       "imports": [
         "./types.js",
         "./schema.js",
@@ -1425,7 +1429,8 @@
         "../execution/index.js",
         "../verification/index.js",
         "../completion/index.js",
-        "../orchestration/index.js"
+        "../orchestration/index.js",
+        "../watchdog/index.js"
       ],
       "exports": [],
       "symbols": [],
@@ -1438,15 +1443,20 @@
       "path": "src/tools/loop.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 6648,
-      "mtimeMs": 1787757120959.4536,
-      "hash": "0eb31312d0250fe6855ff89c3ab6a36c77daee05",
+      "size": 9582,
+      "mtimeMs": 1787758060305.6077,
+      "hash": "bafc458d066e9e07f0abd5ca291430b0dd1c5503",
       "imports": [
         "../model/backend.js",
         "../model/types.js",
         "./framework.js",
         "./types.js",
-        "../completion/index.js"
+        "../completion/index.js",
+        "../watchdog/triggers.js",
+        "../watchdog/continuation.js",
+        "../watchdog/escalation.js",
+        "../watchdog/types.js",
+        "../watchdog/service.js"
       ],
       "exports": [
         "ToolModelTurn",
@@ -1461,6 +1471,7 @@
         "ToolLoopModel",
         "ToolLoopOutcome",
         "runToolLoop",
+        "applyEscalation",
         "BackendToolLoopModel",
         "parseModelTurn",
         "toolInstructions"
@@ -1614,9 +1625,9 @@
       "path": "src/tools/workspace.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 1517,
-      "mtimeMs": 1787757077820.3704,
-      "hash": "fba9db9e804624a7c38102520b0053ba1e4bfbfc",
+      "size": 1801,
+      "mtimeMs": 1787757822670.5764,
+      "hash": "fe3b35842992cdb92749392d9e7b1666c8b05eb4",
       "imports": [
         "./git.js",
         "./repository.js",
@@ -1624,7 +1635,8 @@
         "../verification/index.js",
         "../execution/index.js",
         "../completion/index.js",
-        "../orchestration/index.js"
+        "../orchestration/index.js",
+        "../watchdog/index.js"
       ],
       "exports": [
         "createWorkspaceToolRegistry"
@@ -1641,9 +1653,9 @@
       "path": "src/verification/config.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 7702,
-      "mtimeMs": 1787757120886.4531,
-      "hash": "936475cf3c795d427a6ed0f293c60fad5ed59343",
+      "size": 8141,
+      "mtimeMs": 1787757822559.5764,
+      "hash": "1e26fb8beac5f139aa4e16049b470fd14458c7b0",
       "imports": [
         "node:fs",
         "node:path",
@@ -1652,7 +1664,9 @@
         "../completion/config.js",
         "../completion/types.js",
         "../orchestration/config.js",
-        "../orchestration/types.js"
+        "../orchestration/types.js",
+        "../watchdog/config.js",
+        "../watchdog/types.js"
       ],
       "exports": [
         "VERIFICATION_STEPS",
@@ -1757,6 +1771,302 @@
       "likelyTest": false,
       "likelyDocumentation": false,
       "directory": "src/verification",
+      "module": "src"
+    },
+    {
+      "path": "src/watchdog/analyzer.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 5388,
+      "mtimeMs": 1787758128410.6204,
+      "hash": "da03b867887450b891fc5b9ed1caec63860a16ee",
+      "imports": [
+        "../model/backend.js",
+        "../model/types.js",
+        "./types.js"
+      ],
+      "exports": [
+        "WatchdogBackendResolver",
+        "BackendWatchdogAnalyzer",
+        "RuleBasedWatchdogAnalyzer",
+        "parseWatchdogFinding",
+        "ruleBasedFinding"
+      ],
+      "symbols": [
+        "WatchdogBackendResolver",
+        "BackendWatchdogAnalyzer",
+        "RuleBasedWatchdogAnalyzer",
+        "parseWatchdogFinding",
+        "ruleBasedFinding",
+        "finding",
+        "substantiallyRepeated",
+        "mentioned",
+        "boundedList",
+        "bounded"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/watchdog",
+      "module": "src"
+    },
+    {
+      "path": "src/watchdog/config.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 2736,
+      "mtimeMs": 1787757656494.4912,
+      "hash": "7e7770fc7248d7ffe2f46eb14bbd38395a1db82e",
+      "imports": [
+        "./types.js",
+        "../orchestration/types.js"
+      ],
+      "exports": [
+        "parseWatchdogConfiguration"
+      ],
+      "symbols": [
+        "parseWatchdogConfiguration",
+        "parseModel",
+        "record"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/watchdog",
+      "module": "src"
+    },
+    {
+      "path": "src/watchdog/continuation.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 1233,
+      "mtimeMs": 1787757882603.5842,
+      "hash": "53649d3c3761c15f0bcbc189c9bb0f42078eb86a",
+      "imports": [
+        "./types.js"
+      ],
+      "exports": [
+        "renderContinuationInstruction"
+      ],
+      "symbols": [
+        "renderContinuationInstruction"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/watchdog",
+      "module": "src"
+    },
+    {
+      "path": "src/watchdog/escalation.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 4915,
+      "mtimeMs": 1787758128335.6204,
+      "hash": "93ffa0e29833dce3a0a65f1bd7821fb80f9576e7",
+      "imports": [
+        "node:crypto",
+        "node:fs",
+        "node:path",
+        "../model/types.js",
+        "../model/backend.js",
+        "../tools/loop.js",
+        "../tools/framework.js",
+        "../orchestration/types.js",
+        "./state.js",
+        "./types.js"
+      ],
+      "exports": [
+        "ToolLoopBackendResolver",
+        "RoutedToolLoopModel",
+        "EscalationController"
+      ],
+      "symbols": [
+        "ToolLoopBackendResolver",
+        "RoutedToolLoopModel",
+        "EscalationController",
+        "resolveModel"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/watchdog",
+      "module": "src"
+    },
+    {
+      "path": "src/watchdog/index.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 273,
+      "mtimeMs": 1787757882563.5842,
+      "hash": "418c97bb5f40557c05b409ed7a8719769348789c",
+      "imports": [
+        "./types.js",
+        "./config.js",
+        "./state.js",
+        "./analyzer.js",
+        "./service.js",
+        "./continuation.js",
+        "./escalation.js",
+        "./triggers.js",
+        "./tools.js"
+      ],
+      "exports": [],
+      "symbols": [],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/watchdog",
+      "module": "src"
+    },
+    {
+      "path": "src/watchdog/service.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 2969,
+      "mtimeMs": 1787757711818.5305,
+      "hash": "595914bd4edbbdccd65fe46aba9b37d141728c22",
+      "imports": [
+        "node:fs",
+        "node:path",
+        "../completion/types.js",
+        "./analyzer.js",
+        "./state.js",
+        "./types.js"
+      ],
+      "exports": [
+        "WatchdogService"
+      ],
+      "symbols": [
+        "WatchdogService",
+        "unique"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/watchdog",
+      "module": "src"
+    },
+    {
+      "path": "src/watchdog/state.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 3532,
+      "mtimeMs": 1787758128372.6204,
+      "hash": "9afa182eae9ca5c74dd79f6f74dfd464812edea5",
+      "imports": [
+        "node:fs",
+        "node:path",
+        "./types.js"
+      ],
+      "exports": [
+        "FileTaskStateStore"
+      ],
+      "symbols": [
+        "FileTaskStateStore",
+        "boundedList",
+        "bounded",
+        "validTaskId",
+        "validateTaskId",
+        "clone",
+        "validState"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/watchdog",
+      "module": "src"
+    },
+    {
+      "path": "src/watchdog/tools.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 2300,
+      "mtimeMs": 1787757767737.5542,
+      "hash": "6451628de0dcaeef2b433b26454dcd1f0f63138f",
+      "imports": [
+        "../tools/types.js",
+        "../tools/framework.js",
+        "./state.js",
+        "./service.js"
+      ],
+      "exports": [
+        "registerWatchdogTools"
+      ],
+      "symbols": [
+        "STATE_PERMISSION",
+        "READ_PERMISSION",
+        "LIST",
+        "registerWatchdogTools"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/watchdog",
+      "module": "src"
+    },
+    {
+      "path": "src/watchdog/triggers.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 2245,
+      "mtimeMs": 1787757882482.5842,
+      "hash": "8b7a5372805136f5beb58ff02a07b4adb9b1c412",
+      "imports": [
+        "../completion/types.js",
+        "../tools/types.js",
+        "./types.js"
+      ],
+      "exports": [
+        "detectEscalationTriggers"
+      ],
+      "symbols": [
+        "detectEscalationTriggers",
+        "reviewerRejected"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/watchdog",
+      "module": "src"
+    },
+    {
+      "path": "src/watchdog/types.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 2427,
+      "mtimeMs": 1787757656455.4912,
+      "hash": "ade5c77b7190380a5980e72a06c139ac249799ef",
+      "imports": [
+        "../completion/types.js",
+        "../orchestration/types.js"
+      ],
+      "exports": [
+        "WATCHDOG_CLASSIFICATIONS",
+        "WatchdogClassification",
+        "TaskState",
+        "WatchdogInput",
+        "WatchdogFinding",
+        "WatchdogEvaluation",
+        "WatchdogAnalyzer",
+        "ESCALATION_LEVELS",
+        "EscalationLevel",
+        "ESCALATION_TRIGGERS",
+        "EscalationTrigger",
+        "WatchdogConfiguration",
+        "EscalationRecord",
+        "ContinuationContext"
+      ],
+      "symbols": [
+        "WATCHDOG_CLASSIFICATIONS",
+        "WatchdogClassification",
+        "TaskState",
+        "WatchdogInput",
+        "WatchdogFinding",
+        "WatchdogEvaluation",
+        "WatchdogAnalyzer",
+        "ESCALATION_LEVELS",
+        "EscalationLevel",
+        "ESCALATION_TRIGGERS",
+        "EscalationTrigger",
+        "WatchdogConfiguration",
+        "EscalationRecord",
+        "ContinuationContext"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/watchdog",
       "module": "src"
     },
     {
@@ -2036,6 +2346,32 @@
       "module": "test"
     },
     {
+      "path": "test/watchdog.test.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 9382,
+      "mtimeMs": 1787758246524.6448,
+      "hash": "5adaa840858febfe8222dfd1495045c36a243cda",
+      "imports": [
+        "vitest",
+        "node:fs",
+        "node:os",
+        "node:path",
+        "../src/tools/index.js",
+        "../src/model/types.js"
+      ],
+      "exports": [],
+      "symbols": [
+        "fixture",
+        "cleanup",
+        "task"
+      ],
+      "likelyTest": true,
+      "likelyDocumentation": false,
+      "directory": "test",
+      "module": "test"
+    },
+    {
       "path": "tsconfig.json",
       "fileType": "json",
       "language": "JSON",
@@ -2086,6 +2422,7 @@
         "src/shared",
         "src/tools",
         "src/verification",
+        "src/watchdog",
         "src/webview",
         "test"
       ],
@@ -2148,6 +2485,16 @@
         "src/verification/index.ts",
         "src/verification/runner.ts",
         "src/verification/tools.ts",
+        "src/watchdog/analyzer.ts",
+        "src/watchdog/config.ts",
+        "src/watchdog/continuation.ts",
+        "src/watchdog/escalation.ts",
+        "src/watchdog/index.ts",
+        "src/watchdog/service.ts",
+        "src/watchdog/state.ts",
+        "src/watchdog/tools.ts",
+        "src/watchdog/triggers.ts",
+        "src/watchdog/types.ts",
         "src/webview/main.ts",
         "src/webview/styles.css",
         "test/completion.test.ts",
@@ -2159,6 +2506,7 @@
         "test/settings.test.ts",
         "test/stream.test.ts",
         "test/tools.test.ts",
+        "test/watchdog.test.ts",
         "tsconfig.json",
         "vitest.config.ts"
       ],
@@ -2219,6 +2567,7 @@
           "src/shared",
           "src/tools",
           "src/verification",
+          "src/watchdog",
           "src/webview"
         ],
         "files": [
@@ -2271,6 +2620,16 @@
           "src/verification/index.ts",
           "src/verification/runner.ts",
           "src/verification/tools.ts",
+          "src/watchdog/analyzer.ts",
+          "src/watchdog/config.ts",
+          "src/watchdog/continuation.ts",
+          "src/watchdog/escalation.ts",
+          "src/watchdog/index.ts",
+          "src/watchdog/service.ts",
+          "src/watchdog/state.ts",
+          "src/watchdog/tools.ts",
+          "src/watchdog/triggers.ts",
+          "src/watchdog/types.ts",
           "src/webview/main.ts",
           "src/webview/styles.css"
         ],
@@ -2294,7 +2653,8 @@
           "test/orchestration.test.ts",
           "test/settings.test.ts",
           "test/stream.test.ts",
-          "test/tools.test.ts"
+          "test/tools.test.ts",
+          "test/watchdog.test.ts"
         ],
         "entryPoints": []
       }
@@ -2650,6 +3010,10 @@
       "to": "src/orchestration/config.ts"
     },
     {
+      "from": "src/settings/configuration.ts",
+      "to": "src/watchdog/config.ts"
+    },
+    {
       "from": "src/settings/defaults.ts",
       "to": "src/settings/registry.ts"
     },
@@ -2726,6 +3090,10 @@
       "to": "src/orchestration/index.ts"
     },
     {
+      "from": "src/tools/index.ts",
+      "to": "src/watchdog/index.ts"
+    },
+    {
       "from": "src/tools/loop.ts",
       "to": "src/model/backend.ts"
     },
@@ -2744,6 +3112,26 @@
     {
       "from": "src/tools/loop.ts",
       "to": "src/completion/index.ts"
+    },
+    {
+      "from": "src/tools/loop.ts",
+      "to": "src/watchdog/triggers.ts"
+    },
+    {
+      "from": "src/tools/loop.ts",
+      "to": "src/watchdog/continuation.ts"
+    },
+    {
+      "from": "src/tools/loop.ts",
+      "to": "src/watchdog/escalation.ts"
+    },
+    {
+      "from": "src/tools/loop.ts",
+      "to": "src/watchdog/types.ts"
+    },
+    {
+      "from": "src/tools/loop.ts",
+      "to": "src/watchdog/service.ts"
     },
     {
       "from": "src/tools/repository.ts",
@@ -2790,6 +3178,10 @@
       "to": "src/orchestration/index.ts"
     },
     {
+      "from": "src/tools/workspace.ts",
+      "to": "src/watchdog/index.ts"
+    },
+    {
       "from": "src/verification/config.ts",
       "to": "src/execution/types.ts"
     },
@@ -2808,6 +3200,14 @@
     {
       "from": "src/verification/config.ts",
       "to": "src/orchestration/types.ts"
+    },
+    {
+      "from": "src/verification/config.ts",
+      "to": "src/watchdog/config.ts"
+    },
+    {
+      "from": "src/verification/config.ts",
+      "to": "src/watchdog/types.ts"
     },
     {
       "from": "src/verification/index.ts",
@@ -2856,6 +3256,150 @@
     {
       "from": "src/verification/tools.ts",
       "to": "src/verification/runner.ts"
+    },
+    {
+      "from": "src/watchdog/analyzer.ts",
+      "to": "src/model/backend.ts"
+    },
+    {
+      "from": "src/watchdog/analyzer.ts",
+      "to": "src/model/types.ts"
+    },
+    {
+      "from": "src/watchdog/analyzer.ts",
+      "to": "src/watchdog/types.ts"
+    },
+    {
+      "from": "src/watchdog/config.ts",
+      "to": "src/watchdog/types.ts"
+    },
+    {
+      "from": "src/watchdog/config.ts",
+      "to": "src/orchestration/types.ts"
+    },
+    {
+      "from": "src/watchdog/continuation.ts",
+      "to": "src/watchdog/types.ts"
+    },
+    {
+      "from": "src/watchdog/escalation.ts",
+      "to": "src/model/types.ts"
+    },
+    {
+      "from": "src/watchdog/escalation.ts",
+      "to": "src/model/backend.ts"
+    },
+    {
+      "from": "src/watchdog/escalation.ts",
+      "to": "src/tools/loop.ts"
+    },
+    {
+      "from": "src/watchdog/escalation.ts",
+      "to": "src/tools/framework.ts"
+    },
+    {
+      "from": "src/watchdog/escalation.ts",
+      "to": "src/orchestration/types.ts"
+    },
+    {
+      "from": "src/watchdog/escalation.ts",
+      "to": "src/watchdog/state.ts"
+    },
+    {
+      "from": "src/watchdog/escalation.ts",
+      "to": "src/watchdog/types.ts"
+    },
+    {
+      "from": "src/watchdog/index.ts",
+      "to": "src/watchdog/types.ts"
+    },
+    {
+      "from": "src/watchdog/index.ts",
+      "to": "src/watchdog/config.ts"
+    },
+    {
+      "from": "src/watchdog/index.ts",
+      "to": "src/watchdog/state.ts"
+    },
+    {
+      "from": "src/watchdog/index.ts",
+      "to": "src/watchdog/analyzer.ts"
+    },
+    {
+      "from": "src/watchdog/index.ts",
+      "to": "src/watchdog/service.ts"
+    },
+    {
+      "from": "src/watchdog/index.ts",
+      "to": "src/watchdog/continuation.ts"
+    },
+    {
+      "from": "src/watchdog/index.ts",
+      "to": "src/watchdog/escalation.ts"
+    },
+    {
+      "from": "src/watchdog/index.ts",
+      "to": "src/watchdog/triggers.ts"
+    },
+    {
+      "from": "src/watchdog/index.ts",
+      "to": "src/watchdog/tools.ts"
+    },
+    {
+      "from": "src/watchdog/service.ts",
+      "to": "src/completion/types.ts"
+    },
+    {
+      "from": "src/watchdog/service.ts",
+      "to": "src/watchdog/analyzer.ts"
+    },
+    {
+      "from": "src/watchdog/service.ts",
+      "to": "src/watchdog/state.ts"
+    },
+    {
+      "from": "src/watchdog/service.ts",
+      "to": "src/watchdog/types.ts"
+    },
+    {
+      "from": "src/watchdog/state.ts",
+      "to": "src/watchdog/types.ts"
+    },
+    {
+      "from": "src/watchdog/tools.ts",
+      "to": "src/tools/types.ts"
+    },
+    {
+      "from": "src/watchdog/tools.ts",
+      "to": "src/tools/framework.ts"
+    },
+    {
+      "from": "src/watchdog/tools.ts",
+      "to": "src/watchdog/state.ts"
+    },
+    {
+      "from": "src/watchdog/tools.ts",
+      "to": "src/watchdog/service.ts"
+    },
+    {
+      "from": "src/watchdog/triggers.ts",
+      "to": "src/completion/types.ts"
+    },
+    {
+      "from": "src/watchdog/triggers.ts",
+      "to": "src/tools/types.ts"
+    },
+    {
+      "from": "src/watchdog/triggers.ts",
+      "to": "src/watchdog/types.ts"
+    },
+    {
+      "from": "src/watchdog/types.ts",
+      "to": "src/completion/types.ts"
+    },
+    {
+      "from": "src/watchdog/types.ts",
+      "to": "src/orchestration/types.ts"
     },
     {
       "from": "src/webview/main.ts",
@@ -2936,6 +3480,14 @@
     {
       "from": "test/tools.test.ts",
       "to": "src/model/types.ts"
+    },
+    {
+      "from": "test/watchdog.test.ts",
+      "to": "src/tools/index.ts"
+    },
+    {
+      "from": "test/watchdog.test.ts",
+      "to": "src/model/types.ts"
     }
   ],
   "reverseDependencies": {
@@ -2947,7 +3499,10 @@
       "src/completion/index.ts",
       "src/completion/tools.ts",
       "src/shared/messages.ts",
-      "src/verification/config.ts"
+      "src/verification/config.ts",
+      "src/watchdog/service.ts",
+      "src/watchdog/triggers.ts",
+      "src/watchdog/types.ts"
     ],
     "src/execution/types.ts": [
       "src/completion/failures.ts",
@@ -3006,7 +3561,9 @@
       "src/tools/loop.ts",
       "src/tools/repository.ts",
       "src/tools/schema.ts",
-      "src/verification/tools.ts"
+      "src/verification/tools.ts",
+      "src/watchdog/tools.ts",
+      "src/watchdog/triggers.ts"
     ],
     "src/tools/framework.ts": [
       "src/completion/tools.ts",
@@ -3016,7 +3573,9 @@
       "src/tools/loop.ts",
       "src/tools/repository.ts",
       "src/tools/workspace.ts",
-      "src/verification/tools.ts"
+      "src/verification/tools.ts",
+      "src/watchdog/escalation.ts",
+      "src/watchdog/tools.ts"
     ],
     "src/execution/permissions.ts": [
       "src/execution/index.ts",
@@ -3067,9 +3626,12 @@
       "src/orchestration/tools.ts",
       "src/orchestration/types.ts",
       "src/tools/loop.ts",
+      "src/watchdog/analyzer.ts",
+      "src/watchdog/escalation.ts",
       "test/completion.test.ts",
       "test/orchestration.test.ts",
-      "test/tools.test.ts"
+      "test/tools.test.ts",
+      "test/watchdog.test.ts"
     ],
     "src/model/backend.ts": [
       "src/extension.ts",
@@ -3080,6 +3642,8 @@
       "src/model/registry.ts",
       "src/orchestration/inference.ts",
       "src/tools/loop.ts",
+      "src/watchdog/analyzer.ts",
+      "src/watchdog/escalation.ts",
       "test/orchestration.test.ts",
       "test/stream.test.ts"
     ],
@@ -3096,7 +3660,8 @@
       "test/completion.test.ts",
       "test/execution.test.ts",
       "test/git.test.ts",
-      "test/tools.test.ts"
+      "test/tools.test.ts",
+      "test/watchdog.test.ts"
     ],
     "src/model/anthropic.ts": [
       "src/model/profiles.ts"
@@ -3115,7 +3680,10 @@
       "src/orchestration/report.ts",
       "src/orchestration/scheduler.ts",
       "src/orchestration/tools.ts",
-      "src/verification/config.ts"
+      "src/verification/config.ts",
+      "src/watchdog/config.ts",
+      "src/watchdog/escalation.ts",
+      "src/watchdog/types.ts"
     ],
     "src/orchestration/config.ts": [
       "src/orchestration/index.ts",
@@ -3149,6 +3717,11 @@
       "src/settings/defaults.ts",
       "test/settings.test.ts"
     ],
+    "src/watchdog/config.ts": [
+      "src/settings/configuration.ts",
+      "src/verification/config.ts",
+      "src/watchdog/index.ts"
+    ],
     "src/tools/schema.ts": [
       "src/tools/framework.ts",
       "src/tools/index.ts"
@@ -3158,7 +3731,8 @@
       "src/tools/workspace.ts"
     ],
     "src/tools/loop.ts": [
-      "src/tools/index.ts"
+      "src/tools/index.ts",
+      "src/watchdog/escalation.ts"
     ],
     "src/tools/git.ts": [
       "src/tools/index.ts",
@@ -3186,12 +3760,58 @@
       "src/tools/workspace.ts",
       "test/orchestration.test.ts"
     ],
+    "src/watchdog/index.ts": [
+      "src/tools/index.ts",
+      "src/tools/workspace.ts"
+    ],
+    "src/watchdog/triggers.ts": [
+      "src/tools/loop.ts",
+      "src/watchdog/index.ts"
+    ],
+    "src/watchdog/continuation.ts": [
+      "src/tools/loop.ts",
+      "src/watchdog/index.ts"
+    ],
+    "src/watchdog/escalation.ts": [
+      "src/tools/loop.ts",
+      "src/watchdog/index.ts"
+    ],
+    "src/watchdog/types.ts": [
+      "src/tools/loop.ts",
+      "src/verification/config.ts",
+      "src/watchdog/analyzer.ts",
+      "src/watchdog/config.ts",
+      "src/watchdog/continuation.ts",
+      "src/watchdog/escalation.ts",
+      "src/watchdog/index.ts",
+      "src/watchdog/service.ts",
+      "src/watchdog/state.ts",
+      "src/watchdog/triggers.ts"
+    ],
+    "src/watchdog/service.ts": [
+      "src/tools/loop.ts",
+      "src/watchdog/index.ts",
+      "src/watchdog/tools.ts"
+    ],
     "src/verification/runner.ts": [
       "src/verification/index.ts",
       "src/verification/tools.ts"
     ],
     "src/verification/tools.ts": [
       "src/verification/index.ts"
+    ],
+    "src/watchdog/state.ts": [
+      "src/watchdog/escalation.ts",
+      "src/watchdog/index.ts",
+      "src/watchdog/service.ts",
+      "src/watchdog/tools.ts"
+    ],
+    "src/watchdog/analyzer.ts": [
+      "src/watchdog/index.ts",
+      "src/watchdog/service.ts"
+    ],
+    "src/watchdog/tools.ts": [
+      "src/watchdog/index.ts"
     ],
     "src/webview/styles.css": [
       "src/webview/main.ts"
@@ -3227,7 +3847,7 @@
   "freshness": {
     "index": "current",
     "codebaseMap": "current",
-    "checkedAt": "2026-08-26T15:15:53.655Z",
+    "checkedAt": "2026-08-26T15:31:16.386Z",
     "staleEntries": []
   },
   "incremental": {
@@ -3291,6 +3911,16 @@
       "src/verification/index.ts",
       "src/verification/runner.ts",
       "src/verification/tools.ts",
+      "src/watchdog/analyzer.ts",
+      "src/watchdog/config.ts",
+      "src/watchdog/continuation.ts",
+      "src/watchdog/escalation.ts",
+      "src/watchdog/index.ts",
+      "src/watchdog/service.ts",
+      "src/watchdog/state.ts",
+      "src/watchdog/tools.ts",
+      "src/watchdog/triggers.ts",
+      "src/watchdog/types.ts",
       "src/webview/main.ts",
       "src/webview/styles.css",
       "test/completion.test.ts",
@@ -3302,6 +3932,7 @@
       "test/settings.test.ts",
       "test/stream.test.ts",
       "test/tools.test.ts",
+      "test/watchdog.test.ts",
       "tsconfig.json",
       "vitest.config.ts"
     ],

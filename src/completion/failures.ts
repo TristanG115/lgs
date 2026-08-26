@@ -1,11 +1,15 @@
 import type { ExecutionResult } from '../execution/types.js';
-import type { ExecutionEvidenceReader, FailureBudgetConfiguration, FailureBudgetState } from './types.js';
+import type { EscalationEvidenceReader, ExecutionEvidenceReader, FailureBudgetConfiguration, FailureBudgetState } from './types.js';
 
 export class FailureBudgetTracker {
+  private escalationEvidence?: EscalationEvidenceReader;
   constructor(private readonly evidence: ExecutionEvidenceReader, private readonly configuration: FailureBudgetConfiguration) {}
 
+  useEscalations(evidence: EscalationEvidenceReader): void { this.escalationEvidence = evidence; }
+
   state(taskId: string): FailureBudgetState {
-    const failures = this.evidence.read(taskId).map(entry => entry.execution).filter(failedExecution);
+    const latestEscalation = this.escalationEvidence?.read(taskId).filter(entry => entry.to).at(-1)?.createdAt;
+    const failures = this.evidence.read(taskId).filter(entry => !latestEscalation || entry.recordedAt > latestEscalation).map(entry => entry.execution).filter(failedExecution);
     const counts = new Map<string, number>();
     for (const failure of failures) {
       const fingerprint = errorFingerprint(failure);
@@ -41,4 +45,3 @@ export function errorFingerprint(result: ExecutionResult): string {
 }
 
 function failedExecution(result: ExecutionResult): boolean { return result.status === 'failed' || result.status === 'spawn_error' || result.status === 'timed_out'; }
-

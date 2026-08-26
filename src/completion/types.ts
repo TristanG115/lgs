@@ -67,3 +67,6 @@ export interface ExecutionEvidenceReader {
   read(taskId: string): { recordedAt: string; execution: ExecutionResult }[];
 }
 
+export interface EscalationEvidenceReader {
+  read(taskId: string): { createdAt: string; to?: unknown }[];
+}

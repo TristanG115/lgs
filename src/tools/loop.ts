@@ -2,11 +2,17 @@ import type { ModelBackend } from '../model/backend.js';
 import { textMessage, type GenerationOptions, type LgsMessage } from '../model/types.js';
 import type { ToolExecutor, ToolRegistry } from './framework.js';
 import type { ToolIdentity, ToolResult } from './types.js';
-import { renderCompletionBlocked, type CompletionEvaluation, type CompletionGuard } from '../completion/index.js';
+import type { CompletionEvaluation, CompletionGuard } from '../completion/index.js';
+import { detectEscalationTriggers } from '../watchdog/triggers.js';
+import { renderContinuationInstruction } from '../watchdog/continuation.js';
+import type { EscalationController } from '../watchdog/escalation.js';
+import type { WatchdogEvaluation } from '../watchdog/types.js';
+import type { WatchdogService } from '../watchdog/service.js';
 
 export type ToolModelTurn = { text?: string; toolCalls?: unknown[] };
 export interface ToolLoopModel {
   next(messages: LgsMessage[], tools: ReturnType<ToolRegistry['specifications']>, signal: AbortSignal): Promise<ToolModelTurn>;
+  switchModel?(identity: { profileId: string; model: string }): void | Promise<void>;
 }
 export type ToolLoopOutcome = {
   status: 'complete' | 'cancelled' | 'limit';
@@ -26,6 +32,8 @@ export async function runToolLoop(options: {
   maxToolCalls?: number;
   completionGuard?: CompletionGuard;
   onCompletionState?: (state: CompletionEvaluation) => void | Promise<void>;
+  watchdog?: WatchdogService;
+  escalation?: EscalationController;
 }): Promise<ToolLoopOutcome> {
   const signal = options.signal ?? new AbortController().signal;
   const messages = [...options.messages];
@@ -35,21 +43,26 @@ export async function runToolLoop(options: {
   const maxToolCalls = Math.min(Math.max(options.maxToolCalls ?? 24, 1), 64);
   let lastCompletion: CompletionEvaluation | undefined;
   let lastBlockedText = '';
+  let lastWatchdog: WatchdogEvaluation | undefined;
   for (let turn = 1; turn <= maxTurns; turn++) {
     if (signal.aborted) return { status: 'cancelled', text: '', turns: turn - 1, toolResults: results };
     const response = await options.model.next(messages, specifications, signal);
     const calls = response.toolCalls;
     if (!calls?.length) {
+      let completion: CompletionEvaluation | undefined;
       if (options.completionGuard && options.identity?.taskId) {
-        const completion = await options.completionGuard.attempt(options.identity.taskId);
+        completion = await options.completionGuard.attempt(options.identity.taskId);
         lastCompletion = completion;
         await options.onCompletionState?.(completion);
-        if (completion.status === 'blocked') {
-          lastBlockedText = renderCompletionBlocked(completion);
-          if (response.text) messages.push(textMessage('assistant', response.text));
-          messages.push(textMessage('user', lastBlockedText));
-          continue;
-        }
+      }
+      if (options.watchdog && options.identity?.taskId) lastWatchdog = await options.watchdog.evaluate(options.identity.taskId, completion, signal);
+      const triggers = detectEscalationTriggers({ responseText: response.text, completion, watchdog: lastWatchdog });
+      const escalated = await applyEscalation(options.model, options.escalation, options.identity?.taskId, triggers[0]);
+      if (completion?.status === 'blocked' || lastWatchdog?.classification !== undefined && lastWatchdog.classification !== 'ON_TRACK' || triggers.some(item => item.trigger === 'explicit_uncertainty') || escalated) {
+        lastBlockedText = renderContinuationInstruction({ completion, watchdog: lastWatchdog });
+        if (response.text) messages.push(textMessage('assistant', response.text));
+        messages.push(textMessage('user', lastBlockedText));
+        continue;
       }
       return { status: 'complete', text: response.text ?? '', turns: turn, toolResults: results, completion: lastCompletion };
     }
@@ -65,8 +78,26 @@ export async function runToolLoop(options: {
       if (result.status === 'cancelled') return { status: 'cancelled', text: '', turns: turn, toolResults: results };
     }
     messages.push(textMessage('user', JSON.stringify({ type: 'tool_results', results: turnResults })));
+    if (options.watchdog && options.identity?.taskId && turn % options.watchdog.intervalTurns === 0) {
+      lastWatchdog = await options.watchdog.evaluate(options.identity.taskId, lastCompletion, signal);
+      const triggers = detectEscalationTriggers({ results: turnResults, responseText: response.text, watchdog: lastWatchdog });
+      await applyEscalation(options.model, options.escalation, options.identity.taskId, triggers[0]);
+      if (lastWatchdog.classification !== 'ON_TRACK') messages.push(textMessage('user', renderContinuationInstruction({ completion: lastCompletion, watchdog: lastWatchdog })));
+    } else {
+      const triggers = detectEscalationTriggers({ results: turnResults, responseText: response.text });
+      await applyEscalation(options.model, options.escalation, options.identity?.taskId, triggers[0]);
+    }
   }
   return { status: 'limit', text: lastBlockedText || 'Tool-turn limit reached.', turns: maxTurns, toolResults: results, completion: lastCompletion };
+}
+
+async function applyEscalation(model: ToolLoopModel, controller: EscalationController | undefined, taskId: string | undefined, candidate: { trigger: import('../watchdog/types.js').EscalationTrigger; reason: string } | undefined): Promise<boolean> {
+  if (!controller || !taskId || !candidate) return false;
+  const priorLevel = controller.currentLevel();
+  const record = controller.escalate(taskId, candidate.trigger, candidate.reason);
+  if (!record.to || controller.currentLevel() === priorLevel) return false;
+  await model.switchModel?.({ profileId: record.to.profileId, model: record.to.model });
+  return true;
 }
 
 export class BackendToolLoopModel implements ToolLoopModel {
@@ -107,6 +138,7 @@ function toolInstructions(tools: ReturnType<ToolRegistry['specifications']>): st
     'During development, run targetedTest with the changed paths when it is configured. Before claiming completion, run the configured full verification steps and rely on their execution evidence, never assumptions.',
     'LGS, not you, determines completion. Record concrete file-backed evidence with record_completion_evidence, inspect get_completion_state when useful, and address every COMPLETION_BLOCKED item before returning a final response.',
     'Use delegate_subtasks for bounded independent exploration, research, implementation planning, testing analysis, documentation, review, debugging, or verification. Consume only the compact worker reports returned by LGS.',
+    'Keep LGS task state current with update_task_state at the start of substantive work and after meaningful progress. Record acceptance criteria, plan, completed and remaining work, recent modifications, and explicit uncertainty; the read-only Watchdog and escalation controller use this persistent state automatically.',
     'When you have enough evidence, reply normally to the user. Do not wrap the final answer in the tool-call envelope.',
     'Available tools:', JSON.stringify(tools)
   ].join('\n');

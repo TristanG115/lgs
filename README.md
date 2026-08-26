@@ -1,6 +1,6 @@
 # LGS (Little Grad Student)
 
-LGS is a VS Code extension for reliable software-engineering agents. Phase 10 adds manager-and-worker orchestration on top of the evidence-backed Completion Guard, controlled software verification, provider-neutral model backends, deterministic Repository Intelligence, and guarded workspace tools.
+LGS is a VS Code extension for reliable software-engineering agents. Phase 11 adds a read-only Watchdog, automatic prodding, and persistent model escalation on top of manager-and-worker orchestration, the evidence-backed Completion Guard, controlled verification, provider-neutral model backends, and deterministic Repository Intelligence.
 
 ## Repository structure
 
@@ -12,6 +12,7 @@ LGS is a VS Code extension for reliable software-engineering agents. Phase 10 ad
 - `src/verification/` — generic project verification configuration, targeted selection, and model-facing verification tools.
 - `src/completion/` — completion gates, durable evidence, failure budgets, and completion-attempt enforcement.
 - `src/orchestration/` — logical agent sessions, role/model routing, inference scheduling, lifecycle control, and compact worker reports.
+- `src/watchdog/` — compact persistent task state, read-only progress review, continuation instructions, escalation routing, and escalation evidence.
 - `.lgs/index.json` — generated machine-readable repository index.
 - `.lgs/CODEBASE_MAP.md` — generated compact architecture guide.
 - `src/shared/messages.ts` — typed message contracts and runtime validation shared by both sides.
@@ -160,3 +161,32 @@ agents:
 ```
 
 Unmapped roles inherit the active Manager provider connection and model. This keeps configuration portable across Ollama, OpenAI-compatible, and Anthropic profiles and permits several logical workers to share a single loaded model.
+
+## Watchdog and automatic escalation
+
+Phase 11 stores compact task state in `.lgs/tasks/<task-id>/state.json`, independently of whichever model is active. The objective is initialized from the original user request. Agents update acceptance criteria, the current plan, completed and remaining work, recent modifications, and explicit uncertainty through `update_task_state`. Verification failures are read directly from command evidence rather than self-reported. This state survives model escalation and is available through `get_task_state`; runtime task files remain ignored by Git and Repository Intelligence.
+
+At the configured turn interval and every completion attempt, the lightweight Watchdog receives only the objective, acceptance criteria, plan, completed work, remaining work, recent modifications, and recent failures. It has no workspace tools and cannot edit code. It returns one structured classification: `ON_TRACK`, `OFF_TRACK`, `MISSING_REQUIREMENT`, `NEEDS_RESEARCH`, `RECONSIDER_APPROACH`, or `POTENTIAL_SCOPE_CREEP`, together with bounded evidence, an explanation, and a recommended next action. Findings are retained in `.lgs/tasks/<task-id>/watchdog.json`.
+
+When progress stalls or completion is premature, `runToolLoop` inserts an explicit `CONTINUE_WORKING` or `COMPLETION_BLOCKED` instruction assembled from remaining Completion Guard criteria, Watchdog findings, and failed verification. Models do not need to remember to prompt themselves. Repeated failures, retry exhaustion, Reviewer rejection, invalid tool requests, unresolved criteria, explicit uncertainty, and non-`ON_TRACK` Watchdog recommendations are detected automatically.
+
+Escalation routes are ordered `worker → manager → difficult → cloud`. Each configured transition can select a model on the current provider profile or an explicit provider-profile/model identity. `RoutedToolLoopModel` switches the inference target without replacing the task messages or LGS task state, and a restarted chat task resumes its latest recorded escalation target. A successful route transition begins a fresh bounded failure-budget segment, allowing the escalated model to verify a materially different fix without reopening an endless retry loop. Every attempted escalation—including one with no configured higher route—is recorded with its trigger, explanation, source and destination identity, task-state revision, and timestamp in `.lgs/tasks/<task-id>/escalations.json`.
+
+```yaml
+watchdog:
+  intervalTurns: 3
+  model:
+    profileId: local-ollama
+    model: qwen3.5:9b
+  escalation:
+    routes:
+      manager: gpt-oss:20b
+      difficult:
+        profileId: workstation-ollama
+        model: qwen3.5:27b
+      cloud:
+        profileId: production-anthropic
+        model: configured-cloud-model
+```
+
+The Watchdog model is optional. Without one, LGS uses deterministic checks for missing requirements, explicit uncertainty, stalled progress, and substantially repeated failures. No provider or model name is hardcoded.

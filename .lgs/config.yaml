@@ -64,3 +64,8 @@ agents:
   readOnlyConcurrency: 2
   maxWorkersPerBatch: 6
   maxContextMessages: 30
+
+watchdog:
+  intervalTurns: 3
+  escalation:
+    routes: {}
