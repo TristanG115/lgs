@@ -55,6 +55,7 @@ export type ToolIdentity = {
   agentId?: string;
   model?: string;
   taskMode?: 'planning' | 'implementation';
+  agentRole?: import('../orchestration/types.js').AgentRole;
 };
 
 export type ToolAuditRecord = ToolIdentity & {
@@ -67,6 +68,7 @@ export type ToolAuditRecord = ToolIdentity & {
   durationMs: number;
   result: Pick<ToolResultMetadata, 'resultCount' | 'bytes' | 'truncated' | 'source'>;
   errorCode?: ToolErrorCode;
+  integration?: string;
 };
 
 export interface ToolAuditSink {

@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "generatedAt": "2026-08-26T23:48:49.029Z",
+  "generatedAt": "2026-08-26T23:53:27.805Z",
   "root": "/home/tristan/Documents/Github/lgs",
   "directories": [
     ".vscode",
@@ -10,6 +10,7 @@
     "src/completion",
     "src/documentation",
     "src/execution",
+    "src/integrations",
     "src/intelligence",
     "src/knowledge",
     "src/model",
@@ -76,9 +77,9 @@
       "path": "README.md",
       "fileType": "md",
       "language": "Markdown/Text",
-      "size": 33294,
-      "mtimeMs": 1787788114160.5493,
-      "hash": "69fd59d48c28ddbffdecb5edf0b0a8ec7766ebf3",
+      "size": 34108,
+      "mtimeMs": 1787788383195.2004,
+      "hash": "61c3ca41da53d9f980ba909e05121d2f4ae9720e",
       "imports": [],
       "exports": [],
       "symbols": [],
@@ -918,6 +919,107 @@
       "likelyTest": false,
       "likelyDocumentation": false,
       "directory": "src",
+      "module": "src"
+    },
+    {
+      "path": "src/integrations/hub.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 2761,
+      "mtimeMs": 1787788326482.0632,
+      "hash": "4e945a0d472b377573584ad9ea2c6f09cce12be4",
+      "imports": [
+        "../orchestration/types.js",
+        "../tools/types.js",
+        "./types.js"
+      ],
+      "exports": [
+        "IntegrationHub"
+      ],
+      "symbols": [
+        "IntegrationHub",
+        "validateIntegration"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/integrations",
+      "module": "src"
+    },
+    {
+      "path": "src/integrations/index.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 82,
+      "mtimeMs": 1787788326556.0635,
+      "hash": "b02bb10c3c9c58b30ee49e7572a271a403dc69fd",
+      "imports": [
+        "./types.js",
+        "./hub.js",
+        "./tools.js"
+      ],
+      "exports": [],
+      "symbols": [],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/integrations",
+      "module": "src"
+    },
+    {
+      "path": "src/integrations/tools.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 1198,
+      "mtimeMs": 1787788395699.2307,
+      "hash": "b43834ee7ae1959bc6f24d1f4974b777408aca57",
+      "imports": [
+        "../tools/framework.js",
+        "../tools/types.js",
+        "./hub.js"
+      ],
+      "exports": [
+        "registerIntegrationTools"
+      ],
+      "symbols": [
+        "READ",
+        "registerIntegrationTools"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/integrations",
+      "module": "src"
+    },
+    {
+      "path": "src/integrations/types.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 1197,
+      "mtimeMs": 1787788326445.0632,
+      "hash": "01ce6f6adcc9e03108521c8286474044492efe48",
+      "imports": [
+        "../orchestration/types.js",
+        "../tools/types.js"
+      ],
+      "exports": [
+        "IntegrationOrigin",
+        "IntegrationStatus",
+        "IntegrationCapability",
+        "IntegrationPermission",
+        "IntegrationDescriptor",
+        "ExternalTool",
+        "IntegrationConfiguration"
+      ],
+      "symbols": [
+        "IntegrationOrigin",
+        "IntegrationStatus",
+        "IntegrationCapability",
+        "IntegrationPermission",
+        "IntegrationDescriptor",
+        "ExternalTool",
+        "IntegrationConfiguration"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/integrations",
       "module": "src"
     },
     {
@@ -2565,9 +2667,9 @@
       "path": "src/tools/index.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 676,
-      "mtimeMs": 1787788082359.4722,
-      "hash": "74cc68a4388b581d1d61e744cd5b59b8621bf6fb",
+      "size": 718,
+      "mtimeMs": 1787788347792.1147,
+      "hash": "ec5903eba2ad96b674713e94ce5fd8943a11cc0b",
       "imports": [
         "./types.js",
         "./schema.js",
@@ -2587,7 +2689,8 @@
         "../runtime/index.js",
         "../commit/index.js",
         "../knowledge/index.js",
-        "../planning/index.js"
+        "../planning/index.js",
+        "../integrations/index.js"
       ],
       "exports": [],
       "symbols": [],
@@ -2735,9 +2838,9 @@
       "path": "src/tools/types.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 3200,
-      "mtimeMs": 1787788082210.472,
-      "hash": "6fbe8b490af488d828f07780093f98af455fb633",
+      "size": 3285,
+      "mtimeMs": 1787788347754.1147,
+      "hash": "91ae037e554933520db6c2779bd3004644ac9f27",
       "imports": [],
       "exports": [
         "JsonSchema",
@@ -2782,9 +2885,9 @@
       "path": "src/tools/workspace.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 4307,
-      "mtimeMs": 1787788082391.4724,
-      "hash": "bfd27e09bc057cf1125e73b7c6a4df810141132b",
+      "size": 4514,
+      "mtimeMs": 1787788347830.115,
+      "hash": "8e2f68f9a3bd3dba21417516ae1e07b2411710cd",
       "imports": [
         "./git.js",
         "./repository.js",
@@ -2800,7 +2903,8 @@
         "../runtime/index.js",
         "../commit/index.js",
         "../knowledge/index.js",
-        "../planning/index.js"
+        "../planning/index.js",
+        "../integrations/index.js"
       ],
       "exports": [
         "createWorkspaceToolRegistry"
@@ -2817,9 +2921,9 @@
       "path": "src/verification/config.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 8940,
-      "mtimeMs": 1787779488388.6519,
-      "hash": "6b7d16e5cda4e67c39795cd80994baf3d75bafb1",
+      "size": 9969,
+      "mtimeMs": 1787788367092.1616,
+      "hash": "02ae916cf6ef8b4f0818621ec84987cfb535e215",
       "imports": [
         "node:fs",
         "node:path",
@@ -2834,7 +2938,8 @@
         "../research/config.js",
         "../research/types.js",
         "../runtime/config.js",
-        "../runtime/types.js"
+        "../runtime/types.js",
+        "../integrations/types.js"
       ],
       "exports": [
         "VERIFICATION_STEPS",
@@ -2851,6 +2956,7 @@
         "WorkspaceConfiguration",
         "LoadedWorkspaceConfiguration",
         "loadWorkspaceConfiguration",
+        "parseIntegrations",
         "parseVerification",
         "parseCommand",
         "parsePermissions",
@@ -3453,6 +3559,24 @@
       "module": "test"
     },
     {
+      "path": "test/integrations.test.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 1551,
+      "mtimeMs": 1787788383154.2004,
+      "hash": "f307e4d0b788b0ecfc72f5eedc37c11697dbaa84",
+      "imports": [
+        "vitest",
+        "../src/tools/index.js"
+      ],
+      "exports": [],
+      "symbols": [],
+      "likelyTest": true,
+      "likelyDocumentation": false,
+      "directory": "test",
+      "module": "test"
+    },
+    {
       "path": "test/knowledge.test.ts",
       "fileType": "ts",
       "language": "TypeScript",
@@ -3764,6 +3888,7 @@
         "src/completion",
         "src/documentation",
         "src/execution",
+        "src/integrations",
         "src/intelligence",
         "src/knowledge",
         "src/model",
@@ -3815,6 +3940,10 @@
         "src/execution/service.ts",
         "src/execution/types.ts",
         "src/extension.ts",
+        "src/integrations/hub.ts",
+        "src/integrations/index.ts",
+        "src/integrations/tools.ts",
+        "src/integrations/types.ts",
         "src/intelligence/indexer.ts",
         "src/knowledge/index.ts",
         "src/knowledge/memory.ts",
@@ -3896,6 +4025,7 @@
         "test/execution.test.ts",
         "test/git.test.ts",
         "test/indexer.test.ts",
+        "test/integrations.test.ts",
         "test/knowledge.test.ts",
         "test/messages.test.ts",
         "test/orchestration.test.ts",
@@ -3962,6 +4092,7 @@
           "src/completion",
           "src/documentation",
           "src/execution",
+          "src/integrations",
           "src/intelligence",
           "src/knowledge",
           "src/model",
@@ -4003,6 +4134,10 @@
           "src/execution/service.ts",
           "src/execution/types.ts",
           "src/extension.ts",
+          "src/integrations/hub.ts",
+          "src/integrations/index.ts",
+          "src/integrations/tools.ts",
+          "src/integrations/types.ts",
           "src/intelligence/indexer.ts",
           "src/knowledge/index.ts",
           "src/knowledge/memory.ts",
@@ -4097,6 +4232,7 @@
           "test/execution.test.ts",
           "test/git.test.ts",
           "test/indexer.test.ts",
+          "test/integrations.test.ts",
           "test/knowledge.test.ts",
           "test/messages.test.ts",
           "test/orchestration.test.ts",
@@ -4449,6 +4585,50 @@
     {
       "from": "src/extension.ts",
       "to": "src/tools/index.ts"
+    },
+    {
+      "from": "src/integrations/hub.ts",
+      "to": "src/orchestration/types.ts"
+    },
+    {
+      "from": "src/integrations/hub.ts",
+      "to": "src/tools/types.ts"
+    },
+    {
+      "from": "src/integrations/hub.ts",
+      "to": "src/integrations/types.ts"
+    },
+    {
+      "from": "src/integrations/index.ts",
+      "to": "src/integrations/types.ts"
+    },
+    {
+      "from": "src/integrations/index.ts",
+      "to": "src/integrations/hub.ts"
+    },
+    {
+      "from": "src/integrations/index.ts",
+      "to": "src/integrations/tools.ts"
+    },
+    {
+      "from": "src/integrations/tools.ts",
+      "to": "src/tools/framework.ts"
+    },
+    {
+      "from": "src/integrations/tools.ts",
+      "to": "src/tools/types.ts"
+    },
+    {
+      "from": "src/integrations/tools.ts",
+      "to": "src/integrations/hub.ts"
+    },
+    {
+      "from": "src/integrations/types.ts",
+      "to": "src/orchestration/types.ts"
+    },
+    {
+      "from": "src/integrations/types.ts",
+      "to": "src/tools/types.ts"
     },
     {
       "from": "src/knowledge/index.ts",
@@ -5095,6 +5275,10 @@
       "to": "src/planning/index.ts"
     },
     {
+      "from": "src/tools/index.ts",
+      "to": "src/integrations/index.ts"
+    },
+    {
       "from": "src/tools/loop.ts",
       "to": "src/model/backend.ts"
     },
@@ -5211,6 +5395,10 @@
       "to": "src/planning/index.ts"
     },
     {
+      "from": "src/tools/workspace.ts",
+      "to": "src/integrations/index.ts"
+    },
+    {
       "from": "src/verification/config.ts",
       "to": "src/execution/types.ts"
     },
@@ -5253,6 +5441,10 @@
     {
       "from": "src/verification/config.ts",
       "to": "src/runtime/types.ts"
+    },
+    {
+      "from": "src/verification/config.ts",
+      "to": "src/integrations/types.ts"
     },
     {
       "from": "src/verification/index.ts",
@@ -5491,6 +5683,10 @@
       "to": "src/intelligence/indexer.ts"
     },
     {
+      "from": "test/integrations.test.ts",
+      "to": "src/tools/index.ts"
+    },
+    {
       "from": "test/knowledge.test.ts",
       "to": "src/tools/index.ts"
     },
@@ -5609,6 +5805,7 @@
       "src/commit/tools.ts",
       "src/completion/tools.ts",
       "src/documentation/tools.ts",
+      "src/integrations/tools.ts",
       "src/knowledge/tools.ts",
       "src/orchestration/tools.ts",
       "src/planning/tools.ts",
@@ -5628,6 +5825,9 @@
       "src/commit/tools.ts",
       "src/completion/tools.ts",
       "src/documentation/tools.ts",
+      "src/integrations/hub.ts",
+      "src/integrations/tools.ts",
+      "src/integrations/types.ts",
       "src/knowledge/tools.ts",
       "src/orchestration/tools.ts",
       "src/planning/tools.ts",
@@ -5865,6 +6065,7 @@
       "test/documentation.test.ts",
       "test/execution.test.ts",
       "test/git.test.ts",
+      "test/integrations.test.ts",
       "test/knowledge.test.ts",
       "test/planning.test.ts",
       "test/research.test.ts",
@@ -5872,6 +6073,33 @@
       "test/runtime.test.ts",
       "test/tools.test.ts",
       "test/watchdog.test.ts"
+    ],
+    "src/orchestration/types.ts": [
+      "src/integrations/hub.ts",
+      "src/integrations/types.ts",
+      "src/orchestration/config.ts",
+      "src/orchestration/index.ts",
+      "src/orchestration/inference.ts",
+      "src/orchestration/orchestrator.ts",
+      "src/orchestration/report.ts",
+      "src/orchestration/scheduler.ts",
+      "src/orchestration/tools.ts",
+      "src/verification/config.ts",
+      "src/watchdog/config.ts",
+      "src/watchdog/escalation.ts",
+      "src/watchdog/types.ts"
+    ],
+    "src/integrations/types.ts": [
+      "src/integrations/hub.ts",
+      "src/integrations/index.ts",
+      "src/verification/config.ts"
+    ],
+    "src/integrations/hub.ts": [
+      "src/integrations/index.ts",
+      "src/integrations/tools.ts"
+    ],
+    "src/integrations/tools.ts": [
+      "src/integrations/index.ts"
     ],
     "src/knowledge/types.ts": [
       "src/knowledge/index.ts",
@@ -5898,19 +6126,6 @@
     ],
     "src/model/openai.ts": [
       "src/model/profiles.ts"
-    ],
-    "src/orchestration/types.ts": [
-      "src/orchestration/config.ts",
-      "src/orchestration/index.ts",
-      "src/orchestration/inference.ts",
-      "src/orchestration/orchestrator.ts",
-      "src/orchestration/report.ts",
-      "src/orchestration/scheduler.ts",
-      "src/orchestration/tools.ts",
-      "src/verification/config.ts",
-      "src/watchdog/config.ts",
-      "src/watchdog/escalation.ts",
-      "src/watchdog/types.ts"
     ],
     "src/orchestration/config.ts": [
       "src/orchestration/index.ts",
@@ -6098,6 +6313,10 @@
       "src/tools/index.ts",
       "src/tools/workspace.ts"
     ],
+    "src/integrations/index.ts": [
+      "src/tools/index.ts",
+      "src/tools/workspace.ts"
+    ],
     "src/watchdog/triggers.ts": [
       "src/tools/loop.ts",
       "src/watchdog/index.ts"
@@ -6166,7 +6385,7 @@
   "freshness": {
     "index": "current",
     "codebaseMap": "current",
-    "checkedAt": "2026-08-26T23:48:49.029Z",
+    "checkedAt": "2026-08-26T23:53:27.806Z",
     "staleEntries": []
   },
   "incremental": {
@@ -6206,6 +6425,10 @@
       "src/execution/service.ts",
       "src/execution/types.ts",
       "src/extension.ts",
+      "src/integrations/hub.ts",
+      "src/integrations/index.ts",
+      "src/integrations/tools.ts",
+      "src/integrations/types.ts",
       "src/intelligence/indexer.ts",
       "src/knowledge/index.ts",
       "src/knowledge/memory.ts",
@@ -6287,6 +6510,7 @@
       "test/execution.test.ts",
       "test/git.test.ts",
       "test/indexer.test.ts",
+      "test/integrations.test.ts",
       "test/knowledge.test.ts",
       "test/messages.test.ts",
       "test/orchestration.test.ts",

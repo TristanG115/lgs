@@ -12,6 +12,7 @@ import { parseResearchConfiguration } from '../research/config.js';
 import type { ResearchConfiguration } from '../research/types.js';
 import { parseRuntimeConfiguration } from '../runtime/config.js';
 import type { RuntimeConfiguration } from '../runtime/types.js';
+import type { IntegrationConfiguration } from '../integrations/types.js';
 
 export const VERIFICATION_STEPS = ['install', 'typecheck', 'lint', 'targetedTest', 'test', 'build', 'start'] as const;
 export type VerificationStep = typeof VERIFICATION_STEPS[number];
@@ -25,6 +26,7 @@ export type WorkspaceConfiguration = {
   watchdog?: Record<string, unknown>;
   research?: Record<string, unknown>;
   runtime?: Record<string, unknown>;
+  integrations?: Record<string, unknown>;
 };
 export type LoadedWorkspaceConfiguration = {
   settings: Record<string, unknown>;
@@ -35,11 +37,12 @@ export type LoadedWorkspaceConfiguration = {
   watchdog: WatchdogConfiguration;
   research: ResearchConfiguration;
   runtime: RuntimeConfiguration;
+  integrations?: IntegrationConfiguration;
   errors: string[];
 };
 
 export function loadWorkspaceConfiguration(root: string): LoadedWorkspaceConfiguration {
-  const empty: LoadedWorkspaceConfiguration = { settings: {}, verification: {}, permissions: {}, completion: parseCompletionConfiguration(), agents: parseOrchestrationConfiguration(), watchdog: parseWatchdogConfiguration(), research: parseResearchConfiguration(), runtime: parseRuntimeConfiguration(), errors: [] };
+  const empty: LoadedWorkspaceConfiguration = { settings: {}, verification: {}, permissions: {}, completion: parseCompletionConfiguration(), agents: parseOrchestrationConfiguration(), watchdog: parseWatchdogConfiguration(), research: parseResearchConfiguration(), runtime: parseRuntimeConfiguration(), integrations: { required: [], recommended: [], optional: [], mcp: {} }, errors: [] };
   const file = path.join(root, '.lgs', 'config.yaml');
   if (!fs.existsSync(file)) return empty;
   try {
@@ -58,12 +61,15 @@ export function loadWorkspaceConfiguration(root: string): LoadedWorkspaceConfigu
     const watchdog = parseWatchdogConfiguration(rawWatchdog, empty.errors);
     const research = parseResearchConfiguration(rawResearch, empty.errors);
     const runtime = parseRuntimeConfiguration(rawRuntime, empty.errors);
-    return { settings, verification, permissions, completion, agents, watchdog, research, runtime, errors: empty.errors };
+    const integrations = parseIntegrations(parsed.integrations, empty.errors);
+    return { settings, verification, permissions, completion, agents, watchdog, research, runtime, integrations, errors: empty.errors };
   } catch (error) {
     empty.errors.push(error instanceof Error ? error.message : 'Malformed workspace configuration.');
     return empty;
   }
 }
+
+function parseIntegrations(value: unknown, errors: string[]): IntegrationConfiguration { const empty = { required: [], recommended: [], optional: [], mcp: {} }; if (value === undefined) return empty; if (!record(value)) { errors.push('integrations must be a YAML object.'); return empty; } const names = (key: 'required'|'recommended'|'optional') => Array.isArray(value[key]) && value[key].every(item => typeof item === 'string') ? [...new Set(value[key] as string[])].slice(0, 100) : value[key] === undefined ? [] : (errors.push(`integrations.${key} must be an array of strings.`), []); return { ...empty, required: names('required'), recommended: names('recommended'), optional: names('optional') }; }
 
 function parseVerification(value: unknown, errors: string[]): VerificationConfiguration {
   if (value === undefined) return {};
