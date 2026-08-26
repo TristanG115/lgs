@@ -6,12 +6,14 @@ import type { RawExecutionLogStore } from '../execution/index.js';
 import { registerCompletionTools, type CompletionGuard, type FileCompletionEvidenceStore } from '../completion/index.js';
 import { registerOrchestrationTools, type Orchestrator } from '../orchestration/index.js';
 import { registerWatchdogTools, type FileTaskStateStore, type WatchdogService } from '../watchdog/index.js';
+import { registerResearchTools, type FileResearchStore, type ResearchService } from '../research/index.js';
 
-export function createWorkspaceToolRegistry(options: { gitBaseline?: GitBaseline; gitRunner?: GitCommandRunner; verificationRunner?: VerificationRunner; executionLogs?: RawExecutionLogStore; completionGuard?: CompletionGuard; completionEvidence?: FileCompletionEvidenceStore; orchestrator?: Orchestrator; managerAgentId?: string; taskState?: FileTaskStateStore; watchdog?: WatchdogService } = {}): ToolRegistry {
+export function createWorkspaceToolRegistry(options: { gitBaseline?: GitBaseline; gitRunner?: GitCommandRunner; verificationRunner?: VerificationRunner; executionLogs?: RawExecutionLogStore; completionGuard?: CompletionGuard; completionEvidence?: FileCompletionEvidenceStore; orchestrator?: Orchestrator; managerAgentId?: string; taskState?: FileTaskStateStore; watchdog?: WatchdogService; research?: ResearchService; researchStore?: FileResearchStore } = {}): ToolRegistry {
   const registry = registerGitTools(createRepositoryToolRegistry(), { baseline: options.gitBaseline, runner: options.gitRunner });
   if (options.verificationRunner && options.executionLogs) registerVerificationTools(registry, options.verificationRunner, options.executionLogs);
   if (options.completionGuard && options.completionEvidence) registerCompletionTools(registry, options.completionGuard, options.completionEvidence);
   if (options.orchestrator && options.managerAgentId) registerOrchestrationTools(registry, options.orchestrator, options.managerAgentId);
   if (options.taskState && options.watchdog) registerWatchdogTools(registry, options.taskState, options.watchdog);
+  if (options.research && options.researchStore) registerResearchTools(registry, options.research, options.researchStore);
   return registry;
 }

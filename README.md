@@ -1,6 +1,6 @@
 # LGS (Little Grad Student)
 
-LGS is a VS Code extension for reliable software-engineering agents. Phase 11 adds a read-only Watchdog, automatic prodding, and persistent model escalation on top of manager-and-worker orchestration, the evidence-backed Completion Guard, controlled verification, provider-neutral model backends, and deterministic Repository Intelligence.
+LGS is a VS Code extension for reliable software-engineering agents. Phase 12 adds version-aware, research-first external knowledge on top of the read-only Watchdog, manager-and-worker orchestration, the evidence-backed Completion Guard, controlled verification, provider-neutral model backends, and deterministic Repository Intelligence.
 
 ## Repository structure
 
@@ -13,6 +13,7 @@ LGS is a VS Code extension for reliable software-engineering agents. Phase 11 ad
 - `src/completion/` — completion gates, durable evidence, failure budgets, and completion-attempt enforcement.
 - `src/orchestration/` — logical agent sessions, role/model routing, inference scheduling, lifecycle control, and compact worker reports.
 - `src/watchdog/` — compact persistent task state, read-only progress review, continuation instructions, escalation routing, and escalation evidence.
+- `src/research/` — provider-neutral research tools, manifest version discovery, concise provenance, and task-local deduplication.
 - `.lgs/index.json` — generated machine-readable repository index.
 - `.lgs/CODEBASE_MAP.md` — generated compact architecture guide.
 - `src/shared/messages.ts` — typed message contracts and runtime validation shared by both sides.
@@ -190,3 +191,29 @@ watchdog:
 ```
 
 The Watchdog model is optional. Without one, LGS uses deterministic checks for missing requirements, explicit uncertainty, stalled progress, and substantially repeated failures. No provider or model name is hardcoded.
+
+## Research-first external knowledge
+
+Phase 12 exposes provider-neutral `web_search`, `web_fetch`, `documentation_search`, and `repository_search` tools. Agents are explicitly instructed to research rather than guess when external or dependency APIs are uncertain, versions matter, an error is unfamiliar, behavior may have changed since model training, the model has meaningful uncertainty, or the Manager or Watchdog requests verification. `get_research_findings` lets an agent reuse evidence already collected for the current task without loading worker transcripts or full webpages.
+
+Before every technical research request, LGS reads local manifests and lockfiles. It recognizes npm package manifests and locks, pnpm locks, and pinned Python requirements, then enriches the query with the exact resolved dependency version when available—for example, `yaml 2.9.1 parse API behavior`. An explicit `dependency` or `relevantVersion` tool argument can disambiguate packages and other versioned APIs.
+
+Results are normalized into concise findings and sorted by authority: official documentation, official source, official issues or maintainer discussion, authoritative technical references, high-quality community sources, then forums. Each retained finding records its source URL, title, retrieval time, relevant version, concise evidence, task, subtask, requesting agent, dependency manifests, and normalized query. LGS stores this provenance in `.lgs/tasks/<task-id>/research.json`; complete webpages are never persisted there or returned to model context. Repeated task queries reuse fresh findings, while a changed dependency version or expired freshness window forces new research.
+
+`web_fetch` accepts public HTTP(S) pages, rejects embedded credentials and local or private-network targets, follows only revalidated public redirects, accepts text-like content, and bounds downloaded bytes before extracting relevant sentences. `repository_search` uses a configured provider when present and otherwise uses GitHub code search. Search services remain configurable rather than hardcoded:
+
+```yaml
+research:
+  freshnessDays: 14
+  maxResults: 6
+  maxFetchBytes: 512000
+  endpoints:
+    webSearch: https://research-gateway.example/search
+    documentationSearch: https://research-gateway.example/docs
+    repositorySearch: https://research-gateway.example/source
+  github:
+    enabled: true
+    apiBaseUrl: https://api.github.com
+```
+
+An endpoint may contain a `{query}` placeholder; otherwise LGS adds a `q` query parameter. Endpoint responses may be a JSON array or an object with a `results` or `items` array. Each item can provide `url` or `link`, `title`, a concise `snippet`, an optional `authority`, and an optional `relevantVersion`. Authentication and vendor-specific protocols belong behind the configured gateway, keeping the LGS research contract provider-neutral and preventing credentials from entering task evidence.

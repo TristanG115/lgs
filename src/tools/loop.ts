@@ -139,6 +139,7 @@ function toolInstructions(tools: ReturnType<ToolRegistry['specifications']>): st
     'LGS, not you, determines completion. Record concrete file-backed evidence with record_completion_evidence, inspect get_completion_state when useful, and address every COMPLETION_BLOCKED item before returning a final response.',
     'Use delegate_subtasks for bounded independent exploration, research, implementation planning, testing analysis, documentation, review, debugging, or verification. Consume only the compact worker reports returned by LGS.',
     'Keep LGS task state current with update_task_state at the start of substantive work and after meaningful progress. Record acceptance criteria, plan, completed and remaining work, recent modifications, and explicit uncertainty; the read-only Watchdog and escalation controller use this persistent state automatically.',
+    'Research before guessing whenever an external or dependency API is uncertain, versions matter, an error is unfamiliar, behavior may have changed since training, you have meaningful uncertainty, or the Manager or Watchdog requests verification. Err toward verification. Use documentation_search, repository_search, web_search, and web_fetch; LGS reads manifests, includes resolved dependency versions, prioritizes official sources, and reuses fresh task findings automatically.',
     'When you have enough evidence, reply normally to the user. Do not wrap the final answer in the tool-call envelope.',
     'Available tools:', JSON.stringify(tools)
   ].join('\n');

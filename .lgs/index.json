@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "generatedAt": "2026-08-26T15:31:16.385Z",
+  "generatedAt": "2026-08-26T15:43:51.053Z",
   "root": "/home/tristan/Documents/Github/lgs",
   "directories": [
     ".vscode",
@@ -11,6 +11,7 @@
     "src/intelligence",
     "src/model",
     "src/orchestration",
+    "src/research",
     "src/settings",
     "src/shared",
     "src/tools",
@@ -69,9 +70,9 @@
       "path": "README.md",
       "fileType": "md",
       "language": "Markdown/Text",
-      "size": 20561,
-      "mtimeMs": 1787758254163.6462,
-      "hash": "4cb5933f2f0deb1f1bb94ead001e3c48134692c2",
+      "size": 23629,
+      "mtimeMs": 1787758876917.8606,
+      "hash": "3cf118d6a08af5d3aca1a336f3b8edc268cefa85",
       "imports": [],
       "exports": [],
       "symbols": [],
@@ -580,9 +581,9 @@
       "path": "src/extension.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 14440,
-      "mtimeMs": 1787758226376.6406,
-      "hash": "d39ac896da2046e6c521cd8e14ef8524aefafa89",
+      "size": 14681,
+      "mtimeMs": 1787758719881.7769,
+      "hash": "ea4a3300c3f453753a0ea7205212bbdd0a919cc8",
       "imports": [
         "vscode",
         "./shared/messages.js",
@@ -1128,12 +1129,249 @@
       "module": "src"
     },
     {
+      "path": "src/research/config.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 3033,
+      "mtimeMs": 1787758876879.8606,
+      "hash": "26f3c7be2a813c0ef4ba3ef07d669289f6bcda3a",
+      "imports": [
+        "./types.js"
+      ],
+      "exports": [
+        "parseResearchConfiguration"
+      ],
+      "symbols": [
+        "parseResearchConfiguration",
+        "integer",
+        "validEndpoint",
+        "record"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/research",
+      "module": "src"
+    },
+    {
+      "path": "src/research/dependencies.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 4866,
+      "mtimeMs": 1787758476925.6882,
+      "hash": "172d17eb60662fddf057810d43e1959723fcc871",
+      "imports": [
+        "node:fs",
+        "node:path",
+        "yaml",
+        "../intelligence/indexer.js",
+        "./types.js"
+      ],
+      "exports": [
+        "DependencyCatalog"
+      ],
+      "symbols": [
+        "DependencyCatalog",
+        "merge",
+        "dependencyMentioned",
+        "record"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/research",
+      "module": "src"
+    },
+    {
+      "path": "src/research/index.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 209,
+      "mtimeMs": 1787758609976.7175,
+      "hash": "33f75aaa688e176eb4387218122103a5b7d1b7c8",
+      "imports": [
+        "./types.js",
+        "./config.js",
+        "./dependencies.js",
+        "./store.js",
+        "./provider.js",
+        "./service.js",
+        "./tools.js"
+      ],
+      "exports": [],
+      "symbols": [],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/research",
+      "module": "src"
+    },
+    {
+      "path": "src/research/provider.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 9019,
+      "mtimeMs": 1787758902443.8735,
+      "hash": "3aba3bdab385d0073af2047a2ba8363473481ba6",
+      "imports": [
+        "./types.js"
+      ],
+      "exports": [
+        "ResearchProviderUnavailableError",
+        "HttpResearchProvider"
+      ],
+      "symbols": [
+        "FetchLike",
+        "ResearchProviderUnavailableError",
+        "HttpResearchProvider",
+        "normalizeSearchItem",
+        "arrayResults",
+        "appendQuery",
+        "authorityFor",
+        "validatePublicUrl",
+        "boundedBody",
+        "titleFromContent",
+        "string",
+        "record"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/research",
+      "module": "src"
+    },
+    {
+      "path": "src/research/service.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 6713,
+      "mtimeMs": 1787759011641.929,
+      "hash": "b6264b9fa63ec1a76123347021525c1c9a419266",
+      "imports": [
+        "node:crypto",
+        "./dependencies.js",
+        "./store.js",
+        "./types.js",
+        "./provider.js"
+      ],
+      "exports": [
+        "ResearchService"
+      ],
+      "symbols": [
+        "PRIORITY",
+        "ResearchService",
+        "required",
+        "enrichQuery",
+        "conciseFinding",
+        "stripMarkup",
+        "normalize",
+        "hash",
+        "normalizeUrl",
+        "sortFindings"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/research",
+      "module": "src"
+    },
+    {
+      "path": "src/research/store.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 2069,
+      "mtimeMs": 1787759011677.929,
+      "hash": "0fd05ad21aad398cd64221837bbc8c4f7c7f51fd",
+      "imports": [
+        "node:fs",
+        "node:path",
+        "./types.js"
+      ],
+      "exports": [
+        "FileResearchStore"
+      ],
+      "symbols": [
+        "FileResearchStore",
+        "validTaskId",
+        "validFinding"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/research",
+      "module": "src"
+    },
+    {
+      "path": "src/research/tools.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 5588,
+      "mtimeMs": 1787759011713.929,
+      "hash": "c2ab201d200fa5c8f7dc83355dd11b1967c3438d",
+      "imports": [
+        "../tools/types.js",
+        "../tools/framework.js",
+        "./provider.js",
+        "./store.js",
+        "./service.js",
+        "./types.js"
+      ],
+      "exports": [
+        "registerResearchTools"
+      ],
+      "symbols": [
+        "NETWORK_PERMISSION",
+        "READ_PERMISSION",
+        "COMMON",
+        "registerResearchTools",
+        "registerSearch",
+        "executeResearch"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/research",
+      "module": "src"
+    },
+    {
+      "path": "src/research/types.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 2242,
+      "mtimeMs": 1787758563909.7039,
+      "hash": "47fcddebf754010d5982554cef8f5b2ff5fb2044",
+      "imports": [],
+      "exports": [
+        "RESEARCH_OPERATIONS",
+        "ResearchOperation",
+        "SOURCE_AUTHORITIES",
+        "SourceAuthority",
+        "DependencyVersion",
+        "ResearchSource",
+        "ResearchFinding",
+        "ResearchRequest",
+        "ResearchResult",
+        "ResearchProvider",
+        "ResearchConfiguration"
+      ],
+      "symbols": [
+        "RESEARCH_OPERATIONS",
+        "ResearchOperation",
+        "SOURCE_AUTHORITIES",
+        "SourceAuthority",
+        "DependencyVersion",
+        "ResearchSource",
+        "ResearchFinding",
+        "ResearchRequest",
+        "ResearchResult",
+        "ResearchProvider",
+        "ResearchConfiguration"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/research",
+      "module": "src"
+    },
+    {
       "path": "src/settings/configuration.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 3060,
-      "mtimeMs": 1787757822596.5764,
-      "hash": "8fe5896b4fa377721de4bfe674ed698f9ab93d54",
+      "size": 3164,
+      "mtimeMs": 1787758653050.7407,
+      "hash": "9a41ee104c0174f5d6c16b0f622f31b791e0171c",
       "imports": [
         "node:fs",
         "node:path",
@@ -1144,7 +1382,8 @@
         "../verification/config.js",
         "../completion/config.js",
         "../orchestration/config.js",
-        "../watchdog/config.js"
+        "../watchdog/config.js",
+        "../research/config.js"
       ],
       "exports": [
         "SettingsManager"
@@ -1415,9 +1654,9 @@
       "path": "src/tools/index.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 409,
-      "mtimeMs": 1787757822634.5764,
-      "hash": "5396dade36e84359988f3b800ef6e11b3eff1149",
+      "size": 447,
+      "mtimeMs": 1787758610053.7175,
+      "hash": "6d8208d310a7c07a972e4a50b33e9698ab98681e",
       "imports": [
         "./types.js",
         "./schema.js",
@@ -1430,7 +1669,8 @@
         "../verification/index.js",
         "../completion/index.js",
         "../orchestration/index.js",
-        "../watchdog/index.js"
+        "../watchdog/index.js",
+        "../research/index.js"
       ],
       "exports": [],
       "symbols": [],
@@ -1443,9 +1683,9 @@
       "path": "src/tools/loop.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 9582,
-      "mtimeMs": 1787758060305.6077,
-      "hash": "bafc458d066e9e07f0abd5ca291430b0dd1c5503",
+      "size": 10066,
+      "mtimeMs": 1787758653124.7407,
+      "hash": "3b5535ad97b4a292f35dc7db05f23e6df0c0a8e5",
       "imports": [
         "../model/backend.js",
         "../model/types.js",
@@ -1578,9 +1818,9 @@
       "path": "src/tools/types.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 3114,
-      "mtimeMs": 1787737396759.4019,
-      "hash": "1acfd5782a4983df129042c890ffdf3f58442b2b",
+      "size": 3127,
+      "mtimeMs": 1787758610013.7175,
+      "hash": "043d4c3177fbab172a1ace9942d05a2d9f80e7f5",
       "imports": [],
       "exports": [
         "JsonSchema",
@@ -1625,9 +1865,9 @@
       "path": "src/tools/workspace.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 1801,
-      "mtimeMs": 1787757822670.5764,
-      "hash": "fe3b35842992cdb92749392d9e7b1666c8b05eb4",
+      "size": 2095,
+      "mtimeMs": 1787758610086.7175,
+      "hash": "54c38a9183777bf007114f74564812685ccee451",
       "imports": [
         "./git.js",
         "./repository.js",
@@ -1636,7 +1876,8 @@
         "../execution/index.js",
         "../completion/index.js",
         "../orchestration/index.js",
-        "../watchdog/index.js"
+        "../watchdog/index.js",
+        "../research/index.js"
       ],
       "exports": [
         "createWorkspaceToolRegistry"
@@ -1653,9 +1894,9 @@
       "path": "src/verification/config.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 8141,
-      "mtimeMs": 1787757822559.5764,
-      "hash": "1e26fb8beac5f139aa4e16049b470fd14458c7b0",
+      "size": 8580,
+      "mtimeMs": 1787758653011.7407,
+      "hash": "2ff160691b0d20144c8418083b36944222fe1572",
       "imports": [
         "node:fs",
         "node:path",
@@ -1666,7 +1907,9 @@
         "../orchestration/config.js",
         "../orchestration/types.js",
         "../watchdog/config.js",
-        "../watchdog/types.js"
+        "../watchdog/types.js",
+        "../research/config.js",
+        "../research/types.js"
       ],
       "exports": [
         "VERIFICATION_STEPS",
@@ -2275,6 +2518,31 @@
       "module": "test"
     },
     {
+      "path": "test/research.test.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 10192,
+      "mtimeMs": 1787759011749.929,
+      "hash": "d89ffb5a1b6d97fd0995015d70ad3fd5f97190ae",
+      "imports": [
+        "vitest",
+        "node:fs",
+        "node:os",
+        "node:path",
+        "../src/tools/index.js"
+      ],
+      "exports": [],
+      "symbols": [
+        "fixture",
+        "cleanup",
+        "FakeProvider"
+      ],
+      "likelyTest": true,
+      "likelyDocumentation": false,
+      "directory": "test",
+      "module": "test"
+    },
+    {
       "path": "test/settings.test.ts",
       "fileType": "ts",
       "language": "TypeScript",
@@ -2418,6 +2686,7 @@
         "src/intelligence",
         "src/model",
         "src/orchestration",
+        "src/research",
         "src/settings",
         "src/shared",
         "src/tools",
@@ -2467,6 +2736,14 @@
         "src/orchestration/scheduler.ts",
         "src/orchestration/tools.ts",
         "src/orchestration/types.ts",
+        "src/research/config.ts",
+        "src/research/dependencies.ts",
+        "src/research/index.ts",
+        "src/research/provider.ts",
+        "src/research/service.ts",
+        "src/research/store.ts",
+        "src/research/tools.ts",
+        "src/research/types.ts",
         "src/settings/configuration.ts",
         "src/settings/defaults.ts",
         "src/settings/panel.ts",
@@ -2503,6 +2780,7 @@
         "test/indexer.test.ts",
         "test/messages.test.ts",
         "test/orchestration.test.ts",
+        "test/research.test.ts",
         "test/settings.test.ts",
         "test/stream.test.ts",
         "test/tools.test.ts",
@@ -2563,6 +2841,7 @@
           "src/intelligence",
           "src/model",
           "src/orchestration",
+          "src/research",
           "src/settings",
           "src/shared",
           "src/tools",
@@ -2602,6 +2881,14 @@
           "src/orchestration/scheduler.ts",
           "src/orchestration/tools.ts",
           "src/orchestration/types.ts",
+          "src/research/config.ts",
+          "src/research/dependencies.ts",
+          "src/research/index.ts",
+          "src/research/provider.ts",
+          "src/research/service.ts",
+          "src/research/store.ts",
+          "src/research/tools.ts",
+          "src/research/types.ts",
           "src/settings/configuration.ts",
           "src/settings/defaults.ts",
           "src/settings/panel.ts",
@@ -2651,6 +2938,7 @@
           "test/indexer.test.ts",
           "test/messages.test.ts",
           "test/orchestration.test.ts",
+          "test/research.test.ts",
           "test/settings.test.ts",
           "test/stream.test.ts",
           "test/tools.test.ts",
@@ -2990,6 +3278,94 @@
       "to": "src/model/types.ts"
     },
     {
+      "from": "src/research/config.ts",
+      "to": "src/research/types.ts"
+    },
+    {
+      "from": "src/research/dependencies.ts",
+      "to": "src/intelligence/indexer.ts"
+    },
+    {
+      "from": "src/research/dependencies.ts",
+      "to": "src/research/types.ts"
+    },
+    {
+      "from": "src/research/index.ts",
+      "to": "src/research/types.ts"
+    },
+    {
+      "from": "src/research/index.ts",
+      "to": "src/research/config.ts"
+    },
+    {
+      "from": "src/research/index.ts",
+      "to": "src/research/dependencies.ts"
+    },
+    {
+      "from": "src/research/index.ts",
+      "to": "src/research/store.ts"
+    },
+    {
+      "from": "src/research/index.ts",
+      "to": "src/research/provider.ts"
+    },
+    {
+      "from": "src/research/index.ts",
+      "to": "src/research/service.ts"
+    },
+    {
+      "from": "src/research/index.ts",
+      "to": "src/research/tools.ts"
+    },
+    {
+      "from": "src/research/provider.ts",
+      "to": "src/research/types.ts"
+    },
+    {
+      "from": "src/research/service.ts",
+      "to": "src/research/dependencies.ts"
+    },
+    {
+      "from": "src/research/service.ts",
+      "to": "src/research/store.ts"
+    },
+    {
+      "from": "src/research/service.ts",
+      "to": "src/research/types.ts"
+    },
+    {
+      "from": "src/research/service.ts",
+      "to": "src/research/provider.ts"
+    },
+    {
+      "from": "src/research/store.ts",
+      "to": "src/research/types.ts"
+    },
+    {
+      "from": "src/research/tools.ts",
+      "to": "src/tools/types.ts"
+    },
+    {
+      "from": "src/research/tools.ts",
+      "to": "src/tools/framework.ts"
+    },
+    {
+      "from": "src/research/tools.ts",
+      "to": "src/research/provider.ts"
+    },
+    {
+      "from": "src/research/tools.ts",
+      "to": "src/research/store.ts"
+    },
+    {
+      "from": "src/research/tools.ts",
+      "to": "src/research/service.ts"
+    },
+    {
+      "from": "src/research/tools.ts",
+      "to": "src/research/types.ts"
+    },
+    {
       "from": "src/settings/configuration.ts",
       "to": "src/settings/defaults.ts"
     },
@@ -3012,6 +3388,10 @@
     {
       "from": "src/settings/configuration.ts",
       "to": "src/watchdog/config.ts"
+    },
+    {
+      "from": "src/settings/configuration.ts",
+      "to": "src/research/config.ts"
     },
     {
       "from": "src/settings/defaults.ts",
@@ -3092,6 +3472,10 @@
     {
       "from": "src/tools/index.ts",
       "to": "src/watchdog/index.ts"
+    },
+    {
+      "from": "src/tools/index.ts",
+      "to": "src/research/index.ts"
     },
     {
       "from": "src/tools/loop.ts",
@@ -3182,6 +3566,10 @@
       "to": "src/watchdog/index.ts"
     },
     {
+      "from": "src/tools/workspace.ts",
+      "to": "src/research/index.ts"
+    },
+    {
       "from": "src/verification/config.ts",
       "to": "src/execution/types.ts"
     },
@@ -3208,6 +3596,14 @@
     {
       "from": "src/verification/config.ts",
       "to": "src/watchdog/types.ts"
+    },
+    {
+      "from": "src/verification/config.ts",
+      "to": "src/research/config.ts"
+    },
+    {
+      "from": "src/verification/config.ts",
+      "to": "src/research/types.ts"
     },
     {
       "from": "src/verification/index.ts",
@@ -3450,6 +3846,10 @@
       "to": "src/orchestration/index.ts"
     },
     {
+      "from": "test/research.test.ts",
+      "to": "src/tools/index.ts"
+    },
+    {
       "from": "test/settings.test.ts",
       "to": "src/settings/defaults.ts"
     },
@@ -3519,6 +3919,7 @@
     "src/intelligence/indexer.ts": [
       "src/completion/guard.ts",
       "src/extension.ts",
+      "src/research/dependencies.ts",
       "src/tools/repository.ts",
       "test/completion.test.ts",
       "test/indexer.test.ts"
@@ -3555,6 +3956,7 @@
     "src/tools/types.ts": [
       "src/completion/tools.ts",
       "src/orchestration/tools.ts",
+      "src/research/tools.ts",
       "src/tools/framework.ts",
       "src/tools/git.ts",
       "src/tools/index.ts",
@@ -3568,6 +3970,7 @@
     "src/tools/framework.ts": [
       "src/completion/tools.ts",
       "src/orchestration/tools.ts",
+      "src/research/tools.ts",
       "src/tools/git.ts",
       "src/tools/index.ts",
       "src/tools/loop.ts",
@@ -3660,6 +4063,7 @@
       "test/completion.test.ts",
       "test/execution.test.ts",
       "test/git.test.ts",
+      "test/research.test.ts",
       "test/tools.test.ts",
       "test/watchdog.test.ts"
     ],
@@ -3707,6 +4111,42 @@
     ],
     "src/orchestration/tools.ts": [
       "src/orchestration/index.ts"
+    ],
+    "src/research/types.ts": [
+      "src/research/config.ts",
+      "src/research/dependencies.ts",
+      "src/research/index.ts",
+      "src/research/provider.ts",
+      "src/research/service.ts",
+      "src/research/store.ts",
+      "src/research/tools.ts",
+      "src/verification/config.ts"
+    ],
+    "src/research/config.ts": [
+      "src/research/index.ts",
+      "src/settings/configuration.ts",
+      "src/verification/config.ts"
+    ],
+    "src/research/dependencies.ts": [
+      "src/research/index.ts",
+      "src/research/service.ts"
+    ],
+    "src/research/store.ts": [
+      "src/research/index.ts",
+      "src/research/service.ts",
+      "src/research/tools.ts"
+    ],
+    "src/research/provider.ts": [
+      "src/research/index.ts",
+      "src/research/service.ts",
+      "src/research/tools.ts"
+    ],
+    "src/research/service.ts": [
+      "src/research/index.ts",
+      "src/research/tools.ts"
+    ],
+    "src/research/tools.ts": [
+      "src/research/index.ts"
     ],
     "src/settings/defaults.ts": [
       "src/settings/configuration.ts",
@@ -3761,6 +4201,10 @@
       "test/orchestration.test.ts"
     ],
     "src/watchdog/index.ts": [
+      "src/tools/index.ts",
+      "src/tools/workspace.ts"
+    ],
+    "src/research/index.ts": [
       "src/tools/index.ts",
       "src/tools/workspace.ts"
     ],
@@ -3847,7 +4291,7 @@
   "freshness": {
     "index": "current",
     "codebaseMap": "current",
-    "checkedAt": "2026-08-26T15:31:16.386Z",
+    "checkedAt": "2026-08-26T15:43:51.053Z",
     "staleEntries": []
   },
   "incremental": {
@@ -3893,6 +4337,14 @@
       "src/orchestration/scheduler.ts",
       "src/orchestration/tools.ts",
       "src/orchestration/types.ts",
+      "src/research/config.ts",
+      "src/research/dependencies.ts",
+      "src/research/index.ts",
+      "src/research/provider.ts",
+      "src/research/service.ts",
+      "src/research/store.ts",
+      "src/research/tools.ts",
+      "src/research/types.ts",
       "src/settings/configuration.ts",
       "src/settings/defaults.ts",
       "src/settings/panel.ts",
@@ -3929,6 +4381,7 @@
       "test/indexer.test.ts",
       "test/messages.test.ts",
       "test/orchestration.test.ts",
+      "test/research.test.ts",
       "test/settings.test.ts",
       "test/stream.test.ts",
       "test/tools.test.ts",

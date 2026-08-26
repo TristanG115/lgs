@@ -10,3 +10,4 @@ export * from '../verification/index.js';
 export * from '../completion/index.js';
 export * from '../orchestration/index.js';
 export * from '../watchdog/index.js';
+export * from '../research/index.js';

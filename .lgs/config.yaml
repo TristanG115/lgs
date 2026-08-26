@@ -69,3 +69,12 @@ watchdog:
   intervalTurns: 3
   escalation:
     routes: {}
+
+research:
+  freshnessDays: 14
+  maxResults: 6
+  maxFetchBytes: 512000
+  endpoints: {}
+  github:
+    enabled: true
+    apiBaseUrl: https://api.github.com
