@@ -41,6 +41,12 @@ API secrets are retrieved from VS Code `SecretStorage`. They are never placed in
 
 The compact LGS webview is a research workspace: a notebook-like session list, quiet monogram empty state, Advisor profile/model controls, Committee Review completion checks, and a bottom composer. Its design system uses semantic `--lgs-*` tokens for backgrounds, surfaces, text, borders, primary/accent actions, and success/warning/danger states; components never select palette values directly. Keyboard focus follows VS Code conventions, motion is reduced for `prefers-reduced-motion`, and all controls have accessible labels.
 
+## Task workflow and observability
+
+Phase 25 makes the active engineering task visible above its chat transcript. The task header shows the objective, Advisor model/provider, progress, context, and cloud cost. Tabs organize **Chat**, **Task**, **Agents**, **Changes**, **Research**, **Verification**, and **Usage**; the workspace navigation also links Tasks, Models, Integrations, Skills, Memory, Usage, and Settings. The dashboard shows only observable actions, tool/evidence summaries, structured results, agent assignments, and Completion Guard status—it never exposes private model reasoning.
+
+Task controls provide pause/cancel, approval/rejection, retry/escalation, diff, logs, research, and durable task-state access. Controls use the typed webview message contract and preserve the extension host as the permission boundary. Agent cards identify the logical role, provider/model, and current state; the activity feed is intentionally compact to avoid notification noise.
+
 Chat history is persisted in VS Code global extension state (up to 100 conversations) and is sent back to the selected model as normalized message history. API keys are never persisted with chats.
 
 The webview posts only the `ClientMessage` union. The extension host receives `unknown`, validates it with `parseClientMessage`, and responds only with the `HostMessage` union. The webview validates incoming events with `isHostMessage` before rendering them. Provider profiles are managed by `LgsViewProvider` and `SettingsPanel`; adding a provider means implementing `ModelBackend` and adding a `ProviderKind` mapping in `src/model/profiles.ts`. Approval levels are UI policy state for the future tool-execution phase; Phase 1 has no agent tools to approve.

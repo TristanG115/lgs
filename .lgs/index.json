@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "generatedAt": "2026-08-27T02:29:17.119Z",
+  "generatedAt": "2026-08-27T02:45:19.293Z",
   "root": "/home/tristan/Documents/Github/lgs",
   "directories": [
     ".vscode",
@@ -81,9 +81,9 @@
       "path": "README.md",
       "fileType": "md",
       "language": "Markdown/Text",
-      "size": 41136,
-      "mtimeMs": 1787797574697.2734,
-      "hash": "a91d3f86dc959074bbf129c80e6ab2fd53afb1f5",
+      "size": 42118,
+      "mtimeMs": 1787798702216.2046,
+      "hash": "a56492e2d2384d33358ca4599b5ad1df12ef55b3",
       "imports": [],
       "exports": [],
       "symbols": [],
@@ -1003,7 +1003,7 @@
       "fileType": "ts",
       "language": "TypeScript",
       "size": 16632,
-      "mtimeMs": 1787794922267.2673,
+      "mtimeMs": 1787798693988.1846,
       "hash": "3cfa9f25fc22a70f702f2f75407e66a637dc8343",
       "imports": [
         "vscode",
@@ -2859,14 +2859,16 @@
       "path": "src/shared/messages.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 2644,
-      "mtimeMs": 1787756358653.7031,
-      "hash": "b080a2721d05f782a82800a312cdfadb91890fca",
+      "size": 3699,
+      "mtimeMs": 1787798512038.7397,
+      "hash": "f29bef703defec22a76463394e1ede89f16ebf5c",
       "imports": [
         "../completion/types.js"
       ],
       "exports": [
         "ChatOptions",
+        "TaskActivity",
+        "TaskDashboard",
         "ClientMessage",
         "HostMessage",
         "parseClientMessage",
@@ -2874,6 +2876,8 @@
       ],
       "symbols": [
         "ChatOptions",
+        "TaskActivity",
+        "TaskDashboard",
         "ClientMessage",
         "HostMessage",
         "parseClientMessage",
@@ -3941,9 +3945,9 @@
       "path": "src/webview/main.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 7246,
-      "mtimeMs": 1787797506246.0796,
-      "hash": "f3f26a0b4f4a432f2ccb4020279ffaa672fcbe9c",
+      "size": 13078,
+      "mtimeMs": 1787798712884.2307,
+      "hash": "a92382802bbe7dc6274d9f8231019d860a565240",
       "imports": [
         "./styles.css",
         "../shared/messages.js"
@@ -3955,6 +3959,8 @@
         "app",
         "generating",
         "currentAssistant",
+        "dashboard",
+        "activeTab",
         "history",
         "input",
         "send",
@@ -3969,7 +3975,12 @@
         "completionProgress",
         "completionChecklist",
         "completionToggle",
+        "taskPanel",
         "syncOptions",
+        "newTask",
+        "renderDashboard",
+        "list",
+        "format",
         "add",
         "renderCompletion"
       ],
@@ -3982,9 +3993,9 @@
       "path": "src/webview/styles.css",
       "fileType": "css",
       "language": "CSS",
-      "size": 6914,
-      "mtimeMs": 1787797431654.8684,
-      "hash": "f4878770a39571e6034e889c81bac9e6ded83836",
+      "size": 9181,
+      "mtimeMs": 1787798639973.0525,
+      "hash": "1d0ad331d183fb9ce88532263821d3b04129f636",
       "imports": [],
       "exports": [],
       "symbols": [],
@@ -4245,9 +4256,9 @@
       "path": "test/messages.test.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 960,
-      "mtimeMs": 1787706140735.2168,
-      "hash": "25647091fe7090b44ec309fe535e4746a09decb2",
+      "size": 1149,
+      "mtimeMs": 1787798657174.0945,
+      "hash": "08c6de0681c6067179365ff338b9eaca033d984b",
       "imports": [
         "vitest",
         "../src/shared/messages.js"
@@ -7561,7 +7572,7 @@
   "freshness": {
     "index": "current",
     "codebaseMap": "current",
-    "checkedAt": "2026-08-27T02:29:17.119Z",
+    "checkedAt": "2026-08-27T02:45:19.293Z",
     "staleEntries": []
   },
   "incremental": {
@@ -7569,7 +7580,6 @@
       ".gitignore",
       ".vscode/launch.json",
       ".vscode/tasks.json",
-      "README.md",
       "esbuild.mjs",
       "eslint.config.mjs",
       "media/lgs.svg",
@@ -7663,9 +7673,9 @@
       "src/runtime/types.ts",
       "src/settings/configuration.ts",
       "src/settings/defaults.ts",
+      "src/settings/panel.ts",
       "src/settings/registry.ts",
       "src/shared/logger.ts",
-      "src/shared/messages.ts",
       "src/tools/framework.ts",
       "src/tools/git.ts",
       "src/tools/index.ts",
@@ -7696,8 +7706,6 @@
       "src/watchdog/tools.ts",
       "src/watchdog/triggers.ts",
       "src/watchdog/types.ts",
-      "src/webview/main.ts",
-      "src/webview/styles.css",
       "test/commit.test.ts",
       "test/completion.test.ts",
       "test/context.test.ts",
@@ -7708,7 +7716,6 @@
       "test/integrations.test.ts",
       "test/knowledge.test.ts",
       "test/localruntime.test.ts",
-      "test/messages.test.ts",
       "test/orchestration.test.ts",
       "test/planning.test.ts",
       "test/research.test.ts",
@@ -7725,7 +7732,11 @@
     ],
     "added": [],
     "changed": [
-      "src/settings/panel.ts"
+      "README.md",
+      "src/shared/messages.ts",
+      "src/webview/main.ts",
+      "src/webview/styles.css",
+      "test/messages.test.ts"
     ],
     "removed": [],
     "renamed": []
