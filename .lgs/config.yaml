@@ -65,6 +65,15 @@ agents:
   maxWorkersPerBatch: 6
   maxContextMessages: 30
 
+# Adaptive Model Routing. Connection IDs are configured in LGS Settings.
+routing:
+  policy:
+    privacy: cloud_allowed
+    preferLocal: true
+    preferCheapest: true
+  roles: {}
+  models: []
+
 watchdog:
   intervalTurns: 3
   escalation:

@@ -9,6 +9,8 @@ import type { AgentModelIdentity, ConfiguredAgentModel } from '../orchestration/
 import { FileTaskStateStore } from './state.js';
 import { ESCALATION_LEVELS, type EscalationLevel, type EscalationRecord, type EscalationTrigger, type WatchdogConfiguration } from './types.js';
 import type { LgsMessage } from '../model/types.js';
+import type { ModelRouter } from '../routing/router.js';
+import type { RoutingRole } from '../routing/types.js';
 
 export type ToolLoopBackendResolver = (profileId: string) => ModelBackend | undefined | Promise<ModelBackend | undefined>;
 
@@ -39,7 +41,8 @@ export class EscalationController {
     private readonly configuration: WatchdogConfiguration,
     private readonly taskState: FileTaskStateStore,
     identity: AgentModelIdentity,
-    initialLevel: EscalationLevel = 'manager'
+    initialLevel: EscalationLevel = 'manager',
+    private readonly router?: ModelRouter
   ) { this.identity = { ...identity }; this.level = initialLevel; }
 
   escalate(taskId: string, trigger: EscalationTrigger, reason: string): EscalationRecord {
@@ -78,7 +81,13 @@ export class EscalationController {
     const start = ESCALATION_LEVELS.indexOf(this.level) + 1;
     for (const level of ESCALATION_LEVELS.slice(start)) {
       const configured = this.configuration.escalationRoutes[level];
-      if (configured) return { level, identity: resolveModel(configured, this.identity.profileId) };
+      if (configured) {
+        const fallback = resolveModel(configured, this.identity.profileId);
+        const role: RoutingRole = level === 'cloud' ? 'cloudEscalation' : level;
+        const decision = this.router?.route({ role, fallback, roleModel: configured, difficulty: level === 'difficult' || level === 'cloud' ? 'high' : 'medium', needsTools: true });
+        if (decision?.blocked) continue;
+        return { level, identity: decision?.identity ?? fallback };
+      }
     }
     return;
   }

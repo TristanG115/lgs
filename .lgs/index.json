@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "generatedAt": "2026-08-26T23:59:20.475Z",
+  "generatedAt": "2026-08-27T00:17:18.319Z",
   "root": "/home/tristan/Documents/Github/lgs",
   "directories": [
     ".vscode",
@@ -19,6 +19,7 @@
     "src/planning",
     "src/research",
     "src/review",
+    "src/routing",
     "src/runtime",
     "src/settings",
     "src/shared",
@@ -78,9 +79,9 @@
       "path": "README.md",
       "fileType": "md",
       "language": "Markdown/Text",
-      "size": 34782,
-      "mtimeMs": 1787788745188.0662,
-      "hash": "edb391a64eaee438dbb7cda9ce7bc721ae2f2fce",
+      "size": 36725,
+      "mtimeMs": 1787789797214.486,
+      "hash": "7dc7bca102c8848e3eb9071304f2508abaf96d7b",
       "imports": [],
       "exports": [],
       "symbols": [],
@@ -887,7 +888,7 @@
       "fileType": "ts",
       "language": "TypeScript",
       "size": 15954,
-      "mtimeMs": 1787786973471.7803,
+      "mtimeMs": 1787789809381.511,
       "hash": "e843690e1676ce02d755f3c2a9b2052dce253c42",
       "imports": [
         "vscode",
@@ -1429,9 +1430,9 @@
       "path": "src/model/profiles.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 2959,
-      "mtimeMs": 1787711921338.0347,
-      "hash": "cc8e8421c6a773038e4b5a1fb2ff726a03875858",
+      "size": 3177,
+      "mtimeMs": 1787789546327.9624,
+      "hash": "ac2d561309c741f9c9b95c8bb182aba5f4204d86",
       "imports": [
         "./backend.js",
         "./anthropic.js",
@@ -1441,6 +1442,7 @@
       ],
       "exports": [
         "ProviderKind",
+        "ProviderDataPolicy",
         "BackendProfile",
         "defaultProfiles",
         "normalizeProfile",
@@ -1450,6 +1452,7 @@
       ],
       "symbols": [
         "ProviderKind",
+        "ProviderDataPolicy",
         "BackendProfile",
         "defaultProfiles",
         "normalizeProfile",
@@ -2285,6 +2288,121 @@
       "module": "src"
     },
     {
+      "path": "src/routing/config.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 5026,
+      "mtimeMs": 1787789483523.8137,
+      "hash": "2d639a2fe0d7bc595039c28ab5272ec362f1cbfd",
+      "imports": [
+        "../orchestration/types.js",
+        "./types.js"
+      ],
+      "exports": [
+        "parseRoutingConfiguration"
+      ],
+      "symbols": [
+        "DEFAULT",
+        "parseRoutingConfiguration",
+        "parsePolicy",
+        "parseRoute",
+        "parseModel",
+        "privacy",
+        "cost",
+        "record"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/routing",
+      "module": "src"
+    },
+    {
+      "path": "src/routing/index.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 86,
+      "mtimeMs": 1787789483600.814,
+      "hash": "c9f874259ea14ad7a346c86e811096e73138d918",
+      "imports": [
+        "./types.js",
+        "./config.js",
+        "./router.js"
+      ],
+      "exports": [],
+      "symbols": [],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/routing",
+      "module": "src"
+    },
+    {
+      "path": "src/routing/router.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 4948,
+      "mtimeMs": 1787789776808.4443,
+      "hash": "3d49fda2acf7107040780de6522122b7fb416bf2",
+      "imports": [
+        "../orchestration/types.js",
+        "./types.js",
+        "node:fs",
+        "node:path"
+      ],
+      "exports": [
+        "ModelRouter",
+        "FileRoutingDecisionStore"
+      ],
+      "symbols": [
+        "COST",
+        "ModelRouter",
+        "FileRoutingDecisionStore"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/routing",
+      "module": "src"
+    },
+    {
+      "path": "src/routing/types.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 1551,
+      "mtimeMs": 1787789677348.2407,
+      "hash": "ef54fa1aba71462214758a76b57cf7757e72d3e7",
+      "imports": [
+        "../orchestration/types.js",
+        "../model/profiles.js"
+      ],
+      "exports": [
+        "ROUTING_ROLES",
+        "RoutingRole",
+        "PrivacyPolicy",
+        "CostTier",
+        "ModelRoute",
+        "RoutingPolicy",
+        "RoutingConfiguration",
+        "RoutingRequest",
+        "RoutingDecision",
+        "ProviderPolicyLookup"
+      ],
+      "symbols": [
+        "ROUTING_ROLES",
+        "RoutingRole",
+        "PrivacyPolicy",
+        "CostTier",
+        "ModelRoute",
+        "RoutingPolicy",
+        "RoutingConfiguration",
+        "RoutingRequest",
+        "RoutingDecision",
+        "ProviderPolicyLookup"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/routing",
+      "module": "src"
+    },
+    {
       "path": "src/runtime/browser.ts",
       "fileType": "ts",
       "language": "TypeScript",
@@ -2485,9 +2603,9 @@
       "path": "src/settings/configuration.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 3264,
-      "mtimeMs": 1787779532017.7705,
-      "hash": "d9976bb90092768c0910a9c4987dad9a3b152c0f",
+      "size": 3718,
+      "mtimeMs": 1787789578941.0393,
+      "hash": "1d63982d64e4987274ad9183a8eb8789e39912f6",
       "imports": [
         "node:fs",
         "node:path",
@@ -2500,13 +2618,15 @@
         "../orchestration/config.js",
         "../watchdog/config.js",
         "../research/config.js",
-        "../runtime/config.js"
+        "../runtime/config.js",
+        "../routing/config.js"
       ],
       "exports": [
         "SettingsManager"
       ],
       "symbols": [
-        "SettingsManager"
+        "SettingsManager",
+        "record"
       ],
       "likelyTest": false,
       "likelyDocumentation": false,
@@ -2542,9 +2662,9 @@
       "path": "src/settings/panel.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 11662,
-      "mtimeMs": 1787712212177.2046,
-      "hash": "e852fa7df2fb33995d34c8f3662ead977c9f45ad",
+      "size": 11847,
+      "mtimeMs": 1787789658247.2017,
+      "hash": "b4d5f5a1b70684a5f43fccb156c4755addb10672",
       "imports": [
         "vscode",
         "../model/profiles.js",
@@ -2772,9 +2892,9 @@
       "path": "src/tools/index.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 760,
-      "mtimeMs": 1787788745040.066,
-      "hash": "bbfc500268f0c92460b917ce73ca42257104a03a",
+      "size": 797,
+      "mtimeMs": 1787789669592.2249,
+      "hash": "ddc3da3e2eba24b4b31202c6af09c76bbdf2a332",
       "imports": [
         "./types.js",
         "./schema.js",
@@ -2796,7 +2916,8 @@
         "../knowledge/index.js",
         "../planning/index.js",
         "../integrations/index.js",
-        "../localruntime/index.js"
+        "../localruntime/index.js",
+        "../routing/index.js"
       ],
       "exports": [],
       "symbols": [],
@@ -3028,9 +3149,9 @@
       "path": "src/verification/config.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 9969,
-      "mtimeMs": 1787788367092.1616,
-      "hash": "02ae916cf6ef8b4f0818621ec84987cfb535e215",
+      "size": 10391,
+      "mtimeMs": 1787789546365.9624,
+      "hash": "d4a42b38f821dd72b6647519a3ab763dbeb9a3e9",
       "imports": [
         "node:fs",
         "node:path",
@@ -3046,7 +3167,9 @@
         "../research/types.js",
         "../runtime/config.js",
         "../runtime/types.js",
-        "../integrations/types.js"
+        "../integrations/types.js",
+        "../routing/config.js",
+        "../routing/types.js"
       ],
       "exports": [
         "VERIFICATION_STEPS",
@@ -3239,9 +3362,9 @@
       "path": "src/watchdog/escalation.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 4915,
-      "mtimeMs": 1787758128335.6204,
-      "hash": "93ffa0e29833dce3a0a65f1bd7821fb80f9576e7",
+      "size": 5450,
+      "mtimeMs": 1787789741089.3713,
+      "hash": "a3dda293e4649822da64f46ef202010ccf2a678e",
       "imports": [
         "node:crypto",
         "node:fs",
@@ -3252,7 +3375,9 @@
         "../tools/framework.js",
         "../orchestration/types.js",
         "./state.js",
-        "./types.js"
+        "./types.js",
+        "../routing/router.js",
+        "../routing/types.js"
       ],
       "exports": [
         "ToolLoopBackendResolver",
@@ -3848,6 +3973,30 @@
       "module": "test"
     },
     {
+      "path": "test/routing.test.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 3667,
+      "mtimeMs": 1787789763428.417,
+      "hash": "465a84937c950f0be13f9987f7391f4723485876",
+      "imports": [
+        "vitest",
+        "node:fs",
+        "node:os",
+        "node:path",
+        "../src/routing/index.js",
+        "../src/watchdog/escalation.js",
+        "../src/watchdog/state.js",
+        "../src/watchdog/config.js"
+      ],
+      "exports": [],
+      "symbols": [],
+      "likelyTest": true,
+      "likelyDocumentation": false,
+      "directory": "test",
+      "module": "test"
+    },
+    {
       "path": "test/runtime.test.ts",
       "fileType": "ts",
       "language": "TypeScript",
@@ -4025,6 +4174,7 @@
         "src/planning",
         "src/research",
         "src/review",
+        "src/routing",
         "src/runtime",
         "src/settings",
         "src/shared",
@@ -4115,6 +4265,10 @@
         "src/review/store.ts",
         "src/review/tools.ts",
         "src/review/types.ts",
+        "src/routing/config.ts",
+        "src/routing/index.ts",
+        "src/routing/router.ts",
+        "src/routing/types.ts",
         "src/runtime/browser.ts",
         "src/runtime/config.ts",
         "src/runtime/index.ts",
@@ -4166,6 +4320,7 @@
         "test/planning.test.ts",
         "test/research.test.ts",
         "test/review.test.ts",
+        "test/routing.test.ts",
         "test/runtime.test.ts",
         "test/settings.test.ts",
         "test/stream.test.ts",
@@ -4235,6 +4390,7 @@
           "src/planning",
           "src/research",
           "src/review",
+          "src/routing",
           "src/runtime",
           "src/settings",
           "src/shared",
@@ -4315,6 +4471,10 @@
           "src/review/store.ts",
           "src/review/tools.ts",
           "src/review/types.ts",
+          "src/routing/config.ts",
+          "src/routing/index.ts",
+          "src/routing/router.ts",
+          "src/routing/types.ts",
           "src/runtime/browser.ts",
           "src/runtime/config.ts",
           "src/runtime/index.ts",
@@ -4379,6 +4539,7 @@
           "test/planning.test.ts",
           "test/research.test.ts",
           "test/review.test.ts",
+          "test/routing.test.ts",
           "test/runtime.test.ts",
           "test/settings.test.ts",
           "test/stream.test.ts",
@@ -5235,6 +5396,42 @@
       "to": "src/research/types.ts"
     },
     {
+      "from": "src/routing/config.ts",
+      "to": "src/orchestration/types.ts"
+    },
+    {
+      "from": "src/routing/config.ts",
+      "to": "src/routing/types.ts"
+    },
+    {
+      "from": "src/routing/index.ts",
+      "to": "src/routing/types.ts"
+    },
+    {
+      "from": "src/routing/index.ts",
+      "to": "src/routing/config.ts"
+    },
+    {
+      "from": "src/routing/index.ts",
+      "to": "src/routing/router.ts"
+    },
+    {
+      "from": "src/routing/router.ts",
+      "to": "src/orchestration/types.ts"
+    },
+    {
+      "from": "src/routing/router.ts",
+      "to": "src/routing/types.ts"
+    },
+    {
+      "from": "src/routing/types.ts",
+      "to": "src/orchestration/types.ts"
+    },
+    {
+      "from": "src/routing/types.ts",
+      "to": "src/model/profiles.ts"
+    },
+    {
       "from": "src/runtime/browser.ts",
       "to": "src/runtime/types.ts"
     },
@@ -5337,6 +5534,10 @@
     {
       "from": "src/settings/configuration.ts",
       "to": "src/runtime/config.ts"
+    },
+    {
+      "from": "src/settings/configuration.ts",
+      "to": "src/routing/config.ts"
     },
     {
       "from": "src/settings/defaults.ts",
@@ -5453,6 +5654,10 @@
     {
       "from": "src/tools/index.ts",
       "to": "src/localruntime/index.ts"
+    },
+    {
+      "from": "src/tools/index.ts",
+      "to": "src/routing/index.ts"
     },
     {
       "from": "src/tools/loop.ts",
@@ -5627,6 +5832,14 @@
       "to": "src/integrations/types.ts"
     },
     {
+      "from": "src/verification/config.ts",
+      "to": "src/routing/config.ts"
+    },
+    {
+      "from": "src/verification/config.ts",
+      "to": "src/routing/types.ts"
+    },
+    {
       "from": "src/verification/index.ts",
       "to": "src/verification/config.ts"
     },
@@ -5725,6 +5938,14 @@
     {
       "from": "src/watchdog/escalation.ts",
       "to": "src/watchdog/types.ts"
+    },
+    {
+      "from": "src/watchdog/escalation.ts",
+      "to": "src/routing/router.ts"
+    },
+    {
+      "from": "src/watchdog/escalation.ts",
+      "to": "src/routing/types.ts"
     },
     {
       "from": "src/watchdog/index.ts",
@@ -5907,6 +6128,22 @@
       "to": "src/intelligence/indexer.ts"
     },
     {
+      "from": "test/routing.test.ts",
+      "to": "src/routing/index.ts"
+    },
+    {
+      "from": "test/routing.test.ts",
+      "to": "src/watchdog/escalation.ts"
+    },
+    {
+      "from": "test/routing.test.ts",
+      "to": "src/watchdog/state.ts"
+    },
+    {
+      "from": "test/routing.test.ts",
+      "to": "src/watchdog/config.ts"
+    },
+    {
       "from": "test/runtime.test.ts",
       "to": "src/tools/index.ts"
     },
@@ -5983,7 +6220,8 @@
       "src/watchdog/escalation.ts",
       "src/watchdog/index.ts",
       "src/watchdog/service.ts",
-      "src/watchdog/tools.ts"
+      "src/watchdog/tools.ts",
+      "test/routing.test.ts"
     ],
     "src/tools/framework.ts": [
       "src/commit/tools.ts",
@@ -6229,6 +6467,7 @@
     "src/model/profiles.ts": [
       "src/extension.ts",
       "src/model/registry.ts",
+      "src/routing/types.ts",
       "src/settings/panel.ts",
       "test/settings.test.ts"
     ],
@@ -6271,6 +6510,9 @@
       "src/orchestration/report.ts",
       "src/orchestration/scheduler.ts",
       "src/orchestration/tools.ts",
+      "src/routing/config.ts",
+      "src/routing/router.ts",
+      "src/routing/types.ts",
       "src/verification/config.ts",
       "src/watchdog/config.ts",
       "src/watchdog/escalation.ts",
@@ -6411,6 +6653,22 @@
     "src/review/tools.ts": [
       "src/review/index.ts"
     ],
+    "src/routing/types.ts": [
+      "src/routing/config.ts",
+      "src/routing/index.ts",
+      "src/routing/router.ts",
+      "src/verification/config.ts",
+      "src/watchdog/escalation.ts"
+    ],
+    "src/routing/config.ts": [
+      "src/routing/index.ts",
+      "src/settings/configuration.ts",
+      "src/verification/config.ts"
+    ],
+    "src/routing/router.ts": [
+      "src/routing/index.ts",
+      "src/watchdog/escalation.ts"
+    ],
     "src/runtime/config.ts": [
       "src/runtime/index.ts",
       "src/settings/configuration.ts",
@@ -6444,7 +6702,8 @@
     "src/watchdog/config.ts": [
       "src/settings/configuration.ts",
       "src/verification/config.ts",
-      "src/watchdog/index.ts"
+      "src/watchdog/index.ts",
+      "test/routing.test.ts"
     ],
     "src/tools/schema.ts": [
       "src/tools/framework.ts",
@@ -6520,6 +6779,10 @@
       "src/tools/index.ts",
       "src/tools/workspace.ts"
     ],
+    "src/routing/index.ts": [
+      "src/tools/index.ts",
+      "test/routing.test.ts"
+    ],
     "src/watchdog/triggers.ts": [
       "src/tools/loop.ts",
       "src/watchdog/index.ts"
@@ -6530,7 +6793,8 @@
     ],
     "src/watchdog/escalation.ts": [
       "src/tools/loop.ts",
-      "src/watchdog/index.ts"
+      "src/watchdog/index.ts",
+      "test/routing.test.ts"
     ],
     "src/watchdog/service.ts": [
       "src/tools/loop.ts",
@@ -6589,16 +6853,14 @@
   "freshness": {
     "index": "current",
     "codebaseMap": "current",
-    "checkedAt": "2026-08-26T23:59:20.475Z",
+    "checkedAt": "2026-08-27T00:17:18.320Z",
     "staleEntries": []
   },
   "incremental": {
-    "reused": [],
-    "added": [
+    "reused": [
       ".gitignore",
       ".vscode/launch.json",
       ".vscode/tasks.json",
-      "README.md",
       "esbuild.mjs",
       "eslint.config.mjs",
       "media/lgs.svg",
@@ -6647,7 +6909,6 @@
       "src/model/backend.ts",
       "src/model/ollama.ts",
       "src/model/openai.ts",
-      "src/model/profiles.ts",
       "src/model/registry.ts",
       "src/model/types.ts",
       "src/orchestration/config.ts",
@@ -6682,28 +6943,23 @@
       "src/runtime/service.ts",
       "src/runtime/tools.ts",
       "src/runtime/types.ts",
-      "src/settings/configuration.ts",
       "src/settings/defaults.ts",
-      "src/settings/panel.ts",
       "src/settings/registry.ts",
       "src/shared/logger.ts",
       "src/shared/messages.ts",
       "src/tools/framework.ts",
       "src/tools/git.ts",
-      "src/tools/index.ts",
       "src/tools/loop.ts",
       "src/tools/repository.ts",
       "src/tools/schema.ts",
       "src/tools/types.ts",
       "src/tools/workspace.ts",
-      "src/verification/config.ts",
       "src/verification/index.ts",
       "src/verification/runner.ts",
       "src/verification/tools.ts",
       "src/watchdog/analyzer.ts",
       "src/watchdog/config.ts",
       "src/watchdog/continuation.ts",
-      "src/watchdog/escalation.ts",
       "src/watchdog/index.ts",
       "src/watchdog/service.ts",
       "src/watchdog/state.ts",
@@ -6734,7 +6990,22 @@
       "tsconfig.json",
       "vitest.config.ts"
     ],
-    "changed": [],
+    "added": [
+      "src/routing/config.ts",
+      "src/routing/index.ts",
+      "src/routing/router.ts",
+      "src/routing/types.ts",
+      "test/routing.test.ts"
+    ],
+    "changed": [
+      "README.md",
+      "src/model/profiles.ts",
+      "src/settings/configuration.ts",
+      "src/settings/panel.ts",
+      "src/tools/index.ts",
+      "src/verification/config.ts",
+      "src/watchdog/escalation.ts"
+    ],
     "removed": [],
     "renamed": []
   }

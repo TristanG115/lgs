@@ -165,6 +165,41 @@ agents:
 
 Unmapped roles inherit the active Manager provider connection and model. This keeps configuration portable across Ollama, OpenAI-compatible, and Anthropic profiles and permits several logical workers to share a single loaded model.
 
+## Adaptive Model Routing
+
+Phase 21 assigns a complete provider-connection/model identity to engineering roles: `fast`, `worker`, `manager`, `researcher`, `documentation`, `reviewer`, `difficult`, `vision`, and `cloudEscalation`. A route is always recorded in `.lgs/tasks/<task-id>/routing.json` with its concise reason, selected profile/model, policy, and timestamp; source code and secrets are never recorded there.
+
+Routing evaluates the role, required context window, tool or vision support, configured benchmark score and failure history, task difficulty, local preference, and cost tier. `preferCheapest` selects the weakest appropriate configured model first; disable it when correctness or latency should dominate. A task pin takes precedence over a role pin, and a role pin takes precedence over automatic selection.
+
+```yaml
+routing:
+  policy:
+    privacy: ask_before_cloud # local_only, cloud_allowed, or ask_before_cloud
+    preferLocal: true
+    preferCheapest: true
+    maxCostTier: medium
+  roles:
+    fast:
+      profileId: local-ollama
+      model: qwen3.5:9b
+      toolSupport: true
+      costTier: low
+    difficult:
+      profileId: purdue-genai
+      model: gpt-5
+      contextWindow: 128000
+      benchmarkScore: 9
+      costTier: high
+  models:
+    - profileId: local-ollama
+      model: gpt-oss:20b
+      toolSupport: true
+      costTier: medium
+      benchmarkScore: 7
+```
+
+Use the Models & Providers Settings page to declare each connection's data policy: `local`, `repository_allowed`, or `metadata_only`. `local_only` and `ask_before_cloud` both prevent automatic repository-source routing to cloud connections; `metadata_only` is never eligible for repository-aware work. The Phase 11 escalation controller accepts the same router and skips a forbidden escalation destination instead of sending source silently. Existing `watchdog.escalation.routes` remain explicit route pins and retain their original ordering.
+
 ## Watchdog and automatic escalation
 
 Phase 11 stores compact task state in `.lgs/tasks/<task-id>/state.json`, independently of whichever model is active. The objective is initialized from the original user request. Agents update acceptance criteria, the current plan, completed and remaining work, recent modifications, and explicit uncertainty through `update_task_state`. Verification failures are read directly from command evidence rather than self-reported. This state survives model escalation and is available through `get_task_state`; runtime task files remain ignored by Git and Repository Intelligence.
