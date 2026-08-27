@@ -1,6 +1,6 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
-import type { TaskState } from './types.js';
+import { TASK_PROFILES, type TaskProfile, type TaskState } from './types.js';
 
 export class FileTaskStateStore {
   constructor(private readonly workspaceRoot: string) {}
@@ -31,7 +31,7 @@ export class FileTaskStateStore {
     ].filter((value): value is string => Boolean(value)).join('\n').slice(0, 8_000);
   }
 
-  update(taskId: string, patch: Partial<Pick<TaskState, 'acceptanceCriteria' | 'currentPlan' | 'completedWork' | 'remainingWork' | 'recentModifications' | 'verifiedFacts' | 'designDecisions' | 'failedApproaches' | 'blockers' | 'commitSha' | 'explicitUncertainty'>>): TaskState {
+  update(taskId: string, patch: Partial<Pick<TaskState, 'profile' | 'acceptanceCriteria' | 'currentPlan' | 'completedWork' | 'remainingWork' | 'recentModifications' | 'verifiedFacts' | 'designDecisions' | 'failedApproaches' | 'blockers' | 'commitSha' | 'explicitUncertainty'>>): TaskState {
     const current = this.read(taskId);
     if (!current) throw new Error('Task state was not initialized.');
     for (const key of ['acceptanceCriteria', 'currentPlan', 'completedWork', 'remainingWork', 'recentModifications', 'verifiedFacts', 'designDecisions', 'failedApproaches', 'blockers'] as const) {
@@ -39,6 +39,7 @@ export class FileTaskStateStore {
       if (candidate !== undefined) current[key] = boundedList(candidate);
     }
     if ('commitSha' in patch) current.commitSha = patch.commitSha ? validateCommitSha(patch.commitSha) : undefined;
+    if ('profile' in patch) current.profile = patch.profile ? validateProfile(patch.profile) : undefined;
     if ('explicitUncertainty' in patch) current.explicitUncertainty = patch.explicitUncertainty ? bounded(patch.explicitUncertainty, 2_000) : undefined;
     current.revision++; current.updatedAt = new Date().toISOString(); this.write(current); return clone(current);
   }
@@ -57,6 +58,7 @@ function validateCommitSha(value: string): string {
   if (!/^[0-9a-f]{40}$/i.test(sha)) throw new Error('Commit SHA must be a 40-character hexadecimal Git object ID.');
   return sha;
 }
+function validateProfile(value: TaskProfile): TaskProfile { if (!TASK_PROFILES.includes(value)) throw new Error('Task profile is invalid.'); return value; }
 function validTaskId(value: string): boolean { return /^[a-zA-Z0-9._-]{1,128}$/.test(value); }
 function validateTaskId(value: string): void { if (!validTaskId(value)) throw new Error('Task ID contains unsupported characters.'); }
 function clone(state: TaskState): TaskState { return { ...state, acceptanceCriteria: [...state.acceptanceCriteria], currentPlan: [...state.currentPlan], completedWork: [...state.completedWork], remainingWork: [...state.remainingWork], recentModifications: [...state.recentModifications], verifiedFacts: [...(state.verifiedFacts ?? [])], designDecisions: [...(state.designDecisions ?? [])], failedApproaches: [...(state.failedApproaches ?? [])], blockers: [...(state.blockers ?? [])] }; }
@@ -65,6 +67,7 @@ function validState(value: unknown): value is TaskState {
   const state = value as Record<string, unknown>;
   return typeof state.taskId === 'string' && typeof state.objective === 'string' && Number.isInteger(state.revision)
     && (state.commitSha === undefined || (typeof state.commitSha === 'string' && /^[0-9a-f]{40}$/i.test(state.commitSha)))
+    && (state.profile === undefined || TASK_PROFILES.includes(state.profile as TaskProfile))
     && ['acceptanceCriteria', 'currentPlan', 'completedWork', 'remainingWork', 'recentModifications'].every(key => Array.isArray(state[key]) && (state[key] as unknown[]).every(item => typeof item === 'string'))
     && ['verifiedFacts', 'designDecisions', 'failedApproaches', 'blockers'].every(key => state[key] === undefined || Array.isArray(state[key]) && (state[key] as unknown[]).every(item => typeof item === 'string'));
 }

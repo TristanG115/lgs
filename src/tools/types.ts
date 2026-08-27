@@ -7,7 +7,8 @@ export type JsonSchema =
 
 export type ToolPermission = {
   access: 'read-only' | 'execute';
-  scope: 'workspace';
+  /** `computer` tools are separately policy-gated and may address trusted user paths. */
+  scope: 'workspace' | 'computer';
   network: boolean;
   category?: import('../execution/types.js').CommandCategory;
 };
@@ -37,7 +38,7 @@ export type ToolResultMetadata = {
   bytes: number;
   truncated: boolean;
   continuationToken?: string;
-  source?: 'repository-index' | 'codebase-map' | 'filesystem' | 'git' | 'execution' | 'research' | 'documentation' | 'review';
+  source?: 'repository-index' | 'codebase-map' | 'filesystem' | 'git' | 'execution' | 'research' | 'documentation' | 'review' | 'computer' | 'activity-ledger' | 'decision-journal';
 };
 
 export type ToolResult<T = unknown> = {

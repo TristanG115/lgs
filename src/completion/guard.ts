@@ -35,7 +35,8 @@ export class CompletionGuard {
   evaluate(taskId: string): CompletionEvaluation {
     const recorded = this.completionEvidence.read(taskId);
     const executions = this.executions.read(taskId);
-    const checklist = (Object.keys(this.configuration.gates) as CompletionRequirement[]).map(requirement => this.evaluateRequirement(taskId, requirement, this.configuration.gates[requirement], recorded, executions));
+    const profile = taskProfile(this.workspaceRoot, taskId);
+    const checklist = (Object.keys(this.configuration.gates) as CompletionRequirement[]).map(requirement => this.evaluateRequirement(taskId, requirement, this.configuration.gates[requirement] && requiredForProfile(requirement, profile), recorded, executions));
     const failureBudget = this.failures.state(taskId);
     const required = checklist.filter(item => item.required);
     const outstanding = required.filter(item => !item.passed).map(item => item.detail);
@@ -102,6 +103,12 @@ export class CompletionGuard {
     const evidence: CompletionEvidence = { id: runtime.id, requirement, summary: runtime.summary, recordedAt: runtime.createdAt, source: 'execution' };
     return { requirement, label: LABELS[requirement], required: true, passed: runtime.status === 'passed', detail: runtime.summary, evidence: [evidence] };
   }
+}
+
+function taskProfile(root: string, taskId: string): string | undefined { try { const state = JSON.parse(fs.readFileSync(path.join(root, '.lgs', 'tasks', taskId, 'state.json'), 'utf8')) as { profile?: unknown }; return typeof state.profile === 'string' ? state.profile : undefined; } catch { return; } }
+function requiredForProfile(requirement: CompletionRequirement, profile: string | undefined): boolean {
+  if (!profile || profile === 'Software Engineering' || profile === 'Mixed') return true;
+  return ['acceptance_criteria_addressed', 'implementation_complete', 'no_unresolved_task_failures'].includes(requirement);
 }
 
 export function renderCompletionBlocked(evaluation: CompletionEvaluation): string {

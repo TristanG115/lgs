@@ -17,8 +17,12 @@ import { registerIntegrationTools, type IntegrationHub } from '../integrations/i
 import { BenchmarkStore, LocalRuntimeDiscovery, registerLocalRuntimeTools } from '../localruntime/index.js';
 import { FilePricingStore, registerUsageTools, type UsageTracker } from '../usage/index.js';
 import { ContextBroker, registerContextTools } from '../context/index.js';
+import { ComputerAgent, parseComputerConfiguration, registerComputerTools } from '../computer/index.js';
+import * as fs from 'node:fs';
+import * as path from 'node:path';
+import { parse } from 'yaml';
 
-export function createWorkspaceToolRegistry(options: { gitBaseline?: GitBaseline; gitRunner?: GitCommandRunner; verificationRunner?: VerificationRunner; executionLogs?: RawExecutionLogStore; completionGuard?: CompletionGuard; completionEvidence?: FileCompletionEvidenceStore; orchestrator?: Orchestrator; managerAgentId?: string; taskState?: FileTaskStateStore; watchdog?: WatchdogService; research?: ResearchService; researchStore?: FileResearchStore; documentationAgent?: DocumentationAgent; documentationStore?: FileDocumentationAuditStore; independentReviewer?: IndependentReviewer; reviewStore?: FileReviewStore; processes?: ManagedProcessManager; runtimeVerifier?: RuntimeVerifier; runtimeStore?: FileRuntimeStore; commitService?: VerifiedCommitService; skills?: WorkspaceSkillStore; memories?: ProjectMemoryStore; integrations?: IntegrationHub; usage?: UsageTracker; pricing?: FilePricingStore } = {}): ToolRegistry {
+export function createWorkspaceToolRegistry(options: { gitBaseline?: GitBaseline; gitRunner?: GitCommandRunner; verificationRunner?: VerificationRunner; executionLogs?: RawExecutionLogStore; completionGuard?: CompletionGuard; completionEvidence?: FileCompletionEvidenceStore; orchestrator?: Orchestrator; managerAgentId?: string; taskState?: FileTaskStateStore; watchdog?: WatchdogService; research?: ResearchService; researchStore?: FileResearchStore; documentationAgent?: DocumentationAgent; documentationStore?: FileDocumentationAuditStore; independentReviewer?: IndependentReviewer; reviewStore?: FileReviewStore; processes?: ManagedProcessManager; runtimeVerifier?: RuntimeVerifier; runtimeStore?: FileRuntimeStore; commitService?: VerifiedCommitService; skills?: WorkspaceSkillStore; memories?: ProjectMemoryStore; integrations?: IntegrationHub; usage?: UsageTracker; pricing?: FilePricingStore; computer?: ComputerAgent } = {}): ToolRegistry {
   const registry = registerGitTools(createRepositoryToolRegistry(), { baseline: options.gitBaseline, runner: options.gitRunner });
   if (options.verificationRunner && options.executionLogs) registerVerificationTools(registry, options.verificationRunner, options.executionLogs);
   if (options.completionGuard && options.completionEvidence) registerCompletionTools(registry, options.completionGuard, options.completionEvidence);
@@ -40,5 +44,14 @@ export function createWorkspaceToolRegistry(options: { gitBaseline?: GitBaseline
   if (options.gitBaseline) registerLocalRuntimeTools(registry, new LocalRuntimeDiscovery(), new BenchmarkStore(options.gitBaseline.workspaceRoot));
   if (options.gitBaseline) registerContextTools(registry, new ContextBroker());
   if (options.usage && options.pricing) registerUsageTools(registry, options.usage, options.pricing);
+  const computer = options.computer ?? (options.gitBaseline ? new ComputerAgent(options.gitBaseline.workspaceRoot, workspaceComputerConfiguration(options.gitBaseline.workspaceRoot)) : undefined);
+  if (computer) registerComputerTools(registry, computer, options.taskState);
   return registry;
+}
+
+function workspaceComputerConfiguration(root: string) {
+  try {
+    const value = parse(fs.readFileSync(path.join(root, '.lgs', 'config.yaml'), 'utf8')) as { computer?: unknown };
+    return parseComputerConfiguration(value?.computer);
+  } catch { return parseComputerConfiguration(); }
 }

@@ -95,6 +95,33 @@ Phase 8 gives agents a `run_verification` tool backed by structured command defi
 
 Command policy is resolved at executable, category, and default levels with workspace values taking precedence over user values. The supported policies are `always_allow`, `ask`, and `deny`; categories are `read-only`, `build`, `test`, `package-manager`, `git-mutation`, `network`, `process`, and `dangerous`. The composer approval setting supplies the fallback policy, while `.lgs/config.yaml` can set workspace-specific rules under `permissions.commands`. Commands with an `ask` result use a modal VS Code approval prompt before any process starts.
 
+## Computer access and decision tracing
+
+Phase 27 adds a separate `ComputerAgent`; it does not relax the workspace command runner. External operations use validated tool calls (`list_path`, `stat_path`, `read_external_file`, `find_external_files`, copy/move/create/delete) and longest-match trusted-path policy. `computer.trustedLocations` can grant distinct `read` and `write` policies; external access, system commands, package management, and elevated operations each have their own `always_allow`, `ask`, or `deny` policy. Write, software-management, and elevated operations remain confirmation-gated, and LGS never captures a sudo or administrator password.
+
+External document reads extract text or structured data before it reaches a model: text/Markdown/source, JSON, CSV, PDF text strings, DOCX document XML, XLSX sheets/shared strings, and image metadata are handled deterministically where possible. Unknown binary payloads remain metadata-only. `run_computer_command` accepts an executable plus argument array, cwd, explicit environment, timeout, cancellation, and terminal-visibility preference; it never evaluates shell interpolation. Dry run is on by default and returns a planned action before a command can execute.
+
+Computer activity is persisted locally in `.lgs/activity-ledger.jsonl`; entries include task, agent/model identity when supplied, operation, target, permission outcome, result, duration, and verification references while redacting secret-named fields. Per-task agent traces live in `agent-traces.json`, and concise evidence-backed decisions (not private chain-of-thought) are retained in `decision-journal.jsonl`. `get_activity_ledger` and `get_decision_journal` return compact targeted views. Task profiles now include Software Engineering, Computer Administration, Research, Browser Workflow, Document Workflow, and Mixed; non-engineering profiles do not inherit code-test, documentation, or Codebase Map completion gates.
+
+Example workspace policy:
+
+```yaml
+computer:
+  readOutsideWorkspace: ask
+  writeOutsideWorkspace: ask
+  trustedLocations:
+    - path: ~/Documents
+      read: always_allow
+      write: ask
+    - path: ~/Downloads
+      read: always_allow
+      write: deny
+  systemCommandPolicy: ask
+  packageInstallationPolicy: ask
+  elevatedCommandPolicy: ask
+  dryRun: true
+```
+
 Model-facing execution results contain the exact display command, status and exit code, a primary error, relevant stack lines, important file locations, and short stdout/stderr previews. Full logs are retained under `.lgs/logs/` and are available only through explicitly paged `get_execution_log` calls. Every task-associated execution is appended to `.lgs/tasks/<task-id>/evidence.json`; both runtime directories are ignored by Git and Repository Intelligence.
 
 ## Verification configuration

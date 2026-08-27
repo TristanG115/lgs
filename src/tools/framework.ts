@@ -19,8 +19,8 @@ export class ToolRegistry {
   register<TArguments extends Record<string, unknown>, TData>(definition: ToolDefinition<TArguments, TData>): this {
     if (!/^[a-z][a-z0-9_]{0,63}$/.test(definition.id)) throw new Error(`Invalid tool ID: ${definition.id}`);
     if (this.definitions.has(definition.id)) throw new Error(`Duplicate tool ID: ${definition.id}`);
-    if (definition.permission.scope !== 'workspace') throw new Error(`Workspace tool ${definition.id} must be workspace-scoped.`);
-    if (definition.permission.access === 'read-only' && definition.permission.network) throw new Error(`Read-only workspace tool ${definition.id} cannot use the network.`);
+    if (!['workspace', 'computer'].includes(definition.permission.scope)) throw new Error(`Tool ${definition.id} has an invalid scope.`);
+    if (definition.permission.access === 'read-only' && definition.permission.network) throw new Error(`Read-only tool ${definition.id} cannot use the network.`);
     this.definitions.set(definition.id, definition as ToolDefinition);
     return this;
   }

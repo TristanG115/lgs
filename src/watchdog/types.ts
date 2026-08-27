@@ -10,6 +10,8 @@ export type WatchdogClassification = typeof WATCHDOG_CLASSIFICATIONS[number];
 export type TaskState = {
   taskId: string;
   objective: string;
+  /** Completion requirements adapt to the kind of work, rather than assuming a repository change. */
+  profile?: TaskProfile;
   acceptanceCriteria: string[];
   currentPlan: string[];
   completedWork: string[];
@@ -25,6 +27,9 @@ export type TaskState = {
   createdAt: string;
   updatedAt: string;
 };
+
+export const TASK_PROFILES = ['Software Engineering', 'Computer Administration', 'Research', 'Browser Workflow', 'Document Workflow', 'Mixed'] as const;
+export type TaskProfile = typeof TASK_PROFILES[number];
 
 export type WatchdogInput = {
   objective: string;

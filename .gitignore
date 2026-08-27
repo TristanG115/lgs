@@ -7,4 +7,5 @@ dist/
 .lgs/memory.json
 .lgs/benchmarks.json
 .lgs/usage.jsonl
+.lgs/activity-ledger.jsonl
 .lgs/pricing.json

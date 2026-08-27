@@ -17,6 +17,8 @@ import { parseRoutingConfiguration } from '../routing/config.js';
 import type { RoutingConfiguration } from '../routing/types.js';
 import { parseUsageConfiguration } from '../usage/config.js';
 import type { UsageConfiguration } from '../usage/types.js';
+import { parseComputerConfiguration } from '../computer/config.js';
+import type { ComputerConfiguration } from '../computer/types.js';
 
 export const VERIFICATION_STEPS = ['install', 'typecheck', 'lint', 'targetedTest', 'test', 'build', 'start'] as const;
 export type VerificationStep = typeof VERIFICATION_STEPS[number];
@@ -33,6 +35,7 @@ export type WorkspaceConfiguration = {
   integrations?: Record<string, unknown>;
   routing?: Record<string, unknown>;
   usage?: Record<string, unknown>;
+  computer?: Record<string, unknown>;
 };
 export type LoadedWorkspaceConfiguration = {
   settings: Record<string, unknown>;
@@ -46,11 +49,12 @@ export type LoadedWorkspaceConfiguration = {
   integrations?: IntegrationConfiguration;
   routing: RoutingConfiguration;
   usage: UsageConfiguration;
+  computer: ComputerConfiguration;
   errors: string[];
 };
 
 export function loadWorkspaceConfiguration(root: string): LoadedWorkspaceConfiguration {
-  const empty: LoadedWorkspaceConfiguration = { settings: {}, verification: {}, permissions: {}, completion: parseCompletionConfiguration(), agents: parseOrchestrationConfiguration(), watchdog: parseWatchdogConfiguration(), research: parseResearchConfiguration(), runtime: parseRuntimeConfiguration(), integrations: { required: [], recommended: [], optional: [], mcp: {} }, routing: parseRoutingConfiguration(), usage: parseUsageConfiguration(), errors: [] };
+  const empty: LoadedWorkspaceConfiguration = { settings: {}, verification: {}, permissions: {}, completion: parseCompletionConfiguration(), agents: parseOrchestrationConfiguration(), watchdog: parseWatchdogConfiguration(), research: parseResearchConfiguration(), runtime: parseRuntimeConfiguration(), integrations: { required: [], recommended: [], optional: [], mcp: {} }, routing: parseRoutingConfiguration(), usage: parseUsageConfiguration(), computer: parseComputerConfiguration(), errors: [] };
   const file = path.join(root, '.lgs', 'config.yaml');
   if (!fs.existsSync(file)) return empty;
   try {
@@ -64,6 +68,7 @@ export function loadWorkspaceConfiguration(root: string): LoadedWorkspaceConfigu
     const rawRuntime = parsed.runtime;
     const rawRouting = parsed.routing === undefined ? {} : requireRecord(parsed.routing, 'routing');
     const rawUsage = parsed.usage === undefined ? {} : requireRecord(parsed.usage, 'usage');
+    const rawComputer = parsed.computer === undefined ? {} : requireRecord(parsed.computer, 'computer');
     const verification = parseVerification(parsed.verification, empty.errors);
     const permissions = parsePermissions(parsed.permissions, empty.errors);
     const completion = parseCompletionConfiguration(rawCompletion, empty.errors);
@@ -74,7 +79,8 @@ export function loadWorkspaceConfiguration(root: string): LoadedWorkspaceConfigu
     const integrations = parseIntegrations(parsed.integrations, empty.errors);
     const routing = parseRoutingConfiguration(rawRouting, empty.errors);
     const usage = parseUsageConfiguration(rawUsage, empty.errors);
-    return { settings, verification, permissions, completion, agents, watchdog, research, runtime, integrations, routing, usage, errors: empty.errors };
+    const computer = parseComputerConfiguration(rawComputer, empty.errors);
+    return { settings, verification, permissions, completion, agents, watchdog, research, runtime, integrations, routing, usage, computer, errors: empty.errors };
   } catch (error) {
     empty.errors.push(error instanceof Error ? error.message : 'Malformed workspace configuration.');
     return empty;
