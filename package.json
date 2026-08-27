@@ -66,7 +66,8 @@
     "dev": "node esbuild.mjs --watch",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
-    "test": "vitest run"
+    "test": "vitest run",
+    "test:settings-ui": "node test/settings-ui.mjs"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",

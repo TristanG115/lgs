@@ -29,4 +29,18 @@ describe('product UI integrity', () => {
     expect(followBlock).toContain('--vscode-');
     expect(followBlock).not.toMatch(/#[0-9a-f]{3,8}/i);
   });
+
+  it('uses immediate appearance cards and responsive connection-management workflows', () => {
+    const ui = source('src/settings/main.ts'); const css = source('src/settings/styles.css');
+    expect(ui).toContain("type: 'setAppearance'"); expect(ui).toContain('data-theme'); expect(ui).not.toContain('data-save-theme');
+    for (const action of ['restartServices', 'reconnectProviders', 'restartLocalRuntimes', 'reloadViews', 'reloadWindow']) expect(ui).toContain(action);
+    for (const action of ['Add model connection', 'Test connection', 'Logs', 'Delete connection', 'Refresh discovery']) expect(ui).toContain(action);
+    expect(css).toContain('@media (max-width: 860px)'); expect(css).toContain('@media (max-width: 620px)');
+  });
+
+  it('keeps credential values one-way and makes offline saves explicit', () => {
+    const ui = source('src/settings/main.ts'); const panel = source('src/settings/panel.ts');
+    expect(ui).toContain('never returned'); expect(ui).toContain('Save without a successful test');
+    expect(panel).toContain('hasApiKey'); expect(panel).not.toContain('apiKey: await');
+  });
 });

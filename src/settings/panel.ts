@@ -1,13 +1,10 @@
 import * as vscode from 'vscode';
-import { createBackend, loadProfiles, normalizeProfile, saveProfiles, type BackendProfile } from '../model/profiles.js';
+import { ProviderConnectionService, type ConnectionDraft } from '../model/connections.js';
+import type { ProviderKind } from '../model/profiles.js';
 import type { SettingsManager } from './configuration.js';
+import { parseSettingsClientMessage, type LifecycleAction, type SafeConnection, type SettingsHostMessage } from './messages.js';
 
-type PanelMessage =
-  | { type: 'setSetting'; id: string; value: unknown; scope: 'user' | 'workspace' }
-  | { type: 'saveConnection'; connection: Partial<BackendProfile>; apiKey?: string; secretHeaders?: Record<string, string> }
-  | { type: 'deleteConnection'; id: string }
-  | { type: 'testConnection'; id: string }
-  | { type: 'openWorkspaceConfig' };
+export type SettingsLifecycleHandler = (action: LifecycleAction) => Promise<string>;
 
 export class SettingsPanel {
   private panel?: vscode.WebviewPanel;
@@ -15,99 +12,149 @@ export class SettingsPanel {
   constructor(
     private readonly context: vscode.ExtensionContext,
     private readonly manager: SettingsManager,
+    private readonly connections: ProviderConnectionService,
     private readonly onConnectionsChanged: () => Promise<void>,
     private readonly onSettingsChanged: () => void,
+    private readonly onLifecycle: SettingsLifecycleHandler,
   ) {}
 
   show(): void {
     if (this.panel) { this.panel.reveal(); void this.sendState(); return; }
-    this.panel = vscode.window.createWebviewPanel('lgs.settings', 'LGS Settings', vscode.ViewColumn.One, { enableScripts: true });
+    this.panel = vscode.window.createWebviewPanel('lgs.settings', 'LGS Settings', vscode.ViewColumn.One, {
+      enableScripts: true, localResourceRoots: [this.context.extensionUri], retainContextWhenHidden: true,
+    });
     this.panel.onDidDispose(() => { this.panel = undefined; });
     this.panel.webview.onDidReceiveMessage((raw: unknown) => void this.receive(raw));
-    this.panel.webview.html = this.html();
-    void this.sendState();
+    this.panel.webview.html = this.html(this.panel.webview);
   }
 
-  private send(value: unknown): void { void this.panel?.webview.postMessage(value); }
+  refresh(): void { void this.sendState(); }
 
-  private async state() {
-    const connections = await Promise.all(loadProfiles(this.context).map(async profile => ({
-      id: profile.id, name: profile.name, kind: profile.kind, baseUrl: profile.baseUrl,
-      enabled: profile.enabled, hasApiKey: Boolean(profile.secretName && await this.context.secrets.get(profile.secretName)),
-      headers: profile.headers, secretHeaderNames: profile.secretHeaderNames,
-      modelAliases: profile.modelAliases, capabilityOverrides: profile.capabilityOverrides,
-      dataPolicy: profile.dataPolicy,
+  private send(value: SettingsHostMessage): void { void this.panel?.webview.postMessage(value); }
+
+  private async state(): Promise<SettingsHostMessage> {
+    const profiles = this.connections.profiles();
+    const connections: SafeConnection[] = await Promise.all(profiles.map(async profile => ({
+      ...profile,
+      secretName: undefined,
+      headers: safeHeaders(profile.headers),
+      hasApiKey: await this.connections.hasApiKey(profile),
+      status: this.connections.diagnostics.status(profile),
+      models: this.connections.diagnostics.models(profile.id),
+      statistics: this.connections.diagnostics.statistics(profile.id),
+      activities: this.connections.diagnostics.activities(profile.id),
     })));
-    return { type: 'state', settings: this.manager.effective(), errors: this.manager.errorsList(), connections };
+    return {
+      type: 'state', settings: this.manager.effective(), errors: this.manager.errorsList(), connections,
+      workspaceOpen: Boolean(this.manager.workspaceConfigPath()),
+    };
   }
 
-  private async sendState(): Promise<void> { this.send(await this.state()); }
+  private async sendState(): Promise<void> { if (this.panel) this.send(await this.state()); }
 
   private async receive(raw: unknown): Promise<void> {
-    if (typeof raw !== 'object' || raw === null) return;
-    const message = raw as PanelMessage;
-    if (message.type === 'openWorkspaceConfig') {
-      const file = this.manager.workspaceConfigPath();
-      if (!file) { this.send({ type: 'error', message: 'Open a workspace to configure engineering systems.' }); return; }
-      try {
-        const document = await vscode.workspace.openTextDocument(vscode.Uri.file(file));
-        await vscode.window.showTextDocument(document);
-      } catch (error) { this.send({ type: 'error', message: error instanceof Error ? error.message : 'Unable to open workspace configuration.' }); }
-      return;
-    }
-    if (message.type === 'setSetting') {
-      const error = await this.manager.set(message.id, message.value, message.scope);
-      if (error) this.send({ type: 'error', message: error });
-      else { this.onSettingsChanged(); this.send({ type: 'notice', message: 'Setting applied.' }); await this.sendState(); }
-      return;
-    }
-    if (message.type === 'deleteConnection') {
-      const old = loadProfiles(this.context).find(profile => profile.id === message.id);
-      await saveProfiles(this.context, loadProfiles(this.context).filter(profile => profile.id !== message.id));
-      if (old?.secretName) await this.context.secrets.delete(old.secretName);
-      for (const header of old?.secretHeaderNames || []) await this.context.secrets.delete(secretHeaderKey(message.id, header));
-      await this.onConnectionsChanged(); this.send({ type: 'notice', message: 'Connection removed.' }); await this.sendState(); return;
-    }
-    if (message.type === 'saveConnection') {
-      const previous = loadProfiles(this.context).find(profile => profile.id === message.connection.id);
-      const connection = normalizeProfile({ ...previous, ...message.connection });
-      if (!connection.id || !connection.name || !connection.baseUrl) { this.send({ type: 'error', message: 'Connection ID, name, and base URL are required.' }); return; }
-      connection.secretName = connection.secretName || 'lgs.connection.' + connection.id + '.api';
-      connection.secretHeaderNames = [...new Set([...(message.connection.secretHeaderNames || []), ...Object.keys(message.secretHeaders || {})])];
-      const profiles = loadProfiles(this.context).filter(profile => profile.id !== connection.id); profiles.push(connection);
-      await saveProfiles(this.context, profiles);
-      if (message.apiKey) await this.context.secrets.store(connection.secretName, message.apiKey);
-      for (const [name, value] of Object.entries(message.secretHeaders || {})) if (value) await this.context.secrets.store(secretHeaderKey(connection.id, name), value);
-      for (const oldName of previous?.secretHeaderNames || []) if (!connection.secretHeaderNames.includes(oldName)) await this.context.secrets.delete(secretHeaderKey(connection.id, oldName));
-      await this.onConnectionsChanged(); this.send({ type: 'notice', message: 'Connection saved.' }); await this.sendState(); return;
-    }
-    if (message.type === 'testConnection') {
-      const profile = loadProfiles(this.context).find(candidate => candidate.id === message.id);
-      if (!profile) { this.send({ type: 'connectionResult', id: message.id, ok: false, message: 'Connection not found.' }); return; }
-      try {
-        const key = profile.secretName ? await this.context.secrets.get(profile.secretName) : undefined;
-        const secretHeaders: Record<string, string> = {};
-        for (const name of profile.secretHeaderNames) {
-          const value = await this.context.secrets.get(secretHeaderKey(profile.id, name)); if (value) secretHeaders[name] = value;
+    const message = parseSettingsClientMessage(raw);
+    if (!message) { this.notice('LGS rejected an invalid Settings request.', 'error'); return; }
+    try {
+      if (message.type === 'refreshState') { await this.sendState(); return; }
+      if (message.type === 'openWorkspaceConfig') { await this.openWorkspaceConfig(); return; }
+      if (message.type === 'openUsage') { await vscode.commands.executeCommand('lgs.openUsage'); return; }
+      if (message.type === 'setAppearance') {
+        const workspaceOverride = Object.prototype.hasOwnProperty.call(this.manager.workspaceValues(), 'appearance.theme');
+        const error = await this.manager.set('appearance.theme', message.theme, message.scope);
+        if (error) this.notice(error, 'error');
+        else {
+          this.onSettingsChanged();
+          this.notice(message.scope === 'user' && workspaceOverride
+            ? 'User theme saved. The existing workspace theme remains active and takes precedence in this workspace.'
+            : `Appearance updated for ${message.scope === 'user' ? 'your user profile' : 'this workspace'}.`, message.scope === 'user' && workspaceOverride ? 'warning' : 'success');
+          await this.sendState();
         }
-        const models = await createBackend(profile, key, secretHeaders).listModels();
-        this.send({ type: 'connectionResult', id: profile.id, ok: true, message: `${models.length} model${models.length === 1 ? '' : 's'} discovered.` });
-      } catch (error) { this.send({ type: 'connectionResult', id: profile.id, ok: false, message: error instanceof Error ? error.message : 'Connection failed.' }); }
+        return;
+      }
+      if (message.type === 'setSetting') {
+        const error = await this.manager.set(message.id, message.value, message.scope);
+        if (error) this.notice(error, 'error');
+        else { this.onSettingsChanged(); this.notice('Setting saved.', 'success'); await this.sendState(); }
+        return;
+      }
+      if (message.type === 'saveConnection') {
+        const draft = connectionDraft(message.connection);
+        const saved = await this.connections.save(draft);
+        await this.onConnectionsChanged();
+        this.notice(`${saved.name} saved. Stored secrets will not be returned to this view.`, 'success');
+        await this.sendState(); return;
+      }
+      if (message.type === 'deleteConnection') {
+        const deleted = await this.connections.delete(message.id);
+        if (!deleted) this.notice('Connection not found.', 'error');
+        else { await this.onConnectionsChanged(); this.notice('Connection and its LGS-managed secrets were removed.', 'success'); await this.sendState(); }
+        return;
+      }
+      if (message.type === 'setConnectionEnabled') {
+        const profile = await this.connections.setEnabled(message.id, message.enabled);
+        if (!profile) this.notice('Connection not found.', 'error');
+        else { await this.onConnectionsChanged(); this.notice(`${profile.name} ${message.enabled ? 'enabled' : 'disabled'}.`, 'success'); await this.sendState(); }
+        return;
+      }
+      if (message.type === 'testConnection') {
+        const result = await this.connections.test(message.id);
+        await this.sendState(); this.send({ type: 'connectionResult', id: message.id, result }); return;
+      }
+      if (message.type === 'testDraftConnection') {
+        const result = await this.connections.testDraft(connectionDraft(message.connection));
+        this.send({ type: 'connectionResult', id: String(message.connection.id || 'draft'), result, draft: true }); return;
+      }
+      if (message.type === 'lifecycle') {
+        const result = await this.onLifecycle(message.action);
+        this.send({ type: 'lifecycleResult', action: message.action, ok: true, message: result });
+        await this.sendState(); return;
+      }
+    } catch (error) {
+      const messageText = error instanceof Error ? error.message : 'The Settings operation failed.';
+      if (message.type === 'lifecycle') this.send({ type: 'lifecycleResult', action: message.action, ok: false, message: messageText });
+      else this.notice(messageText, 'error');
     }
   }
 
-  private html(): string {
+  private notice(message: string, tone: 'info' | 'success' | 'warning' | 'error' = 'info'): void { this.send({ type: 'notice', message, tone }); }
+
+  private async openWorkspaceConfig(): Promise<void> {
+    const file = this.manager.workspaceConfigPath();
+    if (!file) { this.notice('Open a workspace to configure engineering systems.', 'error'); return; }
+    const document = await vscode.workspace.openTextDocument(vscode.Uri.file(file)); await vscode.window.showTextDocument(document);
+  }
+
+  private html(webview: vscode.Webview): string {
+    const script = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'dist', 'settings.js'));
+    const style = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'dist', 'settings.css'));
     const nonce = Date.now().toString(36);
-    return `<!doctype html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'nonce-${nonce}'"><style>${css()}</style></head><body><div id="app"><div class="boot">Opening the lab notebook…</div></div><script nonce="${nonce}">${script()}</script></body></html>`;
+    return `<!doctype html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src ${webview.cspSource}; script-src 'nonce-${nonce}'"><link rel="stylesheet" href="${style}"></head><body><div id="app"><div class="boot">Opening LGS Settings…</div></div><script nonce="${nonce}" src="${script}"></script></body></html>`;
   }
 }
 
-function secretHeaderKey(id: string, name: string): string { return `lgs.connection.${id}.header.${name}`; }
-
-function css(): string {
-  return `:root{font-family:var(--vscode-font-family);font-size:var(--vscode-font-size);color:var(--vscode-foreground);background:var(--vscode-editor-background);--bg:var(--vscode-editor-background);--surface:var(--vscode-sideBar-background);--raised:var(--vscode-editorWidget-background);--text:var(--vscode-foreground);--muted:var(--vscode-descriptionForeground);--border:var(--vscode-panel-border);--primary:var(--vscode-button-background);--primary-text:var(--vscode-button-foreground);--hover:var(--vscode-list-hoverBackground);--accent:var(--vscode-textLink-foreground);--danger:var(--vscode-errorForeground);--success:var(--vscode-testing-iconPassed);--warning:var(--vscode-editorWarning-foreground)}html[data-lgs-theme=lgs-light]{--bg:#f4efe3;--surface:#fffaf0;--raised:#e9e0cf;--text:#252a27;--muted:#626a64;--border:#c9bda8;--primary:#285f49;--primary-text:#fffaf0;--hover:#e9e2d5;--accent:#8b642b;--danger:#a63d38;--success:#2d6f4f;--warning:#8a5a08}html[data-lgs-theme=lgs-dark]{--bg:#101820;--surface:#15212b;--raised:#1c2b36;--text:#eee8dc;--muted:#aeb8b1;--border:#334752;--primary:#6f9b7b;--primary-text:#0d1713;--hover:#223642;--accent:#c49a56;--danger:#ef9292;--success:#8fc59b;--warning:#ddb96d}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text)}button,input,select,textarea{font:inherit}button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--vscode-focusBorder);outline-offset:2px}.boot{padding:32px;color:var(--muted)}.shell{display:grid;grid-template-columns:238px minmax(0,880px);min-height:100vh}.rail{position:sticky;top:0;height:100vh;padding:28px 16px;background:var(--surface);border-right:1px solid var(--border)}.mark{display:flex;gap:11px;align-items:center;padding:0 8px 26px}.seal{display:grid;place-items:center;width:34px;height:34px;border:1px solid var(--accent);border-radius:50%;font:700 18px Georgia,serif;color:var(--accent)}.mark b{display:block;font-family:Georgia,serif;font-size:17px}.mark span{display:block;color:var(--muted);font-size:11px;margin-top:2px}.rail button{display:flex;width:100%;border:0;border-radius:5px;padding:9px 10px;margin:2px 0;background:transparent;color:var(--muted);cursor:pointer;text-align:left}.rail button:hover,.rail button.active{background:var(--hover);color:var(--text)}.content{padding:40px 42px 64px}.eyebrow{color:var(--accent);font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase}.content h1{font:500 30px Georgia,serif;margin:8px 0}.lede{max-width:650px;color:var(--muted);line-height:1.55;margin:0 0 28px}.section{display:none}.section.active{display:block}.section h2{font:500 20px Georgia,serif;margin:28px 0 4px}.section-intro{color:var(--muted);margin:0 0 16px}.notice{position:sticky;top:10px;z-index:3;border:1px solid var(--border);border-left:3px solid var(--accent);background:var(--raised);padding:10px 12px;border-radius:5px;margin-bottom:16px}.notice.error{border-left-color:var(--danger);color:var(--danger)}.card{background:color-mix(in srgb,var(--surface) 88%,transparent);border:1px solid var(--border);border-radius:7px;padding:16px;margin:10px 0}.card-head{display:flex;justify-content:space-between;gap:16px;align-items:flex-start}.card h3{font-size:13px;margin:0 0 4px}.muted,.source{color:var(--muted)}.source{font-size:11px}.field{display:flex;flex-direction:column;gap:6px;margin:12px 0;min-width:180px;flex:1}.field>span:first-child{font-size:12px;font-weight:600}.row{display:flex;gap:12px;flex-wrap:wrap}.control,input,select,textarea{width:100%;color:var(--vscode-input-foreground,var(--text));background:var(--vscode-input-background,var(--raised));border:1px solid var(--vscode-input-border,var(--border));padding:8px 9px;border-radius:4px}textarea{min-height:80px;resize:vertical;font-family:var(--vscode-editor-font-family),monospace;font-size:12px}.check{display:flex;align-items:center;gap:8px}.check input{width:auto}.actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:12px}.primary,.secondary,.danger{border-radius:4px;padding:7px 11px;cursor:pointer}.primary{border:1px solid var(--primary);background:var(--primary);color:var(--primary-text)}.secondary{border:1px solid var(--border);background:var(--raised);color:var(--text)}.danger{border:1px solid var(--danger);background:transparent;color:var(--danger)}.connection-status{font-size:11px;color:var(--muted)}.connection-status.ok{color:var(--success)}.connection-status.bad{color:var(--danger)}.swatches{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}.swatch{min-height:72px;padding:10px;border:1px solid var(--border);border-radius:5px;font-family:Georgia,serif}.swatch span{display:block;font:11px var(--vscode-font-family);opacity:.75;margin-top:6px}.paper{background:#f4efe3;color:#252a27;border-color:#c9bda8}.lab{background:#101820;color:#eee8dc;border-color:#334752}.native{background:var(--vscode-editor-background);color:var(--vscode-foreground)}.config-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.config-item{border-left:2px solid var(--accent);padding:7px 10px;background:var(--raised)}@media(max-width:760px){.shell{grid-template-columns:1fr}.rail{position:relative;height:auto;border-right:0;border-bottom:1px solid var(--border);padding:16px}.mark{padding-bottom:12px}.rail nav{display:flex;overflow:auto}.rail button{width:auto;white-space:nowrap}.content{padding:26px 18px}.swatches,.config-grid{grid-template-columns:1fr}}@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}`;
+function connectionDraft(value: Record<string, unknown>): ConnectionDraft {
+  const kind = typeof value.kind === 'string' && ['ollama', 'openai', 'openai-compatible', 'anthropic'].includes(value.kind) ? value.kind as ProviderKind : undefined;
+  return {
+    id: text(value.id), name: text(value.name), kind, baseUrl: text(value.baseUrl), enabled: value.enabled !== false,
+    apiKey: text(value.apiKey), removeApiKey: value.removeApiKey === true,
+    headers: stringRecord(value.headers), secretHeaders: stringRecord(value.secretHeaders), secretHeaderNames: stringArray(value.secretHeaderNames),
+    discoveryMode: value.discoveryMode === 'manual' || value.discoveryMode === 'disabled' ? value.discoveryMode : 'automatic',
+    discoveryPath: text(value.discoveryPath), manualModels: stringArray(value.manualModels), modelAliases: stringRecord(value.modelAliases),
+    capabilityOverrides: booleanRecord(value.capabilityOverrides), contextOverrides: numberRecord(value.contextOverrides),
+    pricing: record(value.pricing) ? {
+      billing: ['commercial', 'institution_provided', 'local', 'unknown'].includes(String(value.pricing.billing)) ? value.pricing.billing as 'commercial' | 'institution_provided' | 'local' | 'unknown' : 'unknown',
+      inputPerMillionUsd: numberValue(value.pricing.inputPerMillionUsd), cachedInputPerMillionUsd: numberValue(value.pricing.cachedInputPerMillionUsd), outputPerMillionUsd: numberValue(value.pricing.outputPerMillionUsd),
+    } : undefined,
+    dataPolicy: ['local', 'cloud', 'repository_allowed', 'metadata_only'].includes(String(value.dataPolicy)) ? value.dataPolicy as ConnectionDraft['dataPolicy'] : undefined,
+  };
 }
 
-function script(): string {
-  return `const api=acquireVsCodeApi(),app=document.querySelector('#app');let state,active='appearance';const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));const categories=[['appearance','Appearance'],['providers','Models & Providers'],['computer','Computer Access'],['engineering','Engineering Systems']];function setting(id){return state.settings.find(x=>x.id===id)}function shell(){const theme=setting('appearance.theme')?.value||'vscode';document.documentElement.dataset.lgsTheme=theme;app.innerHTML='<div class=shell><aside class=rail><div class=mark><div class=seal>L</div><div><b>Little Grad Student</b><span>Research lab settings</span></div></div><nav>'+categories.map(([id,label])=>'<button data-nav='+id+' class="'+(active===id?'active':'')+'">'+label+'</button>').join('')+'</nav></aside><main class=content><div class=eyebrow>Laboratory configuration</div><h1>Settings</h1><p class=lede>Connection profiles, appearance, and permission boundaries for the active research workspace.</p><div id=notice></div>'+categories.map(([id,label])=>'<section id='+id+' class="section '+(active===id?'active':'')+'"><h2>'+label+'</h2><div class=section-body></div></section>').join('')+'</main></div>';document.querySelectorAll('[data-nav]').forEach(b=>b.onclick=()=>{active=b.dataset.nav;shell();render()});render()}function render(){if(state.errors.length)show(state.errors.join(' '),true);renderAppearance();renderProviders();renderComputer();renderEngineering()}function show(message,error=false){const n=document.querySelector('#notice');n.innerHTML='<div class="notice '+(error?'error':'')+'">'+esc(message)+'</div>'}function settingCard(item,extra=''){const input=item.type==='select'?'<select class=control data-value='+esc(item.id)+'>'+item.choices.map(c=>'<option value="'+esc(c.value)+'" '+(c.value===item.value?'selected':'')+'>'+esc(c.label)+'</option>').join('')+'</select>':item.type==='boolean'?'<label class=check><input type=checkbox data-value='+esc(item.id)+' '+(item.value?'checked':'')+'> Enabled</label>':'<input class=control data-value='+esc(item.id)+' type='+(item.type==='number'?'number':'text')+' value="'+esc(item.value)+'">';return '<article class=card><h3>'+esc(item.label)+'</h3><p class=muted>'+esc(item.description)+'</p>'+extra+'<div class=row><label class=field><span>Value</span>'+input+'</label><label class=field><span>Save to</span><select data-scope='+esc(item.id)+'><option value=user>User profile</option><option value=workspace>Workspace</option></select></label></div><div class=actions><button class=primary data-save='+esc(item.id)+'>Apply</button><span class=source>Effective source: '+esc(item.source)+'</span></div></article>'}function bindSettings(root){root.querySelectorAll('[data-save]').forEach(button=>button.onclick=()=>{const id=button.dataset.save,node=root.querySelector('[data-value="'+id+'"]'),item=setting(id);let value=item.type==='boolean'?node.checked:item.type==='number'?Number(node.value):node.value;api.postMessage({type:'setSetting',id,value,scope:root.querySelector('[data-scope="'+id+'"]').value})})}function renderAppearance(){const root=document.querySelector('#appearance .section-body'),item=setting('appearance.theme');root.innerHTML='<p class=section-intro>Theme changes apply to the sidebar immediately.</p>'+settingCard(item,'<div class=swatches><div class="swatch native"><b>Follow VS Code</b><span>Native workbench roles</span></div><div class="swatch paper"><b>Research Paper</b><span>Ivory, graphite, academic green</span></div><div class="swatch lab"><b>Research Lab</b><span>Deep blue, sage, warm brass</span></div></div>');bindSettings(root)}function renderComputer(){const root=document.querySelector('#computer .section-body'),items=state.settings.filter(x=>x.category==='Computer Access');root.innerHTML='<p class=section-intro>These policies are consumed by the live Computer Agent. High-risk actions still require confirmation.</p>'+items.map(x=>settingCard(x)).join('');bindSettings(root)}function renderProviders(){const root=document.querySelector('#providers .section-body'),defaults=state.settings.filter(x=>x.id.startsWith('models.'));root.innerHTML='<p class=section-intro>Profiles are independent connection identities. Secrets stay in VS Code SecretStorage and are never returned here.</p>'+defaults.map(x=>settingCard(x)).join('')+'<div class=actions><button class=primary id=add-connection>Add connection</button></div><div id=connections>'+state.connections.map(connectionCard).join('')+'</div>';bindSettings(root);document.querySelector('#add-connection').onclick=()=>editConnection();root.querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>editConnection(state.connections.find(x=>x.id===b.dataset.edit)));root.querySelectorAll('[data-test]').forEach(b=>b.onclick=()=>{const status=root.querySelector('[data-result="'+b.dataset.test+'"]');status.textContent='Testing connection…';status.className='connection-status';api.postMessage({type:'testConnection',id:b.dataset.test})});root.querySelectorAll('[data-delete]').forEach(b=>b.onclick=()=>{if(confirm('Remove this connection and its stored secrets?'))api.postMessage({type:'deleteConnection',id:b.dataset.delete})})}function connectionCard(c){return '<article class=card><div class=card-head><div><h3>'+esc(c.name)+'</h3><span class=source>'+esc(c.kind)+' · '+esc(c.baseUrl)+'</span></div><span class=source>'+(c.enabled?'Enabled':'Disabled')+'</span></div><p class=muted>Data policy: '+esc(c.dataPolicy||'not set')+' · API secret: '+(c.hasApiKey?'stored':'not stored')+' · Secret headers: '+c.secretHeaderNames.length+'</p><div class=actions><button class=secondary data-test="'+esc(c.id)+'">Test & discover</button><button class=secondary data-edit="'+esc(c.id)+'">Edit</button><button class=danger data-delete="'+esc(c.id)+'">Remove</button><span class=connection-status data-result="'+esc(c.id)+'"></span></div></article>'}function editConnection(c={id:'',name:'',kind:'openai-compatible',baseUrl:'',enabled:true,headers:{},secretHeaderNames:[],modelAliases:{},capabilityOverrides:{},dataPolicy:'repository_allowed'}){const root=document.querySelector('#connections');root.insertAdjacentHTML('afterbegin','<form class=card id=connection-editor><h3>'+(c.id?'Edit connection':'New connection')+'</h3><div class=row><label class=field><span>Connection ID</span><input name=id value="'+esc(c.id)+'" '+(c.id?'readonly':'')+' required></label><label class=field><span>Display name</span><input name=name value="'+esc(c.name)+'" required></label></div><div class=row><label class=field><span>Adapter</span><select name=kind>'+['ollama','openai-compatible','anthropic'].map(x=>'<option '+(x===c.kind?'selected':'')+'>'+x+'</option>').join('')+'</select></label><label class=field><span>Data policy</span><select name=dataPolicy>'+['local','repository_allowed','metadata_only','cloud'].map(x=>'<option '+(x===c.dataPolicy?'selected':'')+'>'+x+'</option>').join('')+'</select></label></div><label class=field><span>Base URL</span><input name=baseUrl type=url value="'+esc(c.baseUrl)+'" required></label><label class=check><input name=enabled type=checkbox '+(c.enabled?'checked':'')+'> Connection enabled</label><div class=row><label class=field><span>API key</span><input name=apiKey type=password placeholder="'+(c.hasApiKey?'Stored — leave blank to keep':'Optional')+'"></label><label class=field><span>Secret header names</span><input name=secretHeaderNames value="'+esc(c.secretHeaderNames.join(', '))+'" placeholder="X-API-Key"></label></div><label class=field><span>Secret header updates (JSON)</span><textarea name=secretHeaders placeholder="{&quot;X-API-Key&quot;:&quot;new value&quot;}">{}</textarea></label><details><summary>Advanced connection metadata</summary><label class=field><span>Ordinary headers (JSON)</span><textarea name=headers>'+esc(JSON.stringify(c.headers,null,2))+'</textarea></label><label class=field><span>Model aliases (JSON)</span><textarea name=modelAliases>'+esc(JSON.stringify(c.modelAliases,null,2))+'</textarea></label><label class=field><span>Capability overrides (JSON)</span><textarea name=capabilityOverrides>'+esc(JSON.stringify(c.capabilityOverrides,null,2))+'</textarea></label></details><div class=actions><button class=primary type=submit>Save connection</button><button class=secondary type=button id=cancel-editor>Cancel</button></div></form>');const form=document.querySelector('#connection-editor');form.scrollIntoView({behavior:'smooth'});document.querySelector('#cancel-editor').onclick=()=>form.remove();form.onsubmit=event=>{event.preventDefault();const data=new FormData(form);try{const secretHeaders=JSON.parse(data.get('secretHeaders')||'{}'),headers=JSON.parse(data.get('headers')||'{}'),modelAliases=JSON.parse(data.get('modelAliases')||'{}'),capabilityOverrides=JSON.parse(data.get('capabilityOverrides')||'{}'),secretHeaderNames=String(data.get('secretHeaderNames')||'').split(',').map(x=>x.trim()).filter(Boolean);api.postMessage({type:'saveConnection',connection:{id:data.get('id'),name:data.get('name'),kind:data.get('kind'),baseUrl:data.get('baseUrl'),dataPolicy:data.get('dataPolicy'),enabled:data.get('enabled')==='on',headers,secretHeaderNames,modelAliases,capabilityOverrides},apiKey:data.get('apiKey')||undefined,secretHeaders})}catch{show('Advanced and secret-header fields must contain valid JSON.',true)}}}function renderEngineering(){const root=document.querySelector('#engineering .section-body');root.innerHTML='<p class=section-intro>Complex engineering policy stays reviewable and versionable in the workspace file.</p><article class=card><div class=config-grid>'+['Agents & routing','Integrations','Context & research','Verification & runtime','Git & completion','Usage & budgets','Memory & skills','Permissions'].map(x=>'<div class=config-item><b>'+x+'</b><br><span class=source>Configured in .lgs/config.yaml</span></div>').join('')+'</div><div class=actions><button class=primary id=open-config>Open workspace configuration</button></div></article>';document.querySelector('#open-config').onclick=()=>api.postMessage({type:'openWorkspaceConfig'})}window.addEventListener('message',event=>{const data=event.data;if(data.type==='state'){state=data;shell()}else if(data.type==='error')show(data.message,true);else if(data.type==='notice')show(data.message);else if(data.type==='connectionResult'){const node=document.querySelector('[data-result="'+CSS.escape(data.id)+'"]');if(node){node.textContent=data.message;node.className='connection-status '+(data.ok?'ok':'bad')}}});api.postMessage({type:'requestState'});`;
-}
+function safeHeaders(headers: Record<string, string>): Record<string, string> { return Object.fromEntries(Object.entries(headers).filter(([name]) => !/authorization|api[-_]?key|token|secret|credential/i.test(name))); }
+function record(value: unknown): value is Record<string, unknown> { return typeof value === 'object' && value !== null && !Array.isArray(value); }
+function text(value: unknown): string | undefined { return typeof value === 'string' ? value : undefined; }
+function numberValue(value: unknown): number | undefined { return typeof value === 'number' && Number.isFinite(value) && value >= 0 ? value : undefined; }
+function stringArray(value: unknown): string[] { return Array.isArray(value) ? value.filter((item): item is string => typeof item === 'string').map(item => item.trim()).filter(Boolean) : []; }
+function stringRecord(value: unknown): Record<string, string> { return record(value) ? Object.fromEntries(Object.entries(value).filter((entry): entry is [string, string] => typeof entry[1] === 'string')) : {}; }
+function booleanRecord(value: unknown): Record<string, boolean> { return record(value) ? Object.fromEntries(Object.entries(value).filter((entry): entry is [string, boolean] => typeof entry[1] === 'boolean')) : {}; }
+function numberRecord(value: unknown): Record<string, number> { return record(value) ? Object.fromEntries(Object.entries(value).filter((entry): entry is [string, number] => typeof entry[1] === 'number' && Number.isInteger(entry[1]))) : {}; }

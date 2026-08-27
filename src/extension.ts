@@ -3,11 +3,14 @@ import * as path from 'node:path';
 import * as vscode from 'vscode';
 import { getFreshness, writeRepositoryIndex, type RepositoryIndex } from './intelligence/indexer.js';
 import type { ModelBackend } from './model/backend.js';
-import { createBackends } from './model/registry.js';
-import { loadProfiles, type BackendProfile, type ProviderDataPolicy } from './model/profiles.js';
+import { ProviderConnectionService } from './model/connections.js';
+import { normalizeProviderError, ProviderDiagnosticsStore } from './model/diagnostics.js';
+import { createBackends, type BackendObservation } from './model/registry.js';
+import { loadProfiles, profileBilling, type BackendProfile, type ProviderDataPolicy } from './model/profiles.js';
 import { textFromMessage, textMessage, type LgsMessage } from './model/types.js';
 import { SettingsManager } from './settings/configuration.js';
 import { SettingsPanel } from './settings/panel.js';
+import { LgsLifecycleService } from './settings/lifecycle.js';
 import { Logger } from './shared/logger.js';
 import { parseClientMessage, type ChatOptions, type HostMessage, type TaskActivity, type TaskAction, type TaskDashboard } from './shared/messages.js';
 import {
@@ -32,9 +35,14 @@ export function activate(context: vscode.ExtensionContext): void {
   const settings = new SettingsManager(context, root);
   const pricing = root ? new FilePricingStore(root) : undefined;
   const usage = root && pricing ? new UsageTracker(new FileUsageStore(root), pricing, settings.workspaceConfiguration().usage) : undefined;
-  setActiveUsageTracker(usage, id => loadProfiles(context).find(profile => profile.id === id)?.dataPolicy === 'local' ? 'local' : 'unknown');
-  const provider = new LgsViewProvider(context, logger, settings, usage, pricing);
-  const settingsPanel = new SettingsPanel(context, settings, () => provider.refreshConnections(), () => provider.refreshSettings());
+  setActiveUsageTracker(usage, id => { const profile = loadProfiles(context).find(candidate => candidate.id === id); return profile ? profileBilling(profile) : 'unknown'; });
+  const diagnostics = new ProviderDiagnosticsStore(context.globalState, () => usage?.records() || []);
+  const connections = new ProviderConnectionService(context, diagnostics, pricing);
+  const provider = new LgsViewProvider(context, logger, settings, connections, usage, pricing);
+  let refreshSettingsPanel = () => {};
+  const lifecycle = new LgsLifecycleService(connections, diagnostics, provider, () => refreshSettingsPanel(), async () => { await vscode.commands.executeCommand('workbench.action.reloadWindow'); });
+  const settingsPanel = new SettingsPanel(context, settings, connections, () => provider.refreshConnections(), () => provider.refreshSettings(), action => lifecycle.run(action));
+  refreshSettingsPanel = () => settingsPanel.refresh();
   provider.attachSettingsPanel(settingsPanel);
   context.subscriptions.push(
     vscode.window.registerWebviewViewProvider('lgs.sidebar', provider),
@@ -71,6 +79,7 @@ class LgsViewProvider implements vscode.WebviewViewProvider {
     private readonly context: vscode.ExtensionContext,
     private readonly logger: Logger,
     private readonly settings: SettingsManager,
+    private readonly connections: ProviderConnectionService,
     private readonly usage?: UsageTracker,
     private readonly pricing?: FilePricingStore,
   ) {
@@ -107,7 +116,20 @@ class LgsViewProvider implements vscode.WebviewViewProvider {
       }
       secretHeaders.set(profile.id, headers);
     }
-    this.backends = createBackends(this.profiles, profile => profile.secretName ? secrets.get(profile.secretName) : undefined, profile => secretHeaders.get(profile.id) || {});
+    this.backends = createBackends(this.profiles, profile => profile.secretName ? secrets.get(profile.secretName) : undefined, profile => secretHeaders.get(profile.id) || {}, (profile, event) => { void this.observeProvider(profile, event); });
+  }
+
+  private async observeProvider(profile: BackendProfile, event: BackendObservation): Promise<void> {
+    const now = new Date().toISOString(); const previous = this.connections.diagnostics.status(profile);
+    if (event.type === 'connecting') await this.connections.diagnostics.updateStatus(profile.id, { ...previous, state: 'connecting', checkedAt: now, message: `Connecting to ${profile.name} for a model request.` });
+    else if (event.type === 'connected') await this.connections.diagnostics.updateStatus(profile.id, { ...previous, state: 'online', checkedAt: now, message: 'Provider accepted the model request.' });
+    else if (event.type === 'done') await this.connections.diagnostics.updateStatus(profile.id, { ...previous, state: 'online', checkedAt: now, lastSuccessfulAt: now, message: `Request completed${event.durationMs === undefined ? '.' : ` in ${event.durationMs} ms.`}` });
+    else {
+      const diagnostic = normalizeProviderError(event.error, profile);
+      await this.connections.diagnostics.updateStatus(profile.id, { ...previous, state: diagnostic.state, checkedAt: now, message: diagnostic.summary });
+      await this.connections.diagnostics.record({ connectionId: profile.id, type: 'error', operation: 'model request', result: 'failed', message: `${diagnostic.summary}${diagnostic.guidance ? ` ${diagnostic.guidance}` : ''}`, model: event.model, durationMs: event.durationMs });
+    }
+    this.settingsPanel?.refresh();
   }
 
   private send(message: HostMessage): void { void this.view?.webview.postMessage(message); }
@@ -158,7 +180,10 @@ class LgsViewProvider implements vscode.WebviewViewProvider {
     if (!backend) { this.send({ type: 'models', models: [], selected: '' }); this.send({ type: 'state', state: 'No enabled connection' }); return; }
     this.send({ type: 'state', state: 'Connecting…' });
     try {
-      const models = await backend.listModels();
+      this.settingsPanel?.refresh();
+      const result = await this.connections.test(this.profileId);
+      const models = result.models;
+      if (!result.ok) throw new Error(`${result.title}\n${result.endpoint}\n\n${result.summary}${result.guidance ? `\n\n${result.guidance}` : ''}`);
       const preferred = String(this.settings.effective().find(setting => setting.id === 'models.defaultModel')?.value || '');
       this.model = models.some(model => model.id === this.model) ? this.model : models.some(model => model.id === preferred) ? preferred : models[0]?.id || '';
       this.send({ type: 'models', models, selected: this.model });
@@ -331,6 +356,16 @@ class LgsViewProvider implements vscode.WebviewViewProvider {
   }
   refreshSettings(): void { this.refreshAppearance(); this.selectConfiguredDefaults(); this.sendProfiles(); void this.listModels(); }
   async refreshConnections(): Promise<void> { this.profiles = loadProfiles(this.context); this.rebuilding = this.rebuild(); await this.rebuilding; this.selectConfiguredDefaults(); this.sendProfiles(); await this.listModels(); }
+  async restartServices(): Promise<string> {
+    const hadActiveRequest = Boolean(this.abort); this.abort?.abort(); this.settings.reloadWorkspace();
+    this.profiles = loadProfiles(this.context); this.rebuilding = this.rebuild(); await this.rebuilding;
+    this.selectConfiguredDefaults(); this.sendProfiles(); this.refreshAppearance(); await this.listModels();
+    return hadActiveRequest ? 'LGS services restarted. The active request was cancelled safely.' : 'LGS services restarted and provider adapters rebuilt.';
+  }
+  restartOwnedLocalRuntimes(): string {
+    return 'No persistent LGS-owned local runtime is active. External provider processes were left untouched.';
+  }
+  reloadViews(): void { this.sendProfiles(); this.send({ type: 'options', options: this.options }); this.refreshAppearance(); this.sendChats(); void this.listModels(); }
 }
 
 function configuredIntegrations(configuration: import('./integrations/types.js').IntegrationConfiguration | undefined): IntegrationHub {

@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "generatedAt": "2026-08-27T12:22:59.900Z",
+  "generatedAt": "2026-08-27T12:50:27.216Z",
   "root": "/home/tristan/Documents/Github/lgs",
   "directories": [
     ".vscode",
@@ -84,9 +84,9 @@
       "path": "README.md",
       "fileType": "md",
       "language": "Markdown/Text",
-      "size": 46077,
-      "mtimeMs": 1787832879848.863,
-      "hash": "cfb68baf334abfb0ea7398f1e8f542488045e0d2",
+      "size": 47590,
+      "mtimeMs": 1787834999931.9514,
+      "hash": "0677ff4a3ecba880181bfeb8ef77aebd06dee6d1",
       "imports": [],
       "exports": [],
       "symbols": [],
@@ -144,9 +144,9 @@
       "path": "docs/providers.md",
       "fileType": "md",
       "language": "Markdown/Text",
-      "size": 1783,
-      "mtimeMs": 1787832969571.96,
-      "hash": "6c20462dd427f4d9a6d8b06b8f27f53144a93b12",
+      "size": 4206,
+      "mtimeMs": 1787835000001.9514,
+      "hash": "36931f9f36cc62842d7f6ccd6d25168a626a4c75",
       "imports": [],
       "exports": [],
       "symbols": [],
@@ -159,9 +159,9 @@
       "path": "docs/settings.md",
       "fileType": "md",
       "language": "Markdown/Text",
-      "size": 1879,
-      "mtimeMs": 1787832969534.96,
-      "hash": "9a8c27be1bb1fbb411a80214d50e00c4939f8814",
+      "size": 4361,
+      "mtimeMs": 1787834999966.9514,
+      "hash": "18a8c41ed07a68996067ebe8feceb3149025b115",
       "imports": [],
       "exports": [],
       "symbols": [],
@@ -174,9 +174,9 @@
       "path": "esbuild.mjs",
       "fileType": "mjs",
       "language": "JavaScript",
-      "size": 907,
-      "mtimeMs": 1787779795020.4858,
-      "hash": "b8cf24132809826f7b83e9668d08ee27313eabea",
+      "size": 1125,
+      "mtimeMs": 1787834451346.623,
+      "hash": "83e00054028ef3b42f72a3e240046006a197caba",
       "imports": [
         "esbuild"
       ],
@@ -185,7 +185,8 @@
         "production",
         "shared",
         "extension",
-        "webview"
+        "webview",
+        "settings"
       ],
       "likelyTest": false,
       "likelyDocumentation": false,
@@ -246,9 +247,9 @@
       "path": "package.json",
       "fileType": "json",
       "language": "JSON",
-      "size": 1917,
-      "mtimeMs": 1787794951491.3103,
-      "hash": "f7085a9e967b423508bb0a679881b83cc28f6366",
+      "size": 1970,
+      "mtimeMs": 1787834880902.8806,
+      "hash": "ea27374b164112e3ffbd8b8f6f6d9124e83144a0",
       "imports": [],
       "exports": [],
       "symbols": [],
@@ -1394,20 +1395,23 @@
       "path": "src/extension.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 29189,
-      "mtimeMs": 1787832997689.9805,
-      "hash": "11de89585b2408ff689af782145e2e30036d0715",
+      "size": 32696,
+      "mtimeMs": 1787834825781.848,
+      "hash": "215bfd6c0d59c985f546349fed6a7ba78208df31",
       "imports": [
         "node:fs",
         "node:path",
         "vscode",
         "./intelligence/indexer.js",
         "./model/backend.js",
+        "./model/connections.js",
+        "./model/diagnostics.js",
         "./model/registry.js",
         "./model/profiles.js",
         "./model/types.js",
         "./settings/configuration.js",
         "./settings/panel.js",
+        "./settings/lifecycle.js",
         "./shared/logger.js",
         "./shared/messages.js",
         "./tools/index.js",
@@ -1846,9 +1850,9 @@
       "path": "src/model/anthropic.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 2990,
-      "mtimeMs": 1787794444780.2083,
-      "hash": "af84d3c42da628e3e7e868d5287d34d8cfd7631c",
+      "size": 3019,
+      "mtimeMs": 1787833837409.285,
+      "hash": "d91bdbf67141b5353d8ab5bea5ebae8195a5806a",
       "imports": [
         "./types.js",
         "./backend.js"
@@ -1868,9 +1872,9 @@
       "path": "src/model/backend.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 1746,
-      "mtimeMs": 1787711658479.8813,
-      "hash": "32d007b9998e6eed4469db027dc1056545f0ae7b",
+      "size": 1825,
+      "mtimeMs": 1787834766977.8127,
+      "hash": "4c3733324a05a9ea3c8476d4df9a43de3b0c6660",
       "imports": [
         "./types.js"
       ],
@@ -1896,12 +1900,102 @@
       "module": "src"
     },
     {
+      "path": "src/model/connections.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 8799,
+      "mtimeMs": 1787834777308.819,
+      "hash": "60f8335155f3e1c4fc238f2856855d8ef20d80b1",
+      "imports": [
+        "node:crypto",
+        "vscode",
+        "../usage/store.js",
+        "./profiles.js",
+        "./diagnostics.js"
+      ],
+      "exports": [
+        "ConnectionDraft",
+        "ProviderConnectionService",
+        "defaultBaseUrl",
+        "validateProfile",
+        "secretHeaderKey"
+      ],
+      "symbols": [
+        "ConnectionDraft",
+        "ProviderConnectionService",
+        "defaultBaseUrl",
+        "validateProfile",
+        "secretHeaderKey",
+        "disabledResult"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/model",
+      "module": "src"
+    },
+    {
+      "path": "src/model/diagnostics.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 15945,
+      "mtimeMs": 1787834789847.8264,
+      "hash": "af578488007441b06429e24c86da49602d3ad965",
+      "imports": [
+        "vscode",
+        "../usage/types.js",
+        "./backend.js",
+        "./profiles.js",
+        "./types.js"
+      ],
+      "exports": [
+        "ProviderHealth",
+        "ProviderActivityType",
+        "ProviderStatus",
+        "ProviderActivity",
+        "ProviderStatistics",
+        "ConnectionTestResult",
+        "ProviderDiagnosticsStore",
+        "testProviderConnection",
+        "normalizeProviderError",
+        "redactProviderText",
+        "aggregateProviderStatistics"
+      ],
+      "symbols": [
+        "ProviderHealth",
+        "ProviderActivityType",
+        "ProviderStatus",
+        "ProviderActivity",
+        "ProviderStatistics",
+        "ConnectionTestResult",
+        "PersistedDiagnostics",
+        "GlobalState",
+        "STORAGE_KEY",
+        "MAX_ACTIVITIES",
+        "ProviderDiagnosticsStore",
+        "testProviderConnection",
+        "normalizeProviderError",
+        "redactProviderText",
+        "aggregateProviderStatistics",
+        "usageActivity",
+        "asBackendError",
+        "nestedCode",
+        "errorText",
+        "sum",
+        "average",
+        "maximum"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/model",
+      "module": "src"
+    },
+    {
       "path": "src/model/ollama.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 2326,
-      "mtimeMs": 1787788061689.422,
-      "hash": "b6099d4ded5bba32078e6eb39685cdedad99f611",
+      "size": 2383,
+      "mtimeMs": 1787833837337.285,
+      "hash": "732e6b6c3d937b6204f82f8c5fe12a59f3737bd6",
       "imports": [
         "./types.js",
         "./backend.js"
@@ -1921,9 +2015,9 @@
       "path": "src/model/openai.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 3457,
-      "mtimeMs": 1787794415643.4663,
-      "hash": "ca6ef883cd2715098a1fa51b3576daaf9a7c6946",
+      "size": 3520,
+      "mtimeMs": 1787833837373.285,
+      "hash": "a342a2f8be086bdee76673e6ef71449f5feeac38",
       "imports": [
         "./types.js",
         "./backend.js"
@@ -1943,35 +2037,44 @@
       "path": "src/model/profiles.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 3177,
-      "mtimeMs": 1787789546327.9624,
-      "hash": "ac2d561309c741f9c9b95c8bb182aba5f4204d86",
+      "size": 6712,
+      "mtimeMs": 1787834767013.8127,
+      "hash": "b5c16955d399e138d3c39b8aa0baf6ffae28a0f2",
       "imports": [
-        "./backend.js",
+        "vscode",
+        "../usage/types.js",
         "./anthropic.js",
+        "./backend.js",
         "./ollama.js",
         "./openai.js",
-        "vscode"
+        "./types.js"
       ],
       "exports": [
         "ProviderKind",
         "ProviderDataPolicy",
+        "ModelDiscoveryMode",
+        "ProviderPricing",
         "BackendProfile",
         "defaultProfiles",
         "normalizeProfile",
         "loadProfiles",
         "saveProfiles",
-        "createBackend"
+        "createBackend",
+        "profileBilling"
       ],
       "symbols": [
         "ProviderKind",
         "ProviderDataPolicy",
+        "ModelDiscoveryMode",
+        "ProviderPricing",
         "BackendProfile",
         "defaultProfiles",
         "normalizeProfile",
         "loadProfiles",
         "saveProfiles",
-        "createBackend"
+        "createBackend",
+        "profileBilling",
+        "ProfileBackend"
       ],
       "likelyTest": false,
       "likelyDocumentation": false,
@@ -1982,20 +2085,24 @@
       "path": "src/model/registry.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 476,
-      "mtimeMs": 1787711921338.0347,
-      "hash": "48ec023af7108243f9842e1638b7b287ec679328",
+      "size": 2622,
+      "mtimeMs": 1787834804899.8354,
+      "hash": "6edba393f8d522afd64f8e40311ad4ff427c39d6",
       "imports": [
         "./backend.js",
-        "./profiles.js"
+        "./profiles.js",
+        "./types.js"
       ],
       "exports": [
         "BackendId",
+        "BackendObservation",
         "createBackends"
       ],
       "symbols": [
         "BackendId",
-        "createBackends"
+        "BackendObservation",
+        "createBackends",
+        "ObservedBackend"
       ],
       "likelyTest": false,
       "likelyDocumentation": false,
@@ -2006,9 +2113,9 @@
       "path": "src/model/types.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 2151,
-      "mtimeMs": 1787794415590.4663,
-      "hash": "b82bb36144b56f1b8e7b02aa2133e8bb62d45682",
+      "size": 2217,
+      "mtimeMs": 1787833837302.285,
+      "hash": "a88571e7578d83ee505a63f2c09665df975813bb",
       "imports": [],
       "exports": [
         "Role",
@@ -2019,8 +2126,8 @@
         "ReasoningEffort",
         "ReasoningConfiguration",
         "GenerationOptions",
-        "ModelInfo",
         "ModelCapabilities",
+        "ModelInfo",
         "ConnectionState",
         "Usage",
         "TokenInformation",
@@ -2040,8 +2147,8 @@
         "ReasoningEffort",
         "ReasoningConfiguration",
         "GenerationOptions",
-        "ModelInfo",
         "ModelCapabilities",
+        "ModelInfo",
         "ConnectionState",
         "Usage",
         "TokenInformation",
@@ -3178,26 +3285,178 @@
       "module": "src"
     },
     {
+      "path": "src/settings/lifecycle.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 2579,
+      "mtimeMs": 1787834628704.7307,
+      "hash": "11232fe62c7071eb2bbfbc7aa33e59785a398a6b",
+      "imports": [
+        "../model/diagnostics.js",
+        "../model/profiles.js",
+        "./messages.js"
+      ],
+      "exports": [
+        "LifecycleConnections",
+        "LifecycleViews",
+        "LgsLifecycleService"
+      ],
+      "symbols": [
+        "LifecycleConnections",
+        "LifecycleViews",
+        "LgsLifecycleService",
+        "lifecycleLabel"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/settings",
+      "module": "src"
+    },
+    {
+      "path": "src/settings/main.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 39324,
+      "mtimeMs": 1787834825817.848,
+      "hash": "fda9eb3b8cef80fdb206ddd7bc512238ea2ada30",
+      "imports": [
+        "./styles.css",
+        "./messages.js"
+      ],
+      "exports": [],
+      "symbols": [
+        "acquireVsCodeApi",
+        "api",
+        "app",
+        "state",
+        "active",
+        "scope",
+        "editingId",
+        "logConnectionId",
+        "logFilter",
+        "draftTestPassed",
+        "categories",
+        "receive",
+        "render",
+        "restartMenu",
+        "renderAppearance",
+        "themeCard",
+        "renderProviders",
+        "connectionCard",
+        "bindProviderActions",
+        "connectionEditor",
+        "bindEditor",
+        "serializeConnection",
+        "modelTable",
+        "logsView",
+        "bindLogs",
+        "statisticsView",
+        "renderStructuredSections",
+        "purposeSection",
+        "permissionRow",
+        "bindNavigation",
+        "bindLifecycle",
+        "setTesting",
+        "updateSaveAvailability",
+        "diagnosticResult",
+        "notice",
+        "applyTheme",
+        "effectiveTheme",
+        "setting",
+        "newConnection",
+        "emptyConnections",
+        "defaultUrl",
+        "apiTypeLabel",
+        "statusLabel",
+        "billingLabel",
+        "policyLabel",
+        "capabilityLabel",
+        "capabilities",
+        "endpointSummary",
+        "settingValue",
+        "field",
+        "rootChecked",
+        "numberInput",
+        "cost",
+        "formatNumber",
+        "formatDate",
+        "relative",
+        "title",
+        "cssEscape",
+        "esc"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/settings",
+      "module": "src"
+    },
+    {
+      "path": "src/settings/messages.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 3348,
+      "mtimeMs": 1787834568512.6948,
+      "hash": "822236bd5c656ce2acc12cc7bc83947d5864c810",
+      "imports": [
+        "../model/diagnostics.js",
+        "../model/profiles.js",
+        "../model/types.js",
+        "./registry.js"
+      ],
+      "exports": [
+        "SettingsScope",
+        "LifecycleAction",
+        "SafeConnection",
+        "SettingsState",
+        "SettingsHostMessage",
+        "SettingsClientMessage",
+        "parseSettingsClientMessage"
+      ],
+      "symbols": [
+        "SettingsScope",
+        "LifecycleAction",
+        "SafeConnection",
+        "SettingsState",
+        "SettingsHostMessage",
+        "SettingsClientMessage",
+        "parseSettingsClientMessage",
+        "record"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/settings",
+      "module": "src"
+    },
+    {
       "path": "src/settings/panel.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 23192,
-      "mtimeMs": 1787832997727.9805,
-      "hash": "25513b467d29f743aeee4a6a5eabb9ed6fa7cd01",
+      "size": 10709,
+      "mtimeMs": 1787834568547.6948,
+      "hash": "b36fc236a09bde7f5df47d1c530eda2be40668f8",
       "imports": [
         "vscode",
+        "../model/connections.js",
         "../model/profiles.js",
-        "./configuration.js"
+        "./configuration.js",
+        "./messages.js"
       ],
       "exports": [
+        "SettingsLifecycleHandler",
         "SettingsPanel"
       ],
       "symbols": [
-        "PanelMessage",
+        "SettingsLifecycleHandler",
         "SettingsPanel",
-        "secretHeaderKey",
-        "css",
-        "script"
+        "connectionDraft",
+        "safeHeaders",
+        "record",
+        "text",
+        "numberValue",
+        "stringArray",
+        "stringRecord",
+        "booleanRecord",
+        "numberRecord"
       ],
       "likelyTest": false,
       "likelyDocumentation": false,
@@ -3230,6 +3489,21 @@
         "SettingsRegistry",
         "resolveSetting"
       ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/settings",
+      "module": "src"
+    },
+    {
+      "path": "src/settings/styles.css",
+      "fileType": "css",
+      "language": "CSS",
+      "size": 20109,
+      "mtimeMs": 1787834825851.848,
+      "hash": "6d70fe72cb155defe5c204873ea75cf5993ceaa3",
+      "imports": [],
+      "exports": [],
+      "symbols": [],
       "likelyTest": false,
       "likelyDocumentation": false,
       "directory": "src/settings",
@@ -3796,9 +4070,9 @@
       "path": "src/usage/service.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 8144,
-      "mtimeMs": 1787795848535.6084,
-      "hash": "953db9fca747b0cc56e85c8bf0c7226f82468678",
+      "size": 8358,
+      "mtimeMs": 1787833961906.333,
+      "hash": "f08d690df0faa2792db4c46dc386e725bee4d066",
       "imports": [
         "node:crypto",
         "../model/types.js",
@@ -3884,9 +4158,9 @@
       "path": "src/usage/types.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 2350,
-      "mtimeMs": 1787794335366.3,
-      "hash": "d4f33533bfe30a803e19d7917db21c4c463b7762",
+      "size": 2484,
+      "mtimeMs": 1787833961870.333,
+      "hash": "0ae954ec6266e480f3c4e4f441dc39dc5c3b4aad",
       "imports": [],
       "exports": [
         "UsageBillingKind",
@@ -4806,6 +5080,33 @@
       "module": "test"
     },
     {
+      "path": "test/provider-management.test.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 10579,
+      "mtimeMs": 1787834699266.7725,
+      "hash": "e56dbf1d98f28ae56e495c3ea6c9e77dc33aff3f",
+      "imports": [
+        "vitest",
+        "vscode",
+        "../src/model/connections.js",
+        "../src/model/diagnostics.js",
+        "../src/model/profiles.js",
+        "../src/model/backend.js",
+        "../src/usage/types.js",
+        "../src/settings/lifecycle.js"
+      ],
+      "exports": [],
+      "symbols": [
+        "fakeContext",
+        "profile"
+      ],
+      "likelyTest": true,
+      "likelyDocumentation": false,
+      "directory": "test",
+      "module": "test"
+    },
+    {
       "path": "test/research.test.ts",
       "fileType": "ts",
       "language": "TypeScript",
@@ -4911,12 +5212,40 @@
       "module": "test"
     },
     {
+      "path": "test/settings-ui.mjs",
+      "fileType": "mjs",
+      "language": "JavaScript",
+      "size": 5435,
+      "mtimeMs": 1787834880867.8806,
+      "hash": "9b202b77856144f99e6e3ae5202fa429210f1730",
+      "imports": [
+        "node:assert/strict",
+        "node:path",
+        "playwright"
+      ],
+      "exports": [],
+      "symbols": [
+        "root",
+        "browser",
+        "page",
+        "setting",
+        "statistics",
+        "baseState",
+        "dispatch",
+        "connection"
+      ],
+      "likelyTest": true,
+      "likelyDocumentation": false,
+      "directory": "test",
+      "module": "test"
+    },
+    {
       "path": "test/settings.test.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 3614,
-      "mtimeMs": 1787801333420.6758,
-      "hash": "01df1e2c4cf60b231dd23a5c8fe51d1405e20c3b",
+      "size": 4550,
+      "mtimeMs": 1787834724348.7876,
+      "hash": "e7aa8c206e9a3860f744f0fddd0ffa10238ad8ce",
       "imports": [
         "vitest",
         "node:fs",
@@ -4985,9 +5314,9 @@
       "path": "test/ui.test.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 1450,
-      "mtimeMs": 1787800705760.699,
-      "hash": "9d064c3f99a84b86f2a81567a3cd42630cb27be2",
+      "size": 2559,
+      "mtimeMs": 1787834699335.7727,
+      "hash": "ab115c224bc6d583145e628d7980b6e0c2d0c6af",
       "imports": [
         "vitest",
         "node:fs",
@@ -5191,6 +5520,8 @@
         "src/localruntime/types.ts",
         "src/model/anthropic.ts",
         "src/model/backend.ts",
+        "src/model/connections.ts",
+        "src/model/diagnostics.ts",
         "src/model/ollama.ts",
         "src/model/openai.ts",
         "src/model/profiles.ts",
@@ -5234,8 +5565,12 @@
         "src/runtime/types.ts",
         "src/settings/configuration.ts",
         "src/settings/defaults.ts",
+        "src/settings/lifecycle.ts",
+        "src/settings/main.ts",
+        "src/settings/messages.ts",
         "src/settings/panel.ts",
         "src/settings/registry.ts",
+        "src/settings/styles.css",
         "src/shared/logger.ts",
         "src/shared/messages.ts",
         "src/tools/framework.ts",
@@ -5285,10 +5620,12 @@
         "test/messages.test.ts",
         "test/orchestration.test.ts",
         "test/planning.test.ts",
+        "test/provider-management.test.ts",
         "test/research.test.ts",
         "test/review.test.ts",
         "test/routing.test.ts",
         "test/runtime.test.ts",
+        "test/settings-ui.mjs",
         "test/settings.test.ts",
         "test/stream.test.ts",
         "test/tools.test.ts",
@@ -5445,6 +5782,8 @@
           "src/localruntime/types.ts",
           "src/model/anthropic.ts",
           "src/model/backend.ts",
+          "src/model/connections.ts",
+          "src/model/diagnostics.ts",
           "src/model/ollama.ts",
           "src/model/openai.ts",
           "src/model/profiles.ts",
@@ -5488,8 +5827,12 @@
           "src/runtime/types.ts",
           "src/settings/configuration.ts",
           "src/settings/defaults.ts",
+          "src/settings/lifecycle.ts",
+          "src/settings/main.ts",
+          "src/settings/messages.ts",
           "src/settings/panel.ts",
           "src/settings/registry.ts",
+          "src/settings/styles.css",
           "src/shared/logger.ts",
           "src/shared/messages.ts",
           "src/tools/framework.ts",
@@ -5552,10 +5895,12 @@
           "test/messages.test.ts",
           "test/orchestration.test.ts",
           "test/planning.test.ts",
+          "test/provider-management.test.ts",
           "test/research.test.ts",
           "test/review.test.ts",
           "test/routing.test.ts",
           "test/runtime.test.ts",
+          "test/settings-ui.mjs",
           "test/settings.test.ts",
           "test/stream.test.ts",
           "test/tools.test.ts",
@@ -6034,6 +6379,14 @@
     },
     {
       "from": "src/extension.ts",
+      "to": "src/model/connections.ts"
+    },
+    {
+      "from": "src/extension.ts",
+      "to": "src/model/diagnostics.ts"
+    },
+    {
+      "from": "src/extension.ts",
       "to": "src/model/registry.ts"
     },
     {
@@ -6051,6 +6404,10 @@
     {
       "from": "src/extension.ts",
       "to": "src/settings/panel.ts"
+    },
+    {
+      "from": "src/extension.ts",
+      "to": "src/settings/lifecycle.ts"
     },
     {
       "from": "src/extension.ts",
@@ -6205,6 +6562,34 @@
       "to": "src/model/types.ts"
     },
     {
+      "from": "src/model/connections.ts",
+      "to": "src/usage/store.ts"
+    },
+    {
+      "from": "src/model/connections.ts",
+      "to": "src/model/profiles.ts"
+    },
+    {
+      "from": "src/model/connections.ts",
+      "to": "src/model/diagnostics.ts"
+    },
+    {
+      "from": "src/model/diagnostics.ts",
+      "to": "src/usage/types.ts"
+    },
+    {
+      "from": "src/model/diagnostics.ts",
+      "to": "src/model/backend.ts"
+    },
+    {
+      "from": "src/model/diagnostics.ts",
+      "to": "src/model/profiles.ts"
+    },
+    {
+      "from": "src/model/diagnostics.ts",
+      "to": "src/model/types.ts"
+    },
+    {
       "from": "src/model/ollama.ts",
       "to": "src/model/types.ts"
     },
@@ -6222,11 +6607,15 @@
     },
     {
       "from": "src/model/profiles.ts",
-      "to": "src/model/backend.ts"
+      "to": "src/usage/types.ts"
     },
     {
       "from": "src/model/profiles.ts",
       "to": "src/model/anthropic.ts"
+    },
+    {
+      "from": "src/model/profiles.ts",
+      "to": "src/model/backend.ts"
     },
     {
       "from": "src/model/profiles.ts",
@@ -6237,12 +6626,20 @@
       "to": "src/model/openai.ts"
     },
     {
+      "from": "src/model/profiles.ts",
+      "to": "src/model/types.ts"
+    },
+    {
       "from": "src/model/registry.ts",
       "to": "src/model/backend.ts"
     },
     {
       "from": "src/model/registry.ts",
       "to": "src/model/profiles.ts"
+    },
+    {
+      "from": "src/model/registry.ts",
+      "to": "src/model/types.ts"
     },
     {
       "from": "src/orchestration/config.ts",
@@ -6741,12 +7138,56 @@
       "to": "src/settings/registry.ts"
     },
     {
+      "from": "src/settings/lifecycle.ts",
+      "to": "src/model/diagnostics.ts"
+    },
+    {
+      "from": "src/settings/lifecycle.ts",
+      "to": "src/model/profiles.ts"
+    },
+    {
+      "from": "src/settings/lifecycle.ts",
+      "to": "src/settings/messages.ts"
+    },
+    {
+      "from": "src/settings/main.ts",
+      "to": "src/settings/styles.css"
+    },
+    {
+      "from": "src/settings/main.ts",
+      "to": "src/settings/messages.ts"
+    },
+    {
+      "from": "src/settings/messages.ts",
+      "to": "src/model/diagnostics.ts"
+    },
+    {
+      "from": "src/settings/messages.ts",
+      "to": "src/model/profiles.ts"
+    },
+    {
+      "from": "src/settings/messages.ts",
+      "to": "src/model/types.ts"
+    },
+    {
+      "from": "src/settings/messages.ts",
+      "to": "src/settings/registry.ts"
+    },
+    {
+      "from": "src/settings/panel.ts",
+      "to": "src/model/connections.ts"
+    },
+    {
       "from": "src/settings/panel.ts",
       "to": "src/model/profiles.ts"
     },
     {
       "from": "src/settings/panel.ts",
       "to": "src/settings/configuration.ts"
+    },
+    {
+      "from": "src/settings/panel.ts",
+      "to": "src/settings/messages.ts"
     },
     {
       "from": "src/shared/messages.ts",
@@ -7473,6 +7914,30 @@
       "to": "src/tools/index.ts"
     },
     {
+      "from": "test/provider-management.test.ts",
+      "to": "src/model/connections.ts"
+    },
+    {
+      "from": "test/provider-management.test.ts",
+      "to": "src/model/diagnostics.ts"
+    },
+    {
+      "from": "test/provider-management.test.ts",
+      "to": "src/model/profiles.ts"
+    },
+    {
+      "from": "test/provider-management.test.ts",
+      "to": "src/model/backend.ts"
+    },
+    {
+      "from": "test/provider-management.test.ts",
+      "to": "src/usage/types.ts"
+    },
+    {
+      "from": "test/provider-management.test.ts",
+      "to": "src/settings/lifecycle.ts"
+    },
+    {
       "from": "test/research.test.ts",
       "to": "src/tools/index.ts"
     },
@@ -7801,6 +8266,8 @@
     ],
     "src/usage/types.ts": [
       "src/context/types.ts",
+      "src/model/diagnostics.ts",
+      "src/model/profiles.ts",
       "src/usage/config.ts",
       "src/usage/index.ts",
       "src/usage/panel.ts",
@@ -7808,7 +8275,8 @@
       "src/usage/service.ts",
       "src/usage/store.ts",
       "src/usage/tools.ts",
-      "src/verification/config.ts"
+      "src/verification/config.ts",
+      "test/provider-management.test.ts"
     ],
     "src/documentation/context.ts": [
       "src/documentation/agent.ts",
@@ -7827,6 +8295,7 @@
       "src/documentation/analyzer.ts",
       "src/extension.ts",
       "src/model/anthropic.ts",
+      "src/model/diagnostics.ts",
       "src/model/ollama.ts",
       "src/model/openai.ts",
       "src/model/profiles.ts",
@@ -7837,6 +8306,7 @@
       "src/watchdog/analyzer.ts",
       "src/watchdog/escalation.ts",
       "test/orchestration.test.ts",
+      "test/provider-management.test.ts",
       "test/stream.test.ts"
     ],
     "src/model/types.ts": [
@@ -7844,13 +8314,17 @@
       "src/extension.ts",
       "src/model/anthropic.ts",
       "src/model/backend.ts",
+      "src/model/diagnostics.ts",
       "src/model/ollama.ts",
       "src/model/openai.ts",
+      "src/model/profiles.ts",
+      "src/model/registry.ts",
       "src/orchestration/inference.ts",
       "src/orchestration/orchestrator.ts",
       "src/orchestration/tools.ts",
       "src/orchestration/types.ts",
       "src/review/analyzer.ts",
+      "src/settings/messages.ts",
       "src/tools/loop.ts",
       "src/usage/service.ts",
       "src/watchdog/analyzer.ts",
@@ -7905,15 +8379,32 @@
       "src/execution/index.ts",
       "src/runtime/processes.ts"
     ],
+    "src/model/connections.ts": [
+      "src/extension.ts",
+      "src/settings/panel.ts",
+      "test/provider-management.test.ts"
+    ],
+    "src/model/diagnostics.ts": [
+      "src/extension.ts",
+      "src/model/connections.ts",
+      "src/settings/lifecycle.ts",
+      "src/settings/messages.ts",
+      "test/provider-management.test.ts"
+    ],
     "src/model/registry.ts": [
       "src/extension.ts",
       "test/settings.test.ts"
     ],
     "src/model/profiles.ts": [
       "src/extension.ts",
+      "src/model/connections.ts",
+      "src/model/diagnostics.ts",
       "src/model/registry.ts",
       "src/routing/types.ts",
+      "src/settings/lifecycle.ts",
+      "src/settings/messages.ts",
       "src/settings/panel.ts",
+      "test/provider-management.test.ts",
       "test/settings.test.ts"
     ],
     "src/settings/configuration.ts": [
@@ -7923,6 +8414,10 @@
     ],
     "src/settings/panel.ts": [
       "src/extension.ts"
+    ],
+    "src/settings/lifecycle.ts": [
+      "src/extension.ts",
+      "test/provider-management.test.ts"
     ],
     "src/shared/logger.ts": [
       "src/extension.ts"
@@ -8021,6 +8516,12 @@
     ],
     "src/localruntime/tools.ts": [
       "src/localruntime/index.ts"
+    ],
+    "src/usage/store.ts": [
+      "src/model/connections.ts",
+      "src/usage/index.ts",
+      "src/usage/service.ts",
+      "src/usage/tools.ts"
     ],
     "src/model/anthropic.ts": [
       "src/model/profiles.ts"
@@ -8171,7 +8672,16 @@
     "src/settings/registry.ts": [
       "src/settings/configuration.ts",
       "src/settings/defaults.ts",
+      "src/settings/messages.ts",
       "test/settings.test.ts"
+    ],
+    "src/settings/messages.ts": [
+      "src/settings/lifecycle.ts",
+      "src/settings/main.ts",
+      "src/settings/panel.ts"
+    ],
+    "src/settings/styles.css": [
+      "src/settings/main.ts"
     ],
     "src/tools/schema.ts": [
       "src/tools/framework.ts",
@@ -8283,11 +8793,6 @@
       "src/watchdog/index.ts",
       "src/watchdog/tools.ts"
     ],
-    "src/usage/store.ts": [
-      "src/usage/index.ts",
-      "src/usage/service.ts",
-      "src/usage/tools.ts"
-    ],
     "src/usage/service.ts": [
       "src/usage/index.ts",
       "src/usage/panel.ts",
@@ -8352,7 +8857,7 @@
   "freshness": {
     "index": "current",
     "codebaseMap": "current",
-    "checkedAt": "2026-08-27T12:22:59.901Z",
+    "checkedAt": "2026-08-27T12:50:27.217Z",
     "staleEntries": []
   },
   "incremental": {
@@ -8362,6 +8867,7 @@
       ".vscode/tasks.json",
       "README.md",
       "docs/architecture.md",
+      "docs/audit-readiness-2026-08-27.md",
       "docs/development.md",
       "docs/providers.md",
       "docs/settings.md",
@@ -8425,6 +8931,8 @@
       "src/localruntime/types.ts",
       "src/model/anthropic.ts",
       "src/model/backend.ts",
+      "src/model/connections.ts",
+      "src/model/diagnostics.ts",
       "src/model/ollama.ts",
       "src/model/openai.ts",
       "src/model/profiles.ts",
@@ -8468,8 +8976,12 @@
       "src/runtime/types.ts",
       "src/settings/configuration.ts",
       "src/settings/defaults.ts",
+      "src/settings/lifecycle.ts",
+      "src/settings/main.ts",
+      "src/settings/messages.ts",
       "src/settings/panel.ts",
       "src/settings/registry.ts",
+      "src/settings/styles.css",
       "src/shared/logger.ts",
       "src/shared/messages.ts",
       "src/tools/framework.ts",
@@ -8519,10 +9031,12 @@
       "test/messages.test.ts",
       "test/orchestration.test.ts",
       "test/planning.test.ts",
+      "test/provider-management.test.ts",
       "test/research.test.ts",
       "test/review.test.ts",
       "test/routing.test.ts",
       "test/runtime.test.ts",
+      "test/settings-ui.mjs",
       "test/settings.test.ts",
       "test/stream.test.ts",
       "test/tools.test.ts",
@@ -8533,9 +9047,7 @@
       "vitest.config.ts"
     ],
     "added": [],
-    "changed": [
-      "docs/audit-readiness-2026-08-27.md"
-    ],
+    "changed": [],
     "removed": [],
     "renamed": []
   }

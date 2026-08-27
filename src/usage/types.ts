@@ -35,6 +35,8 @@ export type UsageRecord = {
   providerReportedCostUsd?: number;
   estimatedCostUsd?: number;
   billing: UsageBillingKind;
+  /** Present only when the normalized provider stream reported a terminal outcome. */
+  result?: 'success' | 'failed' | 'cancelled';
 };
 
 export type PricingEntry = {
