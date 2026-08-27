@@ -1,6 +1,7 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import * as readline from 'node:readline';
+import { createHash } from 'node:crypto';
 import { getFreshness, indexRepository, renderCodebaseMap, type IndexedFile, type RepositoryIndex } from '../intelligence/indexer.js';
 import { throwIfCancelled, toolError, ToolRegistry } from './framework.js';
 import { READ_ONLY_WORKSPACE_PERMISSION, ToolFailure, type JsonSchema, type ToolDefinition, type ToolExecutionContext, type ToolExecutionOutput } from './types.js';
@@ -305,7 +306,8 @@ async function readRange(relative: string, startLine: number, endLine: number, t
   const lastLine = selected.length ? startLine + selected.length - 1 : startLine - 1;
   const paginated = toolId === 'read_file' && (hasAdditionalLines || contentTruncated);
   const token = paginated ? encodeToken(toolId, key, Math.max(lastLine, startLine)) : undefined;
-  return { data: { path: relative, startLine, endLine: lastLine, content: selected.join('\n'), fileBytes: stat.size }, resultCount: selected.length, truncated: paginated || contentTruncated, continuationToken: token, source: 'filesystem' };
+  const hash = createHash('sha256').update(fs.readFileSync(absolute)).digest('hex');
+  return { data: { path: relative, startLine, endLine: lastLine, content: selected.join('\n'), fileBytes: stat.size, hash }, resultCount: selected.length, truncated: paginated || contentTruncated, continuationToken: token, source: 'filesystem' };
 }
 
 function safePath(root: string, requested: string): string {

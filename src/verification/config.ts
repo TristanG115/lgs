@@ -87,7 +87,27 @@ export function loadWorkspaceConfiguration(root: string): LoadedWorkspaceConfigu
   }
 }
 
-function parseIntegrations(value: unknown, errors: string[]): IntegrationConfiguration { const empty = { required: [], recommended: [], optional: [], mcp: {} }; if (value === undefined) return empty; if (!record(value)) { errors.push('integrations must be a YAML object.'); return empty; } const names = (key: 'required'|'recommended'|'optional') => Array.isArray(value[key]) && value[key].every(item => typeof item === 'string') ? [...new Set(value[key] as string[])].slice(0, 100) : value[key] === undefined ? [] : (errors.push(`integrations.${key} must be an array of strings.`), []); return { ...empty, required: names('required'), recommended: names('recommended'), optional: names('optional') }; }
+function parseIntegrations(value: unknown, errors: string[]): IntegrationConfiguration {
+  const empty: IntegrationConfiguration = { required: [], recommended: [], optional: [], mcp: {} };
+  if (value === undefined) return empty;
+  if (!record(value)) { errors.push('integrations must be a YAML object.'); return empty; }
+  const names = (key: 'required' | 'recommended' | 'optional') => Array.isArray(value[key]) && value[key].every(item => typeof item === 'string')
+    ? [...new Set(value[key] as string[])].slice(0, 100)
+    : value[key] === undefined ? [] : (errors.push(`integrations.${key} must be an array of strings.`), []);
+  const mcp: IntegrationConfiguration['mcp'] = {};
+  if (value.mcp !== undefined) {
+    if (!record(value.mcp)) errors.push('integrations.mcp must be an object.');
+    else for (const [id, candidate] of Object.entries(value.mcp)) {
+      if (!/^[a-z][a-z0-9._-]{0,80}$/.test(id) || !record(candidate)) { errors.push(`integrations.mcp.${id} is invalid.`); continue; }
+      if (candidate.transport === 'stdio' && typeof candidate.command === 'string' && candidate.command.trim() && (candidate.args === undefined || Array.isArray(candidate.args) && candidate.args.every(argument => typeof argument === 'string'))) {
+        mcp[id] = { transport: 'stdio', command: candidate.command, args: candidate.args as string[] | undefined };
+      } else if (candidate.transport === 'remote' && typeof candidate.url === 'string' && /^https?:\/\//.test(candidate.url)) {
+        mcp[id] = { transport: 'remote', url: candidate.url };
+      } else errors.push(`integrations.mcp.${id} must define a valid stdio command or remote http(s) URL.`);
+    }
+  }
+  return { required: names('required'), recommended: names('recommended'), optional: names('optional'), mcp };
+}
 
 function parseVerification(value: unknown, errors: string[]): VerificationConfiguration {
   if (value === undefined) return {};

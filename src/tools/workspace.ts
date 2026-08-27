@@ -18,11 +18,12 @@ import { BenchmarkStore, LocalRuntimeDiscovery, registerLocalRuntimeTools } from
 import { FilePricingStore, registerUsageTools, type UsageTracker } from '../usage/index.js';
 import { ContextBroker, registerContextTools } from '../context/index.js';
 import { ComputerAgent, parseComputerConfiguration, registerComputerTools } from '../computer/index.js';
+import { registerEditingTools, type FileEditService } from '../editing/index.js';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { parse } from 'yaml';
 
-export function createWorkspaceToolRegistry(options: { gitBaseline?: GitBaseline; gitRunner?: GitCommandRunner; verificationRunner?: VerificationRunner; executionLogs?: RawExecutionLogStore; completionGuard?: CompletionGuard; completionEvidence?: FileCompletionEvidenceStore; orchestrator?: Orchestrator; managerAgentId?: string; taskState?: FileTaskStateStore; watchdog?: WatchdogService; research?: ResearchService; researchStore?: FileResearchStore; documentationAgent?: DocumentationAgent; documentationStore?: FileDocumentationAuditStore; independentReviewer?: IndependentReviewer; reviewStore?: FileReviewStore; processes?: ManagedProcessManager; runtimeVerifier?: RuntimeVerifier; runtimeStore?: FileRuntimeStore; commitService?: VerifiedCommitService; skills?: WorkspaceSkillStore; memories?: ProjectMemoryStore; integrations?: IntegrationHub; usage?: UsageTracker; pricing?: FilePricingStore; computer?: ComputerAgent } = {}): ToolRegistry {
+export function createWorkspaceToolRegistry(options: { gitBaseline?: GitBaseline; gitRunner?: GitCommandRunner; verificationRunner?: VerificationRunner; executionLogs?: RawExecutionLogStore; completionGuard?: CompletionGuard; completionEvidence?: FileCompletionEvidenceStore; orchestrator?: Orchestrator; managerAgentId?: string; taskState?: FileTaskStateStore; watchdog?: WatchdogService; research?: ResearchService; researchStore?: FileResearchStore; documentationAgent?: DocumentationAgent; documentationStore?: FileDocumentationAuditStore; independentReviewer?: IndependentReviewer; reviewStore?: FileReviewStore; processes?: ManagedProcessManager; runtimeVerifier?: RuntimeVerifier; runtimeStore?: FileRuntimeStore; commitService?: VerifiedCommitService; skills?: WorkspaceSkillStore; memories?: ProjectMemoryStore; integrations?: IntegrationHub; usage?: UsageTracker; pricing?: FilePricingStore; computer?: ComputerAgent; editing?: FileEditService } = {}): ToolRegistry {
   const registry = registerGitTools(createRepositoryToolRegistry(), { baseline: options.gitBaseline, runner: options.gitRunner });
   if (options.verificationRunner && options.executionLogs) registerVerificationTools(registry, options.verificationRunner, options.executionLogs);
   if (options.completionGuard && options.completionEvidence) registerCompletionTools(registry, options.completionGuard, options.completionEvidence);
@@ -46,6 +47,7 @@ export function createWorkspaceToolRegistry(options: { gitBaseline?: GitBaseline
   if (options.usage && options.pricing) registerUsageTools(registry, options.usage, options.pricing);
   const computer = options.computer ?? (options.gitBaseline ? new ComputerAgent(options.gitBaseline.workspaceRoot, workspaceComputerConfiguration(options.gitBaseline.workspaceRoot)) : undefined);
   if (computer) registerComputerTools(registry, computer, options.taskState);
+  if (options.editing) registerEditingTools(registry, options.editing);
   return registry;
 }
 

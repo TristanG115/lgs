@@ -1,7 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
-import { chromium, type Browser, type Page } from 'playwright';
+import type { Browser, Page } from 'playwright';
 import type { RuntimeConfiguration } from './types.js';
 
 export type BrowserEvent = { type: 'console' | 'network'; message: string; url?: string; at: string };
@@ -19,6 +19,7 @@ export class BrowserSession {
   async dispose(): Promise<void> { await this.browser?.close(); this.browser = undefined; this.page = undefined; }
   private async ensurePage(): Promise<Page> {
     if (this.page) return this.page;
+    const { chromium } = await import('playwright');
     this.browser = await chromium.launch({ headless: this.configuration.browser?.headless ?? true }); this.page = await this.browser.newPage();
     this.page.on('console', message => { if (message.type() === 'error') this.events.push({ type: 'console', message: message.text(), at: new Date().toISOString() }); });
     this.page.on('requestfailed', request => this.events.push({ type: 'network', message: request.failure()?.errorText ?? 'Request failed.', url: request.url(), at: new Date().toISOString() }));

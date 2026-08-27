@@ -1,4 +1,58 @@
-import {SettingsRegistry,type EffectiveSetting} from './registry.js';
-export const SETTINGS_CATEGORIES=['General','Appearance','Models & Providers','Agents','Integrations','Context','Verification','Git','Usage & Budgets','Memory','Skills','Permissions','Computer Access','Advanced'];
-export function createDefaultRegistry():SettingsRegistry{const r=new SettingsRegistry();r.register({id:'appearance.theme',category:'Appearance',label:'Appearance',description:'Choose the LGS research-lab identity or inherit the active VS Code theme.',type:'select',default:'vscode',scope:'both',choices:[{value:'vscode',label:'Follow VS Code'},{value:'lgs-light',label:'Research Paper / Light'},{value:'lgs-dark',label:'Research Lab / Dark'}]});r.register({id:'context.maxFiles',category:'Context',label:'Maximum context files',description:'Maximum files considered by future context selection.',type:'number',default:100,scope:'both',validate:value=>typeof value==='number'&&Number.isInteger(value)&&value>0&&value<=10000?undefined:'Enter a whole number from 1 to 10000.'});r.register({id:'models.defaultConnection',category:'Models & Providers',label:'Default connection',description:'Connection selected for new chats.',type:'string',default:'',scope:'both'});r.register({id:'models.defaultModel',category:'Models & Providers',label:'Default model',description:'Model selected when a connection is activated.',type:'string',default:'',scope:'both'});for(const [id,label,description,defaultValue] of [['computer.readOutsideWorkspace','Read outside workspace','Permission policy for external file reads.','ask'],['computer.writeOutsideWorkspace','Write outside workspace','Permission policy for external file changes.','ask'],['computer.systemCommandPolicy','System command policy','Permission policy for non-workspace commands.','ask'],['computer.packageInstallationPolicy','Package installation policy','Permission policy for software installation or removal.','ask'],['computer.elevatedCommandPolicy','Elevated command policy','Administrator operations require explicit approval.','ask'],['computer.externalDocumentAccess','External document access','Permission policy for document extraction.','ask']] as const)r.register({id,category:'Computer Access',label,description,type:'select',default:defaultValue,scope:'both',choices:[{value:'always_allow',label:'Always allow'},{value:'ask',label:'Ask each time'},{value:'deny',label:'Deny'}]});r.register({id:'computer.dryRun',category:'Computer Access',label:'Dry-run preference',description:'Present external commands before execution.',type:'boolean',default:true,scope:'both'});r.register({id:'computer.activityLogRetentionDays',category:'Computer Access',label:'Activity-log retention',description:'Number of days to retain activity records.',type:'number',default:90,scope:'both',validate:value=>typeof value==='number'&&Number.isInteger(value)&&value>=1&&value<=3650?undefined:'Enter a whole number from 1 to 3650.'});for(const category of SETTINGS_CATEGORIES.filter(x=>!['Appearance','Context','Models & Providers','Computer Access'].includes(x)))r.register({id:'placeholder.'+category.toLowerCase().replaceAll(' ','-'),category,label:category,description:'This section will become available when its subsystem is implemented.',type:'placeholder',default:null,scope:'user'});return r;}
-export function visibleSettings(registry:SettingsRegistry,user:Record<string,unknown>,workspace:Record<string,unknown>):EffectiveSetting[]{const values=Object.fromEntries(registry.all().map(def=>[def.id,workspace[def.id]??user[def.id]??def.default]));return registry.all().filter(def=>!def.visibleWhen||def.visibleWhen(values)).map(def=>{const hasW=Object.prototype.hasOwnProperty.call(workspace,def.id);const hasU=Object.prototype.hasOwnProperty.call(user,def.id);return{...def,value:hasW?workspace[def.id]:hasU?user[def.id]:def.default,source:hasW?'workspace':hasU?'user':'built-in'} as EffectiveSetting;});}
+import { type SettingDefinition, SettingsRegistry } from './registry.js';
+
+const permissionChoices = [
+  { value: 'always_allow', label: 'Always allow' },
+  { value: 'ask', label: 'Ask each time' },
+  { value: 'deny', label: 'Deny' },
+];
+
+export function createDefaultRegistry(): SettingsRegistry {
+  const registry = new SettingsRegistry();
+  registry.register({
+    id: 'appearance.theme', category: 'Appearance', label: 'Appearance',
+    description: 'Choose the LGS research identity or inherit the active VS Code theme.',
+    type: 'select', default: 'vscode', scope: 'both', choices: [
+      { value: 'vscode', label: 'Follow VS Code' },
+      { value: 'lgs-light', label: 'Research Paper / Light' },
+      { value: 'lgs-dark', label: 'Research Lab / Dark' },
+    ],
+  });
+  registry.register({
+    id: 'models.defaultConnection', category: 'Models & Providers', label: 'Default connection',
+    description: 'Connection selected when a new LGS session opens.', type: 'string', default: '', scope: 'both',
+  });
+  registry.register({
+    id: 'models.defaultModel', category: 'Models & Providers', label: 'Default model',
+    description: 'Preferred model when it is available on the selected connection.', type: 'string', default: '', scope: 'both',
+  });
+  for (const [id, label, description, defaultValue] of [
+    ['computer.readOutsideWorkspace', 'Read outside workspace', 'Permission policy for external file reads.', 'ask'],
+    ['computer.writeOutsideWorkspace', 'Write outside workspace', 'Permission policy for external file changes.', 'ask'],
+    ['computer.systemCommandPolicy', 'System command policy', 'Permission policy for non-workspace commands.', 'ask'],
+    ['computer.packageInstallationPolicy', 'Package installation policy', 'Permission policy for software installation or removal.', 'ask'],
+    ['computer.elevatedCommandPolicy', 'Elevated command policy', 'Administrator operations always require explicit approval.', 'ask'],
+    ['computer.externalDocumentAccess', 'External document access', 'Permission policy for deterministic document extraction.', 'ask'],
+  ] as const) registry.register({
+    id, category: 'Computer Access', label, description, type: 'select', default: defaultValue,
+    scope: 'both', choices: permissionChoices,
+  });
+  registry.register({
+    id: 'computer.dryRun', category: 'Computer Access', label: 'Dry-run external commands',
+    description: 'Return a command plan before external execution unless explicitly overridden.',
+    type: 'boolean', default: true, scope: 'both',
+  });
+  registry.register({
+    id: 'computer.activityLogRetentionDays', category: 'Computer Access', label: 'Activity retention (days)',
+    description: 'Number of days to retain local computer-operation records.', type: 'number', default: 90, scope: 'both',
+    validate: value => typeof value === 'number' && Number.isInteger(value) && value >= 1 && value <= 3650
+      ? undefined : 'Enter a whole number from 1 to 3650.',
+  });
+  return registry;
+}
+
+// These sections use structured .lgs/config.yaml rather than pretend scalar controls.
+export const CONFIGURATION_CATEGORIES = [
+  'General', 'Agents', 'Integrations', 'Context', 'Verification', 'Git', 'Usage & Budgets',
+  'Memory', 'Skills', 'Permissions', 'Advanced',
+];
+export type LgsSettingDefinition = SettingDefinition;

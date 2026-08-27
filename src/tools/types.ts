@@ -23,6 +23,7 @@ export type ToolErrorCode =
   | 'output_limit'
   | 'cancelled'
   | 'execution_failed'
+  | 'conflict'
   | 'unsupported';
 
 export type ToolError = {

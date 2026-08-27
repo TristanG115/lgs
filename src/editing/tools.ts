@@ -1,0 +1,19 @@
+import { ToolFailure } from '../tools/types.js';
+import { toolError, type ToolRegistry } from '../tools/framework.js';
+import type { FileEditService } from './service.js';
+
+const EXECUTE = { access: 'execute' as const, scope: 'workspace' as const, network: false, category: 'dangerous' as const };
+const READ = { access: 'read-only' as const, scope: 'workspace' as const, network: false, category: 'read-only' as const };
+const pathProperty = { type: 'string' as const, minLength: 1, maxLength: 1024 };
+const hashProperty = { type: 'string' as const, pattern: '^[0-9a-fA-F]{64}$' };
+export function registerEditingTools(registry: ToolRegistry, editing: FileEditService): ToolRegistry {
+  registry.register({ id: 'get_file_fingerprint', description: 'Read the current SHA-256 fingerprint required for an optimistic-concurrency file mutation.', permission: READ, argumentSchema: object({ path: pathProperty }, ['path']), execute: args => ({ data: editing.fingerprint(args.path as string), resultCount: 1, source: 'filesystem' }) });
+  registry.register({ id: 'replace_file', description: 'Replace one workspace text file only if its current SHA-256 hash matches the prior read. Returns a durable undo operation ID.', permission: EXECUTE, argumentSchema: object({ path: pathProperty, expectedHash: hashProperty, content: { type: 'string', maxLength: 2 * 1024 * 1024 } }, ['path', 'expectedHash', 'content']), execute: async (args, context) => ({ data: await editing.replace(task(context.taskId), args.path as string, args.expectedHash as string, args.content as string), resultCount: 1, source: 'filesystem' }) });
+  registry.register({ id: 'create_file', description: 'Create one new workspace text file in an existing directory. Existing paths are never overwritten.', permission: EXECUTE, argumentSchema: object({ path: pathProperty, content: { type: 'string', maxLength: 2 * 1024 * 1024 } }, ['path', 'content']), execute: async (args, context) => ({ data: await editing.create(task(context.taskId), args.path as string, args.content as string), resultCount: 1, source: 'filesystem' }) });
+  registry.register({ id: 'delete_file', description: 'Delete one regular workspace file only if its current SHA-256 hash matches the prior read. The content is retained for durable undo.', permission: EXECUTE, argumentSchema: object({ path: pathProperty, expectedHash: hashProperty }, ['path', 'expectedHash']), execute: async (args, context) => ({ data: await editing.delete(task(context.taskId), args.path as string, args.expectedHash as string), resultCount: 1, source: 'filesystem' }) });
+  registry.register({ id: 'rename_file', description: 'Rename one workspace file to a new non-existing path after a current-hash check.', permission: EXECUTE, argumentSchema: object({ path: pathProperty, destination: pathProperty, expectedHash: hashProperty }, ['path', 'destination', 'expectedHash']), execute: async (args, context) => ({ data: await editing.rename(task(context.taskId), args.path as string, args.destination as string, args.expectedHash as string), resultCount: 1, source: 'filesystem' }) });
+  registry.register({ id: 'undo_edit', description: 'Undo one LGS edit operation if the affected file has not changed since that operation.', permission: EXECUTE, argumentSchema: object({ operationId: { type: 'string', pattern: '^[0-9a-fA-F-]{36}$' } }, ['operationId']), execute: async (args, context) => ({ data: await editing.undo(task(context.taskId), args.operationId as string), resultCount: 1, source: 'filesystem' }) });
+  return registry;
+}
+function task(value: string | undefined): string { if (!value) throw new ToolFailure(toolError('invalid_request', 'Workspace editing requires a task ID.')); return value; }
+function object(properties: Record<string, import('../tools/types.js').JsonSchema>, required: string[]) { return { type: 'object' as const, properties, required, additionalProperties: false }; }

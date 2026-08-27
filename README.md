@@ -1,6 +1,8 @@
 # LGS (Little Grad Student)
 
-LGS is a VS Code extension for reliable software-engineering agents. Phase 14 adds fresh-context independent review and Manager disposition on top of mechanically enforced documentation, version-aware research, the read-only Watchdog, manager-and-worker orchestration, the evidence-backed Completion Guard, controlled verification, provider-neutral model backends, and deterministic Repository Intelligence.
+LGS is a VS Code extension for evidence-driven software-engineering agents. It combines provider-neutral streaming models, deterministic Repository Intelligence, validated tools, safe workspace editing, controlled verification, persistent task state, Completion Guard, specialist agents, research, documentation review, runtime checks, and conservative Git commits in one task workflow.
+
+The current implementation is a **functional alpha**, not a finished marketplace product. The latest evidence, repaired defects, blocked live-provider checks, and remaining gaps are recorded in [`docs/audit-readiness-2026-08-27.md`](docs/audit-readiness-2026-08-27.md).
 
 ## Repository structure
 
@@ -8,6 +10,7 @@ LGS is a VS Code extension for reliable software-engineering agents. Phase 14 ad
 - `src/webview/` — browser-side UI and styles.
 - `src/intelligence/indexer.ts` — deterministic filesystem/source indexer and codebase-map generator.
 - `src/tools/` — typed tool contracts, validation, guarded execution, repository/Git tools, task baselines, audit records, and the model continuation loop.
+- `src/editing/` — optimistic-concurrency file creation, replacement, deletion, rename, durable undo, and task attribution.
 - `src/execution/` — structured process execution, command permissions, normalized output, raw logs, and persisted task evidence.
 - `src/verification/` — generic project verification configuration, targeted selection, and model-facing verification tools.
 - `src/completion/` — completion gates, durable evidence, failure budgets, and completion-attempt enforcement.
@@ -16,6 +19,8 @@ LGS is a VS Code extension for reliable software-engineering agents. Phase 14 ad
 - `src/research/` — provider-neutral research tools, manifest version discovery, concise provenance, and task-local deduplication.
 - `src/documentation/` — DocumentationAgent context collection, category audits, freshness evidence, and incremental CODEBASE_MAP tools.
 - `src/review/` — fresh Reviewer evidence, structured findings, Manager dispositions, approval freshness, and completion integration.
+- `src/runtime/`, `src/commit/`, and `src/computer/` — owned-process/browser checks, guarded verified commits, and separately permissioned external-file/desktop operations.
+- `src/integrations/`, `src/routing/`, `src/context/`, and `src/usage/` — declared external capabilities, adaptive model selection, hierarchical context selection, and local usage/cost records.
 - `.lgs/index.json` — generated machine-readable repository index.
 - `.lgs/CODEBASE_MAP.md` — generated compact architecture guide.
 - `src/shared/messages.ts` — typed message contracts and runtime validation shared by both sides.
@@ -25,7 +30,7 @@ LGS is a VS Code extension for reliable software-engineering agents. Phase 14 ad
 
 ## Installation and development
 
-Install dependencies with `npm install`, then use `npm run build` for a production build. `npm run dev` watches both entry points. Quality checks are `npm run typecheck`, `npm run lint`, and `npm test`.
+Install dependencies with `npm install`, then use `npm run build` for a production build. `npm run dev` watches both entry points. Quality checks are `npm run typecheck`, `npm run lint`, and `npm test`. Git, process, runtime, and commit integration tests must run in an environment that allows disposable child processes and a temporary loopback listener.
 
 To launch the extension, open this repository in VS Code and press `F5`. This opens an Extension Development Host. Select the LGS activity-bar icon, enter a message, and press **Send**.
 
@@ -43,13 +48,13 @@ The compact LGS webview is a research workspace: a notebook-like session list, q
 
 ## Task workflow and observability
 
-Phase 25 makes the active engineering task visible above its chat transcript. The task header shows the objective, Advisor model/provider, progress, context, and cloud cost. Tabs organize **Chat**, **Task**, **Agents**, **Changes**, **Research**, **Verification**, and **Usage**; the workspace navigation also links Tasks, Models, Integrations, Skills, Memory, Usage, and Settings. The dashboard shows only observable actions, tool/evidence summaries, structured results, agent assignments, and Completion Guard status—it never exposes private model reasoning.
+The sidebar separates **Conversation** from **Task evidence**. When a persisted task exists, the task view shows the objective, Advisor profile/model, Completion Guard progress, changed files, sources, reviewer findings, agent assignments, compact observable activity, and usage. Its tabs are **Overview**, **Plan**, **Agents**, **Evidence**, and **Usage**. The evidence view opens Source Control, durable task state, retained research, or execution logs; it does not invent approval, retry, or lifecycle actions that the host cannot perform.
 
-Task controls provide pause/cancel, approval/rejection, retry/escalation, diff, logs, research, and durable task-state access. Controls use the typed webview message contract and preserve the extension host as the permission boundary. Agent cards identify the logical role, provider/model, and current state; the activity feed is intentionally compact to avoid notification noise.
+The composer exposes provider profile, model, implementation/planning mode, reasoning effort, and command approval. Stop cancels the active model/tool signal. New task and session selection update real persisted chat state. Agent cards identify the logical role, provider/model, and current state; the activity feed is intentionally compact and records structured tool outcomes rather than private reasoning.
 
 Chat history is persisted in VS Code global extension state (up to 100 conversations) and is sent back to the selected model as normalized message history. API keys are never persisted with chats.
 
-The webview posts only the `ClientMessage` union. The extension host receives `unknown`, validates it with `parseClientMessage`, and responds only with the `HostMessage` union. The webview validates incoming events with `isHostMessage` before rendering them. Provider profiles are managed by `LgsViewProvider` and `SettingsPanel`; adding a provider means implementing `ModelBackend` and adding a `ProviderKind` mapping in `src/model/profiles.ts`. Approval levels are UI policy state for the future tool-execution phase; Phase 1 has no agent tools to approve.
+The webview posts only the `ClientMessage` union. An explicit `ready` handshake prevents initial profiles, options, appearance, and connection state from racing webview startup. The extension host receives `unknown`, validates it with `parseClientMessage`, and responds only with the `HostMessage` union. The webview validates incoming events with `isHostMessage` before rendering them. Composer approval is consumed by command and workspace-edit permission resolution; workspace policy can still override that fallback.
 
 ## Repository intelligence
 
@@ -69,6 +74,12 @@ All repository tools reject absolute paths, `..` traversal, workspace escape, an
 
 The continuation lifecycle is model → tool-call envelope → schema validation → guarded execution → structured tool result → model. `runToolLoop` caps turns and total calls, and `BackendToolLoopModel` makes this loop available consistently across the existing OpenAI-compatible, Anthropic, and Ollama backends. Pressing Stop aborts both model generation and tool execution.
 
+## Safe workspace editing
+
+Implementation Mode registers `get_file_fingerprint`, `replace_file`, `create_file`, `delete_file`, `rename_file`, and `undo_edit`. Replacements, deletions, and renames require a current SHA-256 fingerprint. LGS checks the fingerprint again after any permission prompt, so a user edit made while approval is pending is preserved and the model receives a conflict instead of overwriting it.
+
+Editing is workspace-relative, rejects absolute paths, traversal, non-files, final or intermediate symlink escape, destination overwrite, and content larger than 2 MiB. Each successful operation writes an undo record under `.lgs/tasks/<task-id>/edits/` and updates task-attributable modifications automatically. Undo also checks the post-edit fingerprint and refuses to overwrite later user changes. Planning Mode blocks every mutating edit tool.
+
 ## Git intelligence
 
 Phase 5 adds `git_status`, `git_diff`, `git_file_history`, `git_show_commit`, `git_blame_range`, and `git_log_search`. Recent file history and log searches return compact commit, date, and summary records first. Older history uses continuation tokens; commit patches and blame ranges are returned only when explicitly requested. Diffs and patches are line-paginated and byte-bounded.
@@ -87,7 +98,7 @@ Configuration precedence is built-in default → user setting → workspace sett
 
 Provider connections are independent profiles, so multiple OpenAI-compatible endpoints can coexist. Profiles support enablement, ordinary headers, secret custom headers, model aliases, capability overrides, connection testing, and model discovery. API keys and secret header values remain in VS Code SecretStorage; the Settings webview receives only metadata such as whether a secret exists.
 
-The General, Appearance, Models & Providers, Agents, Integrations, Context, Verification, Git, Usage & Budgets, Memory, Skills, Permissions, and Advanced sections are navigable. Unimplemented sections show explicit placeholders rather than nonfunctional controls. Appearance changes apply to open LGS webviews without restarting VS Code: **Follow VS Code** maps every semantic role to native `--vscode-*` variables, while **Research Paper / Light** and **Research Lab / Dark** use restrained parchment/forest and navy/sage palettes respectively. The setting may be stored per-user or per-workspace.
+The live Settings sections are **Appearance**, **Models & Providers**, **Computer Access**, and **Engineering Systems**. Complex agent, integration, context, verification, Git/completion, usage, memory, skill, and permission policy remains reviewable in `.lgs/config.yaml` instead of being represented by placeholder controls. Appearance changes apply to open LGS webviews without restarting VS Code: **Follow VS Code** maps semantic roles to native `--vscode-*` variables, while **Research Paper / Light** and **Research Lab / Dark** use parchment/academic-green and deep-blue/sage/brass palettes. The setting may be stored per-user or per-workspace.
 
 ## Controlled command execution
 
@@ -393,7 +404,7 @@ LGS normalizes reasoning as `{ enabled, effort: low | medium | high }` and expos
 
 ## Integrations
 
-The Integration Hub normalizes MCP servers, LGS plugins, and connected apps into descriptors with origin, health, requested permissions, capabilities, allowed agents, and process ownership. External tools are schema-validated and registered through the normal LGS tool framework; their callers do not depend on the originating transport. `.lgs/config.yaml` may declare `integrations.required`, `recommended`, and `optional` IDs without secrets. The current local catalog is intentionally explicit: an integration must be registered and healthy before its capabilities are exposed, and agent-role restrictions are enforced at invocation time. `list_integrations` provides the browser-ready Installed/MCP/Apps data surface; only LGS-owned processes may be stopped by future MCP lifecycle controls.
+The Integration Hub normalizes MCP servers, LGS plugins, and connected apps into descriptors with origin, health, requested permissions, capabilities, allowed agents, and process ownership. External tools use the normal schema-validated tool framework. `.lgs/config.yaml` may declare required, recommended, optional, and MCP IDs without secrets. In the current extension-host composition these declarations appear honestly as disconnected catalog entries with no capabilities; LGS does not yet provide a marketplace/install UI or start arbitrary declared connectors. Only a separately registered healthy integration can expose callable tools.
 
 ## Local runtimes and benchmarks
 

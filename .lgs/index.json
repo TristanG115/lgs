@@ -1,15 +1,18 @@
 {
   "version": 2,
-  "generatedAt": "2026-08-27T02:45:19.293Z",
+  "generatedAt": "2026-08-27T12:22:59.900Z",
   "root": "/home/tristan/Documents/Github/lgs",
   "directories": [
     ".vscode",
+    "docs",
     "media",
     "src",
     "src/commit",
     "src/completion",
+    "src/computer",
     "src/context",
     "src/documentation",
+    "src/editing",
     "src/execution",
     "src/integrations",
     "src/intelligence",
@@ -36,9 +39,9 @@
       "path": ".gitignore",
       "fileType": "unknown",
       "language": "",
-      "size": 136,
-      "mtimeMs": 1787794773123.1047,
-      "hash": "59da030e658a1a42873c99e0902132fa84800beb",
+      "size": 163,
+      "mtimeMs": 1787799298030.5916,
+      "hash": "5c1b7a8dc36b2b02920bf7fb737915c58032886b",
       "imports": [],
       "exports": [],
       "symbols": [],
@@ -81,9 +84,9 @@
       "path": "README.md",
       "fileType": "md",
       "language": "Markdown/Text",
-      "size": 42118,
-      "mtimeMs": 1787798702216.2046,
-      "hash": "a56492e2d2384d33358ca4599b5ad1df12ef55b3",
+      "size": 46077,
+      "mtimeMs": 1787832879848.863,
+      "hash": "cfb68baf334abfb0ea7398f1e8f542488045e0d2",
       "imports": [],
       "exports": [],
       "symbols": [],
@@ -91,6 +94,81 @@
       "likelyDocumentation": true,
       "directory": "",
       "module": ""
+    },
+    {
+      "path": "docs/architecture.md",
+      "fileType": "md",
+      "language": "Markdown/Text",
+      "size": 2831,
+      "mtimeMs": 1787832969495.96,
+      "hash": "8a98fab67e67ec1cace5def69ee0edc52d9edcc6",
+      "imports": [],
+      "exports": [],
+      "symbols": [],
+      "likelyTest": false,
+      "likelyDocumentation": true,
+      "directory": "docs",
+      "module": "docs"
+    },
+    {
+      "path": "docs/audit-readiness-2026-08-27.md",
+      "fileType": "md",
+      "language": "Markdown/Text",
+      "size": 13157,
+      "mtimeMs": 1787833357672.1243,
+      "hash": "be695cc7902910057c2c7b819973de3b988f1c8c",
+      "imports": [],
+      "exports": [],
+      "symbols": [],
+      "likelyTest": false,
+      "likelyDocumentation": true,
+      "directory": "docs",
+      "module": "docs"
+    },
+    {
+      "path": "docs/development.md",
+      "fileType": "md",
+      "language": "Markdown/Text",
+      "size": 1358,
+      "mtimeMs": 1787832969608.96,
+      "hash": "525cb7e815d3622889a78e4f23162e7c9fb54708",
+      "imports": [],
+      "exports": [],
+      "symbols": [],
+      "likelyTest": false,
+      "likelyDocumentation": true,
+      "directory": "docs",
+      "module": "docs"
+    },
+    {
+      "path": "docs/providers.md",
+      "fileType": "md",
+      "language": "Markdown/Text",
+      "size": 1783,
+      "mtimeMs": 1787832969571.96,
+      "hash": "6c20462dd427f4d9a6d8b06b8f27f53144a93b12",
+      "imports": [],
+      "exports": [],
+      "symbols": [],
+      "likelyTest": false,
+      "likelyDocumentation": true,
+      "directory": "docs",
+      "module": "docs"
+    },
+    {
+      "path": "docs/settings.md",
+      "fileType": "md",
+      "language": "Markdown/Text",
+      "size": 1879,
+      "mtimeMs": 1787832969534.96,
+      "hash": "9a8c27be1bb1fbb411a80214d50e00c4939f8814",
+      "imports": [],
+      "exports": [],
+      "symbols": [],
+      "likelyTest": false,
+      "likelyDocumentation": true,
+      "directory": "docs",
+      "module": "docs"
     },
     {
       "path": "esbuild.mjs",
@@ -201,9 +279,9 @@
       "path": "src/commit/service.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 4852,
-      "mtimeMs": 1787787048299.9626,
-      "hash": "26e566ee33bba62f8a29ad449abfdd52986352c1",
+      "size": 4868,
+      "mtimeMs": 1787832774672.5986,
+      "hash": "ac77c7686e87e04c2692bbfd21aa769b99fcc529",
       "imports": [
         "node:child_process",
         "node:fs",
@@ -335,9 +413,9 @@
       "path": "src/completion/guard.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 11610,
-      "mtimeMs": 1787779532100.7708,
-      "hash": "35179f81e102a5f5ccfd56c741c664e3cd2fbc11",
+      "size": 12339,
+      "mtimeMs": 1787799297994.5913,
+      "hash": "20e016be547f8b57e90646b92ce4722f412e1778",
       "imports": [
         "node:fs",
         "node:path",
@@ -356,6 +434,8 @@
         "LABELS",
         "STEP_REQUIREMENT",
         "CompletionGuard",
+        "taskProfile",
+        "requiredForProfile",
         "renderCompletionBlocked",
         "commandItem",
         "unresolvedItem"
@@ -465,6 +545,208 @@
       "likelyTest": false,
       "likelyDocumentation": false,
       "directory": "src/completion",
+      "module": "src"
+    },
+    {
+      "path": "src/computer/agent.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 16213,
+      "mtimeMs": 1787799011781.931,
+      "hash": "432559393c1d4f5afd96c30d8dac74cb8aad4be2",
+      "imports": [
+        "node:child_process",
+        "node:crypto",
+        "node:fs",
+        "node:os",
+        "node:path",
+        "node:zlib",
+        "./config.js",
+        "./permissions.js",
+        "./types.js"
+      ],
+      "exports": [
+        "ComputerAgent",
+        "extractExternalFile"
+      ],
+      "symbols": [
+        "MAX_FILE_BYTES",
+        "MAX_OUTPUT_BYTES",
+        "SECRET",
+        "ComputerAgent",
+        "validateCommand",
+        "commandResult",
+        "append",
+        "appendJsonl",
+        "readJsonl",
+        "readJson",
+        "writeJson",
+        "redact",
+        "extractExternalFile",
+        "csv",
+        "pdfText",
+        "xmlText",
+        "zipEntries",
+        "xlsxRows",
+        "imageMetadata"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/computer",
+      "module": "src"
+    },
+    {
+      "path": "src/computer/config.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 2845,
+      "mtimeMs": 1787798930206.7424,
+      "hash": "106043c5e3c68eea5d65a0a6cdef32e15858704e",
+      "imports": [
+        "node:os",
+        "node:path",
+        "../execution/types.js",
+        "./types.js"
+      ],
+      "exports": [
+        "parseComputerConfiguration",
+        "normalize"
+      ],
+      "symbols": [
+        "policy",
+        "parseComputerConfiguration",
+        "parseLocations",
+        "normalize",
+        "record"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/computer",
+      "module": "src"
+    },
+    {
+      "path": "src/computer/index.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 147,
+      "mtimeMs": 1787798930271.7427,
+      "hash": "bffbda9d4a30a3c93f44c2fdea84962a08ca6cd1",
+      "imports": [
+        "./types.js",
+        "./config.js",
+        "./permissions.js",
+        "./agent.js",
+        "./tools.js"
+      ],
+      "exports": [],
+      "symbols": [],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/computer",
+      "module": "src"
+    },
+    {
+      "path": "src/computer/permissions.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 2270,
+      "mtimeMs": 1787798930240.7427,
+      "hash": "aa4bbe192bd636edd2ae14da44a69a6bbc43c4c0",
+      "imports": [
+        "node:fs",
+        "node:path",
+        "./types.js",
+        "./config.js"
+      ],
+      "exports": [
+        "ComputerPermissionResolver"
+      ],
+      "symbols": [
+        "ComputerPermissionResolver",
+        "canonicalPath",
+        "inside"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/computer",
+      "module": "src"
+    },
+    {
+      "path": "src/computer/tools.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 8778,
+      "mtimeMs": 1787799203778.374,
+      "hash": "242f1b5f2492668c8cbb7ec120426b0499e72dd6",
+      "imports": [
+        "./agent.js",
+        "./types.js",
+        "../watchdog/types.js",
+        "../tools/framework.js",
+        "../tools/types.js",
+        "../watchdog/state.js"
+      ],
+      "exports": [
+        "registerComputerTools"
+      ],
+      "symbols": [
+        "READ",
+        "WRITE",
+        "COMMAND",
+        "pathProperty",
+        "registerComputerTools",
+        "object"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/computer",
+      "module": "src"
+    },
+    {
+      "path": "src/computer/types.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 3265,
+      "mtimeMs": 1787798930170.7424,
+      "hash": "cccfc1a062fb3f1225b12ee1fc2db7116603a1de",
+      "imports": [
+        "../execution/types.js"
+      ],
+      "exports": [
+        "COMPUTER_OPERATION_CLASSES",
+        "ComputerOperationClass",
+        "ExternalAccess",
+        "ComputerResultStatus",
+        "TrustedLocation",
+        "ComputerConfiguration",
+        "ComputerPermissionDecision",
+        "ComputerPermissionPrompt",
+        "ComputerCommandRequest",
+        "ComputerCommandResult",
+        "ActivityLedgerEntry",
+        "AgentTrace",
+        "DecisionJournalEntry",
+        "ExternalFileContent"
+      ],
+      "symbols": [
+        "COMPUTER_OPERATION_CLASSES",
+        "ComputerOperationClass",
+        "ExternalAccess",
+        "ComputerResultStatus",
+        "TrustedLocation",
+        "ComputerConfiguration",
+        "ComputerPermissionDecision",
+        "ComputerPermissionPrompt",
+        "ComputerCommandRequest",
+        "ComputerCommandResult",
+        "ActivityLedgerEntry",
+        "AgentTrace",
+        "DecisionJournalEntry",
+        "ExternalFileContent"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/computer",
       "module": "src"
     },
     {
@@ -799,6 +1081,116 @@
       "module": "src"
     },
     {
+      "path": "src/editing/index.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 86,
+      "mtimeMs": 1787801476996.8745,
+      "hash": "91a8f2ec7c2185b5f87300714602c642bc758539",
+      "imports": [
+        "./types.js",
+        "./service.js",
+        "./tools.js"
+      ],
+      "exports": [],
+      "symbols": [],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/editing",
+      "module": "src"
+    },
+    {
+      "path": "src/editing/service.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 11228,
+      "mtimeMs": 1787831569660.9844,
+      "hash": "c666d3bf0d2a69d8964529301b469578f1a8e8bf",
+      "imports": [
+        "node:crypto",
+        "node:fs",
+        "node:path",
+        "../tools/types.js",
+        "../tools/framework.js",
+        "../watchdog/state.js",
+        "./types.js"
+      ],
+      "exports": [
+        "FileEditService"
+      ],
+      "symbols": [
+        "MAX_CONTENT_BYTES",
+        "FileEditService",
+        "snapshot",
+        "atomicWrite",
+        "hashFile",
+        "hash",
+        "portable",
+        "within",
+        "now",
+        "operationPaths",
+        "fail"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/editing",
+      "module": "src"
+    },
+    {
+      "path": "src/editing/tools.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 3915,
+      "mtimeMs": 1787801518672.9324,
+      "hash": "e577b565eca64742432b883732baa97801aeeb27",
+      "imports": [
+        "../tools/types.js",
+        "../tools/framework.js",
+        "./service.js"
+      ],
+      "exports": [
+        "registerEditingTools"
+      ],
+      "symbols": [
+        "EXECUTE",
+        "READ",
+        "pathProperty",
+        "hashProperty",
+        "registerEditingTools",
+        "task",
+        "object"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/editing",
+      "module": "src"
+    },
+    {
+      "path": "src/editing/types.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 491,
+      "mtimeMs": 1787801476893.8745,
+      "hash": "142d301135915bf617efdaad3d6cd1807e526e02",
+      "imports": [],
+      "exports": [
+        "EditKind",
+        "FileSnapshot",
+        "EditOperation",
+        "EditPermissionPrompt"
+      ],
+      "symbols": [
+        "EditKind",
+        "FileSnapshot",
+        "EditOperation",
+        "EditPermissionPrompt"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/editing",
+      "module": "src"
+    },
+    {
       "path": "src/execution/evidence.ts",
       "fileType": "ts",
       "language": "TypeScript",
@@ -1002,22 +1394,22 @@
       "path": "src/extension.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 16632,
-      "mtimeMs": 1787798693988.1846,
-      "hash": "3cfa9f25fc22a70f702f2f75407e66a637dc8343",
+      "size": 29189,
+      "mtimeMs": 1787832997689.9805,
+      "hash": "11de89585b2408ff689af782145e2e30036d0715",
       "imports": [
-        "vscode",
-        "./shared/messages.js",
-        "./shared/logger.js",
-        "./model/profiles.js",
-        "./model/registry.js",
-        "./model/types.js",
-        "./model/backend.js",
-        "./intelligence/indexer.js",
         "node:fs",
         "node:path",
+        "vscode",
+        "./intelligence/indexer.js",
+        "./model/backend.js",
+        "./model/registry.js",
+        "./model/profiles.js",
+        "./model/types.js",
         "./settings/configuration.js",
         "./settings/panel.js",
+        "./shared/logger.js",
+        "./shared/messages.js",
         "./tools/index.js",
         "./usage/index.js",
         "./usage/panel.js"
@@ -1031,6 +1423,10 @@
         "activate",
         "deactivate",
         "LgsViewProvider",
+        "configuredIntegrations",
+        "providerPolicy",
+        "toolLabel",
+        "newestFile",
         "getHtml",
         "rebuildIndex",
         "openCodebaseMap"
@@ -2526,9 +2922,9 @@
       "path": "src/runtime/browser.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 2916,
-      "mtimeMs": 1787779354224.287,
-      "hash": "d534976c133b334e53ecaf5f1ae644a4a62010d7",
+      "size": 2954,
+      "mtimeMs": 1787801294207.6213,
+      "hash": "51851532ed76636164e57550e096c4318f58f737",
       "imports": [
         "node:crypto",
         "node:fs",
@@ -2723,24 +3119,25 @@
       "path": "src/settings/configuration.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 3810,
-      "mtimeMs": 1787794524031.8752,
-      "hash": "61f489e1a09c6d403b70836ff9e1dcc4214b0d5a",
+      "size": 6258,
+      "mtimeMs": 1787801325545.6648,
+      "hash": "c81373b2dd6d2a75499feecb33299553970ec2b0",
       "imports": [
         "node:fs",
         "node:path",
         "yaml",
         "vscode",
-        "./defaults.js",
-        "./registry.js",
-        "../verification/config.js",
+        "../computer/config.js",
         "../completion/config.js",
         "../orchestration/config.js",
-        "../watchdog/config.js",
         "../research/config.js",
-        "../runtime/config.js",
         "../routing/config.js",
-        "../usage/config.js"
+        "../runtime/config.js",
+        "../usage/config.js",
+        "../verification/config.js",
+        "../watchdog/config.js",
+        "./defaults.js",
+        "./registry.js"
       ],
       "exports": [
         "SettingsManager"
@@ -2758,21 +3155,22 @@
       "path": "src/settings/defaults.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 2381,
-      "mtimeMs": 1787797536508.1653,
-      "hash": "2ead5604c0bf523823af153a9947df41736d4b51",
+      "size": 3320,
+      "mtimeMs": 1787800160055.5266,
+      "hash": "307a28232c79da94bc5f78afe318919685204ed2",
       "imports": [
         "./registry.js"
       ],
       "exports": [
-        "SETTINGS_CATEGORIES",
         "createDefaultRegistry",
-        "visibleSettings"
+        "CONFIGURATION_CATEGORIES",
+        "LgsSettingDefinition"
       ],
       "symbols": [
-        "SETTINGS_CATEGORIES",
+        "permissionChoices",
         "createDefaultRegistry",
-        "visibleSettings"
+        "CONFIGURATION_CATEGORIES",
+        "LgsSettingDefinition"
       ],
       "likelyTest": false,
       "likelyDocumentation": false,
@@ -2783,9 +3181,9 @@
       "path": "src/settings/panel.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 13835,
-      "mtimeMs": 1787797748598.766,
-      "hash": "7d60816ec2a277eabe54c1a65f2507c5cea7fadf",
+      "size": 23192,
+      "mtimeMs": 1787832997727.9805,
+      "hash": "25513b467d29f743aeee4a6a5eabb9ed6fa7cd01",
       "imports": [
         "vscode",
         "../model/profiles.js",
@@ -2797,6 +3195,7 @@
       "symbols": [
         "PanelMessage",
         "SettingsPanel",
+        "secretHeaderKey",
         "css",
         "script"
       ],
@@ -2859,9 +3258,9 @@
       "path": "src/shared/messages.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 3699,
-      "mtimeMs": 1787798512038.7397,
-      "hash": "f29bef703defec22a76463394e1ede89f16ebf5c",
+      "size": 4638,
+      "mtimeMs": 1787831995538.209,
+      "hash": "727b12888e390879d230be21daa49d619b77be10",
       "imports": [
         "../completion/types.js"
       ],
@@ -2869,6 +3268,7 @@
         "ChatOptions",
         "TaskActivity",
         "TaskDashboard",
+        "TaskAction",
         "ClientMessage",
         "HostMessage",
         "parseClientMessage",
@@ -2878,6 +3278,7 @@
         "ChatOptions",
         "TaskActivity",
         "TaskDashboard",
+        "TaskAction",
         "ClientMessage",
         "HostMessage",
         "parseClientMessage",
@@ -2892,9 +3293,9 @@
       "path": "src/tools/framework.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 11129,
-      "mtimeMs": 1787788082242.472,
-      "hash": "c0065982ab86896e2f8901f4f1bb2e10e0660959",
+      "size": 11126,
+      "mtimeMs": 1787798886139.6409,
+      "hash": "d5cb7db2104d4e924b7deaadf69f15ab5b01f726",
       "imports": [
         "./schema.js",
         "./types.js"
@@ -3017,9 +3418,9 @@
       "path": "src/tools/index.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 869,
-      "mtimeMs": 1787795848570.6084,
-      "hash": "8cbfe559afb86ebecccfb13d28caea1add70b940",
+      "size": 944,
+      "mtimeMs": 1787831569704.9844,
+      "hash": "5ab7bf51f6cbfb9f0b97b54069f31b1fffe6fb88",
       "imports": [
         "./types.js",
         "./schema.js",
@@ -3044,7 +3445,9 @@
         "../localruntime/index.js",
         "../routing/index.js",
         "../usage/index.js",
-        "../context/index.js"
+        "../context/index.js",
+        "../computer/index.js",
+        "../editing/index.js"
       ],
       "exports": [],
       "symbols": [],
@@ -3099,13 +3502,14 @@
       "path": "src/tools/repository.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 26940,
-      "mtimeMs": 1787713794442.2214,
-      "hash": "82192369177d06525479b3651ad858c5f5d2d019",
+      "size": 27073,
+      "mtimeMs": 1787801407003.7776,
+      "hash": "5449d07ad12d3387d5ce0720028e9e19059952c4",
       "imports": [
         "node:fs",
         "node:path",
         "node:readline",
+        "node:crypto",
         "../intelligence/indexer.js",
         "./framework.js",
         "./types.js"
@@ -3192,9 +3596,9 @@
       "path": "src/tools/types.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 3285,
-      "mtimeMs": 1787788347754.1147,
-      "hash": "91ae037e554933520db6c2779bd3004644ac9f27",
+      "size": 3457,
+      "mtimeMs": 1787801406969.7776,
+      "hash": "5d1ad0bf73a764da35e81e23905c2c15d01bbd11",
       "imports": [],
       "exports": [
         "JsonSchema",
@@ -3239,9 +3643,9 @@
       "path": "src/tools/workspace.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 5171,
-      "mtimeMs": 1787795848605.6086,
-      "hash": "11e2869b181111514fdf32dafc7f4e5a891ca177",
+      "size": 6143,
+      "mtimeMs": 1787831569738.9844,
+      "hash": "833ca16c3ebe0aa0493d836c7feb35b996aba548",
       "imports": [
         "./git.js",
         "./repository.js",
@@ -3261,13 +3665,19 @@
         "../integrations/index.js",
         "../localruntime/index.js",
         "../usage/index.js",
-        "../context/index.js"
+        "../context/index.js",
+        "../computer/index.js",
+        "../editing/index.js",
+        "node:fs",
+        "node:path",
+        "yaml"
       ],
       "exports": [
         "createWorkspaceToolRegistry"
       ],
       "symbols": [
-        "createWorkspaceToolRegistry"
+        "createWorkspaceToolRegistry",
+        "workspaceComputerConfiguration"
       ],
       "likelyTest": false,
       "likelyDocumentation": false,
@@ -3328,9 +3738,9 @@
       "path": "src/usage/panel.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 4412,
-      "mtimeMs": 1787794898922.4973,
-      "hash": "18257c4b22249959c2248030fe717c2d557e3c78",
+      "size": 4512,
+      "mtimeMs": 1787801294309.6216,
+      "hash": "496a9111ef4e361b74fe2924806ebf59b2cfe1a0",
       "imports": [
         "vscode",
         "./types.js",
@@ -3511,9 +3921,9 @@
       "path": "src/verification/config.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 10779,
-      "mtimeMs": 1787794470474.6328,
-      "hash": "7f3484b9bff0c043563b6a83cc40936c68865f73",
+      "size": 12301,
+      "mtimeMs": 1787801353676.7039,
+      "hash": "d90784e10ae2cc2852ce6c1a1be6002a558bb8bd",
       "imports": [
         "node:fs",
         "node:path",
@@ -3533,7 +3943,9 @@
         "../routing/config.js",
         "../routing/types.js",
         "../usage/config.js",
-        "../usage/types.js"
+        "../usage/types.js",
+        "../computer/config.js",
+        "../computer/types.js"
       ],
       "exports": [
         "VERIFICATION_STEPS",
@@ -3816,9 +4228,9 @@
       "path": "src/watchdog/state.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 5325,
-      "mtimeMs": 1787796043449.2195,
-      "hash": "66a0417a4b8b885e9120e32e055b2c32f73071fd",
+      "size": 5726,
+      "mtimeMs": 1787798886212.6409,
+      "hash": "a3aee660d80029eb867a55a904ebaa5feec709eb",
       "imports": [
         "node:fs",
         "node:path",
@@ -3832,6 +4244,7 @@
         "boundedList",
         "bounded",
         "validateCommitSha",
+        "validateProfile",
         "validTaskId",
         "validateTaskId",
         "clone",
@@ -3897,9 +4310,9 @@
       "path": "src/watchdog/types.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 2557,
-      "mtimeMs": 1787795868340.6606,
-      "hash": "3b467ec72d4ffe825b875c0ab038585fb7c3d7de",
+      "size": 2894,
+      "mtimeMs": 1787798886177.6409,
+      "hash": "ee1133c65693246916923333853087c78be988bb",
       "imports": [
         "../completion/types.js",
         "../orchestration/types.js"
@@ -3908,6 +4321,8 @@
         "WATCHDOG_CLASSIFICATIONS",
         "WatchdogClassification",
         "TaskState",
+        "TASK_PROFILES",
+        "TaskProfile",
         "WatchdogInput",
         "WatchdogFinding",
         "WatchdogEvaluation",
@@ -3924,6 +4339,8 @@
         "WATCHDOG_CLASSIFICATIONS",
         "WatchdogClassification",
         "TaskState",
+        "TASK_PROFILES",
+        "TaskProfile",
         "WatchdogInput",
         "WatchdogFinding",
         "WatchdogEvaluation",
@@ -3945,9 +4362,9 @@
       "path": "src/webview/main.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 13078,
-      "mtimeMs": 1787798712884.2307,
-      "hash": "a92382802bbe7dc6274d9f8231019d860a565240",
+      "size": 20153,
+      "mtimeMs": 1787831995607.209,
+      "hash": "33113767f3d354d2326f2804a630840cd3847990",
       "imports": [
         "./styles.css",
         "../shared/messages.js"
@@ -3960,14 +4377,17 @@
         "generating",
         "currentAssistant",
         "dashboard",
-        "activeTab",
+        "activeTaskTab",
+        "activePane",
         "history",
         "input",
         "send",
         "stop",
         "state",
+        "statusDot",
         "profile",
         "model",
+        "mode",
         "thinking",
         "approval",
         "chats",
@@ -3976,13 +4396,26 @@
         "completionChecklist",
         "completionToggle",
         "taskPanel",
+        "errorRegion",
+        "optionsPanel",
+        "optionsToggle",
         "syncOptions",
-        "newTask",
+        "option",
+        "renderChats",
+        "renderEmpty",
+        "renderPane",
         "renderDashboard",
-        "list",
-        "format",
-        "add",
-        "renderCompletion"
+        "evidenceView",
+        "usageView",
+        "sectionList",
+        "renderCompletion",
+        "addMessage",
+        "showError",
+        "clearError",
+        "resizeInput",
+        "escapeHtml",
+        "formatNumber",
+        "relativeTime"
       ],
       "likelyTest": false,
       "likelyDocumentation": false,
@@ -3993,9 +4426,9 @@
       "path": "src/webview/styles.css",
       "fileType": "css",
       "language": "CSS",
-      "size": 9181,
-      "mtimeMs": 1787798639973.0525,
-      "hash": "1d0ad331d183fb9ce88532263821d3b04129f636",
+      "size": 17946,
+      "mtimeMs": 1787800656595.5935,
+      "hash": "23b6651039142e988d76f7f3123de23dd18dabb9",
       "imports": [],
       "exports": [],
       "symbols": [],
@@ -4008,9 +4441,9 @@
       "path": "test/commit.test.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 3023,
-      "mtimeMs": 1787786147634.2744,
-      "hash": "7cc0908a2e51cd8641cce6f6cbf733ed578c91dc",
+      "size": 4070,
+      "mtimeMs": 1787832813398.717,
+      "hash": "0bef8b441fc5d69aba3ffa0c0ed130f0215c830d",
       "imports": [
         "vitest",
         "node:fs",
@@ -4022,7 +4455,8 @@
       "exports": [],
       "symbols": [
         "root",
-        "baseline"
+        "baseline",
+        "disabledGates"
       ],
       "likelyTest": true,
       "likelyDocumentation": false,
@@ -4053,6 +4487,31 @@
         "gates",
         "execution",
         "guard"
+      ],
+      "likelyTest": true,
+      "likelyDocumentation": false,
+      "directory": "test",
+      "module": "test"
+    },
+    {
+      "path": "test/computer.test.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 3825,
+      "mtimeMs": 1787799246442.4724,
+      "hash": "6979e72cc877c854c86090bb30da7a9fa680ea74",
+      "imports": [
+        "vitest",
+        "node:fs",
+        "node:os",
+        "node:path",
+        "../src/tools/index.js"
+      ],
+      "exports": [],
+      "symbols": [
+        "fixture",
+        "cleanup",
+        "configuration"
       ],
       "likelyTest": true,
       "likelyDocumentation": false,
@@ -4107,6 +4566,32 @@
         "cleanup",
         "task",
         "gates"
+      ],
+      "likelyTest": true,
+      "likelyDocumentation": false,
+      "directory": "test",
+      "module": "test"
+    },
+    {
+      "path": "test/editing.test.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 5607,
+      "mtimeMs": 1787831613009.001,
+      "hash": "61010fae016d6dcaed59115d4318b765b383ad8a",
+      "imports": [
+        "node:crypto",
+        "node:fs",
+        "node:os",
+        "node:path",
+        "vitest",
+        "../src/tools/index.js"
+      ],
+      "exports": [],
+      "symbols": [
+        "fixtures",
+        "fixture",
+        "hash"
       ],
       "likelyTest": true,
       "likelyDocumentation": false,
@@ -4193,12 +4678,16 @@
       "path": "test/integrations.test.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 1551,
-      "mtimeMs": 1787788383154.2004,
-      "hash": "f307e4d0b788b0ecfc72f5eedc37c11697dbaa84",
+      "size": 2552,
+      "mtimeMs": 1787801367676.7231,
+      "hash": "48177e764b019effdf173af29e78abb925c54e72",
       "imports": [
         "vitest",
-        "../src/tools/index.js"
+        "node:fs",
+        "node:os",
+        "node:path",
+        "../src/tools/index.js",
+        "../src/verification/config.js"
       ],
       "exports": [],
       "symbols": [],
@@ -4256,9 +4745,9 @@
       "path": "test/messages.test.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 1149,
-      "mtimeMs": 1787798657174.0945,
-      "hash": "08c6de0681c6067179365ff338b9eaca033d984b",
+      "size": 1857,
+      "mtimeMs": 1787831995641.2087,
+      "hash": "f5a1c6f042fc911b3db72b8c0ced13ef39d349dc",
       "imports": [
         "vitest",
         "../src/shared/messages.js"
@@ -4425,9 +4914,9 @@
       "path": "test/settings.test.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 2647,
-      "mtimeMs": 1787797669068.5408,
-      "hash": "38d575404abc9c06285cad0be506ede1d87bb760",
+      "size": 3614,
+      "mtimeMs": 1787801333420.6758,
+      "hash": "01df1e2c4cf60b231dd23a5c8fe51d1405e20c3b",
       "imports": [
         "vitest",
         "node:fs",
@@ -4486,6 +4975,28 @@
         "fixture",
         "cleanup",
         "call"
+      ],
+      "likelyTest": true,
+      "likelyDocumentation": false,
+      "directory": "test",
+      "module": "test"
+    },
+    {
+      "path": "test/ui.test.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 1450,
+      "mtimeMs": 1787800705760.699,
+      "hash": "9d064c3f99a84b86f2a81567a3cd42630cb27be2",
+      "imports": [
+        "vitest",
+        "node:fs",
+        "node:path"
+      ],
+      "exports": [],
+      "symbols": [
+        "root",
+        "source"
       ],
       "likelyTest": true,
       "likelyDocumentation": false,
@@ -4580,12 +5091,15 @@
       "path": "",
       "directories": [
         ".vscode",
+        "docs",
         "media",
         "src",
         "src/commit",
         "src/completion",
+        "src/computer",
         "src/context",
         "src/documentation",
+        "src/editing",
         "src/execution",
         "src/integrations",
         "src/intelligence",
@@ -4612,6 +5126,11 @@
         ".vscode/launch.json",
         ".vscode/tasks.json",
         "README.md",
+        "docs/architecture.md",
+        "docs/audit-readiness-2026-08-27.md",
+        "docs/development.md",
+        "docs/providers.md",
+        "docs/settings.md",
         "esbuild.mjs",
         "eslint.config.mjs",
         "media/lgs.svg",
@@ -4627,6 +5146,12 @@
         "src/completion/index.ts",
         "src/completion/tools.ts",
         "src/completion/types.ts",
+        "src/computer/agent.ts",
+        "src/computer/config.ts",
+        "src/computer/index.ts",
+        "src/computer/permissions.ts",
+        "src/computer/tools.ts",
+        "src/computer/types.ts",
         "src/context/broker.ts",
         "src/context/index.ts",
         "src/context/tools.ts",
@@ -4638,6 +5163,10 @@
         "src/documentation/store.ts",
         "src/documentation/tools.ts",
         "src/documentation/types.ts",
+        "src/editing/index.ts",
+        "src/editing/service.ts",
+        "src/editing/tools.ts",
+        "src/editing/types.ts",
         "src/execution/evidence.ts",
         "src/execution/index.ts",
         "src/execution/logs.ts",
@@ -4743,8 +5272,10 @@
         "src/webview/styles.css",
         "test/commit.test.ts",
         "test/completion.test.ts",
+        "test/computer.test.ts",
         "test/context.test.ts",
         "test/documentation.test.ts",
+        "test/editing.test.ts",
         "test/execution.test.ts",
         "test/git.test.ts",
         "test/indexer.test.ts",
@@ -4761,6 +5292,7 @@
         "test/settings.test.ts",
         "test/stream.test.ts",
         "test/tools.test.ts",
+        "test/ui.test.ts",
         "test/usage.test.ts",
         "test/watchdog.test.ts",
         "tsconfig.json",
@@ -4768,6 +5300,7 @@
       ],
       "modules": [
         "root",
+        "docs",
         "media",
         "src",
         "test"
@@ -4797,6 +5330,22 @@
         "entryPoints": []
       },
       {
+        "id": "docs",
+        "name": "docs",
+        "path": "docs",
+        "directories": [
+          "docs"
+        ],
+        "files": [
+          "docs/architecture.md",
+          "docs/audit-readiness-2026-08-27.md",
+          "docs/development.md",
+          "docs/providers.md",
+          "docs/settings.md"
+        ],
+        "entryPoints": []
+      },
+      {
         "id": "media",
         "name": "media",
         "path": "media",
@@ -4816,8 +5365,10 @@
           "src",
           "src/commit",
           "src/completion",
+          "src/computer",
           "src/context",
           "src/documentation",
+          "src/editing",
           "src/execution",
           "src/integrations",
           "src/intelligence",
@@ -4849,6 +5400,12 @@
           "src/completion/index.ts",
           "src/completion/tools.ts",
           "src/completion/types.ts",
+          "src/computer/agent.ts",
+          "src/computer/config.ts",
+          "src/computer/index.ts",
+          "src/computer/permissions.ts",
+          "src/computer/tools.ts",
+          "src/computer/types.ts",
           "src/context/broker.ts",
           "src/context/index.ts",
           "src/context/tools.ts",
@@ -4860,6 +5417,10 @@
           "src/documentation/store.ts",
           "src/documentation/tools.ts",
           "src/documentation/types.ts",
+          "src/editing/index.ts",
+          "src/editing/service.ts",
+          "src/editing/tools.ts",
+          "src/editing/types.ts",
           "src/execution/evidence.ts",
           "src/execution/index.ts",
           "src/execution/logs.ts",
@@ -4978,8 +5539,10 @@
         "files": [
           "test/commit.test.ts",
           "test/completion.test.ts",
+          "test/computer.test.ts",
           "test/context.test.ts",
           "test/documentation.test.ts",
+          "test/editing.test.ts",
           "test/execution.test.ts",
           "test/git.test.ts",
           "test/indexer.test.ts",
@@ -4996,6 +5559,7 @@
           "test/settings.test.ts",
           "test/stream.test.ts",
           "test/tools.test.ts",
+          "test/ui.test.ts",
           "test/usage.test.ts",
           "test/watchdog.test.ts"
         ],
@@ -5135,6 +5699,82 @@
     {
       "from": "src/completion/types.ts",
       "to": "src/runtime/types.ts"
+    },
+    {
+      "from": "src/computer/agent.ts",
+      "to": "src/computer/config.ts"
+    },
+    {
+      "from": "src/computer/agent.ts",
+      "to": "src/computer/permissions.ts"
+    },
+    {
+      "from": "src/computer/agent.ts",
+      "to": "src/computer/types.ts"
+    },
+    {
+      "from": "src/computer/config.ts",
+      "to": "src/execution/types.ts"
+    },
+    {
+      "from": "src/computer/config.ts",
+      "to": "src/computer/types.ts"
+    },
+    {
+      "from": "src/computer/index.ts",
+      "to": "src/computer/types.ts"
+    },
+    {
+      "from": "src/computer/index.ts",
+      "to": "src/computer/config.ts"
+    },
+    {
+      "from": "src/computer/index.ts",
+      "to": "src/computer/permissions.ts"
+    },
+    {
+      "from": "src/computer/index.ts",
+      "to": "src/computer/agent.ts"
+    },
+    {
+      "from": "src/computer/index.ts",
+      "to": "src/computer/tools.ts"
+    },
+    {
+      "from": "src/computer/permissions.ts",
+      "to": "src/computer/types.ts"
+    },
+    {
+      "from": "src/computer/permissions.ts",
+      "to": "src/computer/config.ts"
+    },
+    {
+      "from": "src/computer/tools.ts",
+      "to": "src/computer/agent.ts"
+    },
+    {
+      "from": "src/computer/tools.ts",
+      "to": "src/computer/types.ts"
+    },
+    {
+      "from": "src/computer/tools.ts",
+      "to": "src/watchdog/types.ts"
+    },
+    {
+      "from": "src/computer/tools.ts",
+      "to": "src/tools/framework.ts"
+    },
+    {
+      "from": "src/computer/tools.ts",
+      "to": "src/tools/types.ts"
+    },
+    {
+      "from": "src/computer/tools.ts",
+      "to": "src/watchdog/state.ts"
+    },
+    {
+      "from": "src/computer/types.ts",
+      "to": "src/execution/types.ts"
     },
     {
       "from": "src/context/broker.ts",
@@ -5289,6 +5929,46 @@
       "to": "src/watchdog/types.ts"
     },
     {
+      "from": "src/editing/index.ts",
+      "to": "src/editing/types.ts"
+    },
+    {
+      "from": "src/editing/index.ts",
+      "to": "src/editing/service.ts"
+    },
+    {
+      "from": "src/editing/index.ts",
+      "to": "src/editing/tools.ts"
+    },
+    {
+      "from": "src/editing/service.ts",
+      "to": "src/tools/types.ts"
+    },
+    {
+      "from": "src/editing/service.ts",
+      "to": "src/tools/framework.ts"
+    },
+    {
+      "from": "src/editing/service.ts",
+      "to": "src/watchdog/state.ts"
+    },
+    {
+      "from": "src/editing/service.ts",
+      "to": "src/editing/types.ts"
+    },
+    {
+      "from": "src/editing/tools.ts",
+      "to": "src/tools/types.ts"
+    },
+    {
+      "from": "src/editing/tools.ts",
+      "to": "src/tools/framework.ts"
+    },
+    {
+      "from": "src/editing/tools.ts",
+      "to": "src/editing/service.ts"
+    },
+    {
       "from": "src/execution/evidence.ts",
       "to": "src/execution/types.ts"
     },
@@ -5346,23 +6026,7 @@
     },
     {
       "from": "src/extension.ts",
-      "to": "src/shared/messages.ts"
-    },
-    {
-      "from": "src/extension.ts",
-      "to": "src/shared/logger.ts"
-    },
-    {
-      "from": "src/extension.ts",
-      "to": "src/model/profiles.ts"
-    },
-    {
-      "from": "src/extension.ts",
-      "to": "src/model/registry.ts"
-    },
-    {
-      "from": "src/extension.ts",
-      "to": "src/model/types.ts"
+      "to": "src/intelligence/indexer.ts"
     },
     {
       "from": "src/extension.ts",
@@ -5370,7 +6034,15 @@
     },
     {
       "from": "src/extension.ts",
-      "to": "src/intelligence/indexer.ts"
+      "to": "src/model/registry.ts"
+    },
+    {
+      "from": "src/extension.ts",
+      "to": "src/model/profiles.ts"
+    },
+    {
+      "from": "src/extension.ts",
+      "to": "src/model/types.ts"
     },
     {
       "from": "src/extension.ts",
@@ -5379,6 +6051,14 @@
     {
       "from": "src/extension.ts",
       "to": "src/settings/panel.ts"
+    },
+    {
+      "from": "src/extension.ts",
+      "to": "src/shared/logger.ts"
+    },
+    {
+      "from": "src/extension.ts",
+      "to": "src/shared/messages.ts"
     },
     {
       "from": "src/extension.ts",
@@ -6014,15 +6694,7 @@
     },
     {
       "from": "src/settings/configuration.ts",
-      "to": "src/settings/defaults.ts"
-    },
-    {
-      "from": "src/settings/configuration.ts",
-      "to": "src/settings/registry.ts"
-    },
-    {
-      "from": "src/settings/configuration.ts",
-      "to": "src/verification/config.ts"
+      "to": "src/computer/config.ts"
     },
     {
       "from": "src/settings/configuration.ts",
@@ -6034,15 +6706,7 @@
     },
     {
       "from": "src/settings/configuration.ts",
-      "to": "src/watchdog/config.ts"
-    },
-    {
-      "from": "src/settings/configuration.ts",
       "to": "src/research/config.ts"
-    },
-    {
-      "from": "src/settings/configuration.ts",
-      "to": "src/runtime/config.ts"
     },
     {
       "from": "src/settings/configuration.ts",
@@ -6050,7 +6714,27 @@
     },
     {
       "from": "src/settings/configuration.ts",
+      "to": "src/runtime/config.ts"
+    },
+    {
+      "from": "src/settings/configuration.ts",
       "to": "src/usage/config.ts"
+    },
+    {
+      "from": "src/settings/configuration.ts",
+      "to": "src/verification/config.ts"
+    },
+    {
+      "from": "src/settings/configuration.ts",
+      "to": "src/watchdog/config.ts"
+    },
+    {
+      "from": "src/settings/configuration.ts",
+      "to": "src/settings/defaults.ts"
+    },
+    {
+      "from": "src/settings/configuration.ts",
+      "to": "src/settings/registry.ts"
     },
     {
       "from": "src/settings/defaults.ts",
@@ -6179,6 +6863,14 @@
     {
       "from": "src/tools/index.ts",
       "to": "src/context/index.ts"
+    },
+    {
+      "from": "src/tools/index.ts",
+      "to": "src/computer/index.ts"
+    },
+    {
+      "from": "src/tools/index.ts",
+      "to": "src/editing/index.ts"
     },
     {
       "from": "src/tools/loop.ts",
@@ -6311,6 +7003,14 @@
     {
       "from": "src/tools/workspace.ts",
       "to": "src/context/index.ts"
+    },
+    {
+      "from": "src/tools/workspace.ts",
+      "to": "src/computer/index.ts"
+    },
+    {
+      "from": "src/tools/workspace.ts",
+      "to": "src/editing/index.ts"
     },
     {
       "from": "src/usage/config.ts",
@@ -6455,6 +7155,14 @@
     {
       "from": "src/verification/config.ts",
       "to": "src/usage/types.ts"
+    },
+    {
+      "from": "src/verification/config.ts",
+      "to": "src/computer/config.ts"
+    },
+    {
+      "from": "src/verification/config.ts",
+      "to": "src/computer/types.ts"
     },
     {
       "from": "src/verification/index.ts",
@@ -6685,6 +7393,10 @@
       "to": "src/intelligence/indexer.ts"
     },
     {
+      "from": "test/computer.test.ts",
+      "to": "src/tools/index.ts"
+    },
+    {
       "from": "test/context.test.ts",
       "to": "src/context/index.ts"
     },
@@ -6709,6 +7421,10 @@
       "to": "src/intelligence/indexer.ts"
     },
     {
+      "from": "test/editing.test.ts",
+      "to": "src/tools/index.ts"
+    },
+    {
       "from": "test/execution.test.ts",
       "to": "src/tools/index.ts"
     },
@@ -6723,6 +7439,10 @@
     {
       "from": "test/integrations.test.ts",
       "to": "src/tools/index.ts"
+    },
+    {
+      "from": "test/integrations.test.ts",
+      "to": "src/verification/config.ts"
     },
     {
       "from": "test/knowledge.test.ts",
@@ -6857,8 +7577,10 @@
     ],
     "src/watchdog/state.ts": [
       "src/commit/service.ts",
+      "src/computer/tools.ts",
       "src/documentation/agent.ts",
       "src/documentation/store.ts",
+      "src/editing/service.ts",
       "src/planning/tools.ts",
       "src/review/context.ts",
       "src/review/reviewer.ts",
@@ -6872,8 +7594,11 @@
     "src/tools/framework.ts": [
       "src/commit/tools.ts",
       "src/completion/tools.ts",
+      "src/computer/tools.ts",
       "src/context/tools.ts",
       "src/documentation/tools.ts",
+      "src/editing/service.ts",
+      "src/editing/tools.ts",
       "src/integrations/tools.ts",
       "src/knowledge/tools.ts",
       "src/localruntime/tools.ts",
@@ -6895,8 +7620,11 @@
     "src/tools/types.ts": [
       "src/commit/tools.ts",
       "src/completion/tools.ts",
+      "src/computer/tools.ts",
       "src/context/tools.ts",
       "src/documentation/tools.ts",
+      "src/editing/service.ts",
+      "src/editing/tools.ts",
       "src/integrations/hub.ts",
       "src/integrations/tools.ts",
       "src/integrations/types.ts",
@@ -6934,6 +7662,8 @@
       "src/completion/failures.ts",
       "src/completion/guard.ts",
       "src/completion/types.ts",
+      "src/computer/config.ts",
+      "src/computer/types.ts",
       "src/execution/evidence.ts",
       "src/execution/index.ts",
       "src/execution/normalize.ts",
@@ -6964,7 +7694,8 @@
       "src/settings/configuration.ts",
       "src/verification/index.ts",
       "src/verification/runner.ts",
-      "src/verification/tools.ts"
+      "src/verification/tools.ts",
+      "test/integrations.test.ts"
     ],
     "src/completion/evidence.ts": [
       "src/completion/guard.ts",
@@ -7010,6 +7741,47 @@
       "src/runtime/processes.ts",
       "src/runtime/service.ts",
       "src/verification/config.ts"
+    ],
+    "src/computer/config.ts": [
+      "src/computer/agent.ts",
+      "src/computer/index.ts",
+      "src/computer/permissions.ts",
+      "src/settings/configuration.ts",
+      "src/verification/config.ts"
+    ],
+    "src/computer/permissions.ts": [
+      "src/computer/agent.ts",
+      "src/computer/index.ts"
+    ],
+    "src/computer/types.ts": [
+      "src/computer/agent.ts",
+      "src/computer/config.ts",
+      "src/computer/index.ts",
+      "src/computer/permissions.ts",
+      "src/computer/tools.ts",
+      "src/verification/config.ts"
+    ],
+    "src/computer/agent.ts": [
+      "src/computer/index.ts",
+      "src/computer/tools.ts"
+    ],
+    "src/computer/tools.ts": [
+      "src/computer/index.ts"
+    ],
+    "src/watchdog/types.ts": [
+      "src/computer/tools.ts",
+      "src/documentation/context.ts",
+      "src/documentation/types.ts",
+      "src/tools/loop.ts",
+      "src/verification/config.ts",
+      "src/watchdog/analyzer.ts",
+      "src/watchdog/config.ts",
+      "src/watchdog/continuation.ts",
+      "src/watchdog/escalation.ts",
+      "src/watchdog/index.ts",
+      "src/watchdog/service.ts",
+      "src/watchdog/state.ts",
+      "src/watchdog/triggers.ts"
     ],
     "src/usage/runtime.ts": [
       "src/context/broker.ts",
@@ -7088,20 +7860,6 @@
       "test/tools.test.ts",
       "test/watchdog.test.ts"
     ],
-    "src/watchdog/types.ts": [
-      "src/documentation/context.ts",
-      "src/documentation/types.ts",
-      "src/tools/loop.ts",
-      "src/verification/config.ts",
-      "src/watchdog/analyzer.ts",
-      "src/watchdog/config.ts",
-      "src/watchdog/continuation.ts",
-      "src/watchdog/escalation.ts",
-      "src/watchdog/index.ts",
-      "src/watchdog/service.ts",
-      "src/watchdog/state.ts",
-      "src/watchdog/triggers.ts"
-    ],
     "src/documentation/analyzer.ts": [
       "src/documentation/index.ts"
     ],
@@ -7111,6 +7869,17 @@
     ],
     "src/documentation/tools.ts": [
       "src/documentation/index.ts"
+    ],
+    "src/editing/types.ts": [
+      "src/editing/index.ts",
+      "src/editing/service.ts"
+    ],
+    "src/editing/service.ts": [
+      "src/editing/index.ts",
+      "src/editing/tools.ts"
+    ],
+    "src/editing/tools.ts": [
+      "src/editing/index.ts"
     ],
     "src/execution/permissions.ts": [
       "src/execution/index.ts",
@@ -7136,23 +7905,15 @@
       "src/execution/index.ts",
       "src/runtime/processes.ts"
     ],
-    "src/shared/messages.ts": [
+    "src/model/registry.ts": [
       "src/extension.ts",
-      "src/webview/main.ts",
-      "test/messages.test.ts"
-    ],
-    "src/shared/logger.ts": [
-      "src/extension.ts"
+      "test/settings.test.ts"
     ],
     "src/model/profiles.ts": [
       "src/extension.ts",
       "src/model/registry.ts",
       "src/routing/types.ts",
       "src/settings/panel.ts",
-      "test/settings.test.ts"
-    ],
-    "src/model/registry.ts": [
-      "src/extension.ts",
       "test/settings.test.ts"
     ],
     "src/settings/configuration.ts": [
@@ -7163,11 +7924,21 @@
     "src/settings/panel.ts": [
       "src/extension.ts"
     ],
+    "src/shared/logger.ts": [
+      "src/extension.ts"
+    ],
+    "src/shared/messages.ts": [
+      "src/extension.ts",
+      "src/webview/main.ts",
+      "test/messages.test.ts"
+    ],
     "src/tools/index.ts": [
       "src/extension.ts",
       "test/commit.test.ts",
       "test/completion.test.ts",
+      "test/computer.test.ts",
       "test/documentation.test.ts",
+      "test/editing.test.ts",
       "test/execution.test.ts",
       "test/git.test.ts",
       "test/integrations.test.ts",
@@ -7382,6 +8153,17 @@
     "src/runtime/tools.ts": [
       "src/runtime/index.ts"
     ],
+    "src/usage/config.ts": [
+      "src/settings/configuration.ts",
+      "src/usage/index.ts",
+      "src/verification/config.ts"
+    ],
+    "src/watchdog/config.ts": [
+      "src/settings/configuration.ts",
+      "src/verification/config.ts",
+      "src/watchdog/index.ts",
+      "test/routing.test.ts"
+    ],
     "src/settings/defaults.ts": [
       "src/settings/configuration.ts",
       "test/settings.test.ts"
@@ -7390,17 +8172,6 @@
       "src/settings/configuration.ts",
       "src/settings/defaults.ts",
       "test/settings.test.ts"
-    ],
-    "src/watchdog/config.ts": [
-      "src/settings/configuration.ts",
-      "src/verification/config.ts",
-      "src/watchdog/index.ts",
-      "test/routing.test.ts"
-    ],
-    "src/usage/config.ts": [
-      "src/settings/configuration.ts",
-      "src/usage/index.ts",
-      "src/verification/config.ts"
     ],
     "src/tools/schema.ts": [
       "src/tools/framework.ts",
@@ -7486,6 +8257,14 @@
       "src/tools/workspace.ts",
       "test/context.test.ts"
     ],
+    "src/computer/index.ts": [
+      "src/tools/index.ts",
+      "src/tools/workspace.ts"
+    ],
+    "src/editing/index.ts": [
+      "src/tools/index.ts",
+      "src/tools/workspace.ts"
+    ],
     "src/watchdog/triggers.ts": [
       "src/tools/loop.ts",
       "src/watchdog/index.ts"
@@ -7567,12 +8346,13 @@
     ".lgs/memory.json",
     ".lgs/benchmarks.json",
     ".lgs/usage.jsonl",
+    ".lgs/activity-ledger.jsonl",
     ".lgs/pricing.json"
   ],
   "freshness": {
     "index": "current",
     "codebaseMap": "current",
-    "checkedAt": "2026-08-27T02:45:19.293Z",
+    "checkedAt": "2026-08-27T12:22:59.901Z",
     "staleEntries": []
   },
   "incremental": {
@@ -7580,6 +8360,11 @@
       ".gitignore",
       ".vscode/launch.json",
       ".vscode/tasks.json",
+      "README.md",
+      "docs/architecture.md",
+      "docs/development.md",
+      "docs/providers.md",
+      "docs/settings.md",
       "esbuild.mjs",
       "eslint.config.mjs",
       "media/lgs.svg",
@@ -7595,6 +8380,12 @@
       "src/completion/index.ts",
       "src/completion/tools.ts",
       "src/completion/types.ts",
+      "src/computer/agent.ts",
+      "src/computer/config.ts",
+      "src/computer/index.ts",
+      "src/computer/permissions.ts",
+      "src/computer/tools.ts",
+      "src/computer/types.ts",
       "src/context/broker.ts",
       "src/context/index.ts",
       "src/context/tools.ts",
@@ -7606,6 +8397,10 @@
       "src/documentation/store.ts",
       "src/documentation/tools.ts",
       "src/documentation/types.ts",
+      "src/editing/index.ts",
+      "src/editing/service.ts",
+      "src/editing/tools.ts",
+      "src/editing/types.ts",
       "src/execution/evidence.ts",
       "src/execution/index.ts",
       "src/execution/logs.ts",
@@ -7676,6 +8471,7 @@
       "src/settings/panel.ts",
       "src/settings/registry.ts",
       "src/shared/logger.ts",
+      "src/shared/messages.ts",
       "src/tools/framework.ts",
       "src/tools/git.ts",
       "src/tools/index.ts",
@@ -7706,16 +8502,21 @@
       "src/watchdog/tools.ts",
       "src/watchdog/triggers.ts",
       "src/watchdog/types.ts",
+      "src/webview/main.ts",
+      "src/webview/styles.css",
       "test/commit.test.ts",
       "test/completion.test.ts",
+      "test/computer.test.ts",
       "test/context.test.ts",
       "test/documentation.test.ts",
+      "test/editing.test.ts",
       "test/execution.test.ts",
       "test/git.test.ts",
       "test/indexer.test.ts",
       "test/integrations.test.ts",
       "test/knowledge.test.ts",
       "test/localruntime.test.ts",
+      "test/messages.test.ts",
       "test/orchestration.test.ts",
       "test/planning.test.ts",
       "test/research.test.ts",
@@ -7725,6 +8526,7 @@
       "test/settings.test.ts",
       "test/stream.test.ts",
       "test/tools.test.ts",
+      "test/ui.test.ts",
       "test/usage.test.ts",
       "test/watchdog.test.ts",
       "tsconfig.json",
@@ -7732,11 +8534,7 @@
     ],
     "added": [],
     "changed": [
-      "README.md",
-      "src/shared/messages.ts",
-      "src/webview/main.ts",
-      "src/webview/styles.css",
-      "test/messages.test.ts"
+      "docs/audit-readiness-2026-08-27.md"
     ],
     "removed": [],
     "renamed": []

@@ -29,7 +29,7 @@ export class VerifiedCommitService {
     const diff = (await this.git(['diff', '--no-ext-diff', '--no-textconv', '--', ...files])).stdout;
     if (SECRET.test(diff) || files.some(file => this.fileContainsSecret(file))) throw new Error('Potential secret detected in task diff; commit blocked.');
     await this.git(['add', '--', ...files]);
-    const stagedFiles = (await this.git(['diff', '--cached', '--name-only', '--'])).stdout.split('\n').filter(Boolean).sort();
+    const stagedFiles = (await this.git(['diff', '--cached', '--name-only', '--no-renames', '--'])).stdout.split('\n').filter(Boolean).sort();
     if (JSON.stringify(stagedFiles) !== JSON.stringify([...files].sort())) throw new Error('Staged files differ from task-tracked changes; commit blocked for manual review.');
     const stagedCheck = (await this.git(['diff', '--cached', '--check'])).stdout;
     if (stagedCheck) throw new Error(`Staged diff failed checks: ${stagedCheck}`);

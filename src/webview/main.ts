@@ -1,28 +1,207 @@
 import './styles.css';
-import { isHostMessage, type ClientMessage, type TaskDashboard } from '../shared/messages.js';
-declare const acquireVsCodeApi:()=>{postMessage(m:ClientMessage):void};
-const vscode=acquireVsCodeApi();
-const app=document.querySelector<HTMLDivElement>('#app')!;
-let generating=false; let currentAssistant:HTMLElement|undefined;
-let dashboard:TaskDashboard|undefined; let activeTab='Task';
+import { isHostMessage, type ChatOptions, type ClientMessage, type TaskDashboard } from '../shared/messages.js';
 
-app.innerHTML=`<header><div class="brand"><strong>LGS</strong><small>research workspace</small></div><div class="header-actions"><button class="icon-button" id="new" aria-label="New task">＋</button><button class="icon-button" id="settings" aria-label="Open LGS settings">⚙</button></div></header><nav class="workspace-nav" aria-label="LGS navigation"><button>Tasks</button><button>Models</button><button>Integrations</button><button>Skills</button><button>Memory</button><button>Usage</button><button id="settings-nav">Settings</button></nav><section id="task-dashboard" aria-live="polite"></section><section class="chat-nav" aria-label="Research sessions"><div class="section-title">Notebook</div><div id="chats"></div></section><main aria-live="polite" id="history"><div class="empty"><div class="monogram" aria-hidden="true">L</div><p>What shall we investigate?</p><small>LGS is ready to do its homework.</small></div></main><section id="completion" aria-live="polite" hidden><button id="completion-toggle" type="button" aria-expanded="true"><span>Committee Review</span><span id="completion-progress"></span></button><div id="completion-checklist"></div></section><section class="composer"><div class="selectors"><select id="profile" aria-label="Advisor provider profile"></select><select id="model" aria-label="Advisor model"><option>Discovering models...</option></select><select id="thinking" aria-label="Thinking level"><option value="off">Thinking off</option><option value="low">Thinking low</option><option value="medium">Thinking medium</option><option value="high">Thinking high</option></select><select id="approval" aria-label="Approval level"><option value="always">Approve all</option><option value="on-request" selected>Approve on request</option><option value="never">Never approve</option></select></div><form id="composer-form"><textarea id="input" rows="2" maxlength="4000" placeholder="Describe the task and acceptance criteria…" aria-label="Task objective"></textarea><div class="composer-bottom"><span>⌘ Enter to send</span><button id="send" type="submit" aria-label="Start task">↑</button><button id="stop" type="button" aria-label="Cancel task" hidden>■</button></div></form></section><footer><span>⌁ Local research</span><span id="state">Disconnected</span></footer>`;
-const history=app.querySelector('#history')!,input=app.querySelector<HTMLTextAreaElement>('#input')!,send=app.querySelector<HTMLButtonElement>('#send')!,stop=app.querySelector<HTMLButtonElement>('#stop')!,state=app.querySelector('#state')!,profile=app.querySelector<HTMLSelectElement>('#profile')!,model=app.querySelector<HTMLSelectElement>('#model')!,thinking=app.querySelector<HTMLSelectElement>('#thinking')!,approval=app.querySelector<HTMLSelectElement>('#approval')!,chats=app.querySelector('#chats')!,completion=app.querySelector<HTMLElement>('#completion')!,completionProgress=app.querySelector('#completion-progress')!,completionChecklist=app.querySelector('#completion-checklist')!,completionToggle=app.querySelector<HTMLButtonElement>('#completion-toggle')!,taskPanel=app.querySelector<HTMLElement>('#task-dashboard')!;
-completionToggle.onclick=()=>{const expanded=completionToggle.getAttribute('aria-expanded')==='true';completionToggle.setAttribute('aria-expanded',String(!expanded));completionChecklist.toggleAttribute('hidden',expanded);};
-profile.onchange=()=>vscode.postMessage({type:'selectProfile',profileId:profile.value}); model.onchange=()=>vscode.postMessage({type:'selectModel',model:model.value});
-const syncOptions=()=>vscode.postMessage({type:'setOptions',options:{thinking:thinking.value as 'off'|'low'|'medium'|'high',approval:approval.value as 'always'|'on-request'|'never'}});
-thinking.onchange=syncOptions; approval.onchange=syncOptions;
-for(const selector of ['#settings','#settings-nav'])app.querySelector(selector)?.addEventListener('click',()=>vscode.postMessage({type:'openSettings'}));
-app.querySelector('#new')!.addEventListener('click',()=>vscode.postMessage({type:'newChat'}));
-app.querySelector('#composer-form')!.addEventListener('submit',event=>{event.preventDefault();const text=input.value.trim();if(!text||generating)return;add('user',text);input.value='';dashboard=newTask(text);renderDashboard();vscode.postMessage({type:'userMessage',text});});
-input.addEventListener('keydown',event=>{if(event.key==='Enter'&&(event.metaKey||event.ctrlKey)){event.preventDefault();(app.querySelector('#composer-form') as HTMLFormElement).requestSubmit();}});
-stop.onclick=()=>vscode.postMessage({type:'cancel'});
+declare const acquireVsCodeApi: () => { postMessage(message: ClientMessage): void };
+const vscode = acquireVsCodeApi();
+const app = document.querySelector<HTMLDivElement>('#app')!;
+let generating = false;
+let currentAssistant: HTMLElement | undefined;
+let dashboard: TaskDashboard | undefined;
+let activeTaskTab = 'overview';
+let activePane: 'chat' | 'task' = 'chat';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-expressions
-window.addEventListener('message',({data}:MessageEvent<unknown>)=>{if(!isHostMessage(data))return;switch(data.type){case'appearance':document.documentElement.dataset.lgsTheme=data.theme;break;case'profiles':profile.innerHTML=data.profiles.map(item=>'<option value="'+item.id+'">'+item.name+'</option>').join('');profile.value=data.selected;break;case'models':model.innerHTML=data.models.map(item=>'<option value="'+item.id+'">'+(item.displayName||item.id)+'</option>').join('');model.value=data.selected;break;case'options':thinking.value=data.options.thinking;approval.value=data.options.approval;break;case'chatList':chats.innerHTML=data.chats.map(item=>'<button class="chat-item" data-id="'+item.id+'">'+item.title+'</button>').join('');chats.querySelectorAll('.chat-item').forEach(item=>item.addEventListener('click',()=>vscode.postMessage({type:'loadChat',chatId:(item as HTMLElement).dataset.id||''})));break;case'chatLoaded':history.innerHTML='';completion.hidden=true;data.messages.forEach(item=>add(item.role,item.text));break;case'completionState':renderCompletion(data.state);if(dashboard){dashboard.completion=data.state;dashboard.activities.unshift({label:'Committee Review',detail:data.state.status==='passed'?'Required evidence is current.':'Completion evidence needs attention.',status:data.state.status==='passed'?'completed':'warning',at:new Date().toISOString()});renderDashboard();}break;case'taskDashboard':dashboard=data.dashboard;renderDashboard();break;case'state':state.textContent=data.state;break;case'streamStart':generating=true;completion.hidden=true;send.hidden=false;stop.hidden=false;if(dashboard){dashboard.advisor={profile:data.backend,model:data.model};dashboard.agents=[{role:'Advisor',profile:data.backend,model:data.model,state:'Planning'}];dashboard.activities.unshift({label:'Advisor is planning',detail:'LGS is assembling task context and selecting the next safe action.',status:'active',at:new Date().toISOString()});renderDashboard();}currentAssistant=add('assistant','');break;case'textDelta':if(currentAssistant)currentAssistant.textContent+=data.text;break;case'streamEnd':generating=false;send.hidden=false;stop.hidden=true;currentAssistant=undefined;if(dashboard){dashboard.agents[0]&&(dashboard.agents[0].state='Waiting');dashboard.activities[0]&&(dashboard.activities[0].status='completed');renderDashboard();}break;case'error':add('error',data.message);generating=false;send.hidden=false;stop.hidden=true;}});
-function newTask(objective:string):TaskDashboard{return{taskId:'current',objective,acceptanceCriteria:[],plan:['Clarify objective and inspect relevant evidence','Implement the smallest safe change','Run verification and Committee Review'],completed:[],remaining:['Awaiting LGS investigation'],files:[],advisor:{profile:profile.options[profile.selectedIndex]?.text||'Advisor',model:model.value||'Discovering model'},agents:[],activities:[{label:'Task initialized',detail:'Objective recorded; LGS will report observable actions and evidence here.',status:'active',at:new Date().toISOString()}],usage:{context:0,tokens:0,cost:0},git:{modified:0},review:{findings:0}};}
-function renderDashboard(){if(!dashboard){taskPanel.hidden=true;return;}taskPanel.hidden=false;const required=dashboard.completion?.progress.required||0,passed=dashboard.completion?.progress.passed||0,progress=required?Math.round(passed/required*100):dashboard.completed.length?Math.round(dashboard.completed.length/(dashboard.completed.length+dashboard.remaining.length)*100):0;const tabs=['Chat','Task','Agents','Changes','Research','Verification','Usage'];const details=activeTab==='Task'?list('Acceptance criteria',dashboard.acceptanceCriteria,'No criteria recorded yet.')+list('Current plan',dashboard.plan)+list('Remaining work',dashboard.remaining):activeTab==='Agents'?dashboard.agents.map(agent=>'<article class="agent-card"><b>'+agent.role+'</b><span>'+agent.model+' · '+agent.profile+'</span><em>'+agent.state+'</em></article>').join('')||'<p class=muted>Logical agents appear when they are assigned work.</p>':activeTab==='Changes'?list('Files modified',dashboard.files,'No modified files recorded yet.')+'<button data-action=viewDiff>View Diff</button>':activeTab==='Research'?list('Research evidence',dashboard.activities.filter(item=>/research|documentation/i.test(item.label)).map(item=>item.detail),'No research evidence yet.')+'<button data-action=viewResearch>View Research</button>':activeTab==='Verification'?list('Completion checks',dashboard.completion?.checklist.filter(item=>item.required).map(item=>(item.passed?'✓ ':'○ ')+item.label), 'Verification has not started.')+'<button data-action=viewLogs>View Logs</button>':activeTab==='Usage'?'<div class=metrics><span>Context <b>'+format(dashboard.usage.context)+' / '+format(dashboard.usage.contextMaximum||0)+'</b></span><span>Tokens <b>'+format(dashboard.usage.tokens)+'</b></span><span>Tokens/sec <b>'+format(dashboard.usage.tokensPerSecond||0)+'</b></span><span>Cloud cost <b>$'+dashboard.usage.cost.toFixed(2)+'</b></span></div>':history.innerHTML?'<p class=muted>Conversation remains available below the task header.</p>':'';taskPanel.innerHTML='<section class=task-header><div><span class=section-title>Active task</span><h2>'+dashboard.objective+'</h2><p>Advisor: '+dashboard.advisor.model+' · '+dashboard.advisor.profile+'</p></div><div class=task-metrics><b>Progress '+progress+'%</b><span>Context '+format(dashboard.usage.context)+' / '+format(dashboard.usage.contextMaximum||0)+'</span><span>Cloud cost $'+dashboard.usage.cost.toFixed(2)+'</span></div></section><div class=task-controls><button data-action=pause>Pause</button><button data-action=approve>Approve</button><button data-action=reject>Reject</button><button data-action=retry>Retry</button><button data-action=escalate>Escalate</button><button data-action=viewTaskState>Task State</button></div><div class=task-tabs role=tablist>'+tabs.map(tab=>'<button role=tab aria-selected='+(tab===activeTab)+' data-tab='+tab+'>'+tab+'</button>').join('')+'</div><section class=task-detail>'+details+'</section><section class=activity><h3>Observable activity</h3>'+dashboard.activities.slice(0,6).map(item=>'<div class="activity-item '+item.status+'"><b>'+item.label+'</b><span>'+item.detail+'</span></div>').join('')+'</section>';taskPanel.querySelectorAll('[data-tab]').forEach(button=>button.addEventListener('click',()=>{activeTab=(button as HTMLElement).dataset.tab||'Task';renderDashboard();}));taskPanel.querySelectorAll('[data-action]').forEach(button=>button.addEventListener('click',()=>{const action=(button as HTMLElement).dataset.action as Extract<ClientMessage,{type:'taskAction'}>['action'];if(action==='pause')vscode.postMessage({type:'cancel'});else vscode.postMessage({type:'taskAction',action});}));}
-function list(title:string,items:string[]|undefined,empty='Nothing to report yet.'){const values=items||[];return'<div class=detail-list><h3>'+title+'</h3>'+(values.length?'<ul>'+values.map(item=>'<li>'+item+'</li>').join('')+'</ul>':'<p class=muted>'+empty+'</p>')+'</div>';}
-function format(value:number){return value>=1000?(value/1000).toFixed(value%1000?1:0)+'K':String(value);}
-function add(kind:string,text:string){history.querySelector('.empty')?.remove();const item=document.createElement('p');item.className='message '+kind;item.textContent=text;history.append(item);item.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});return item;}
-function renderCompletion(view:Extract<import('../shared/messages.js').HostMessage,{type:'completionState'}>['state']){completion.hidden=false;completion.dataset.status=view.status;completionProgress.textContent=`${view.progress.passed}/${view.progress.required}`;completionChecklist.replaceChildren(...view.checklist.filter(item=>item.required).map(item=>{const row=document.createElement('div');row.className='completion-item '+(item.passed?'passed':'blocked');row.title=item.detail;row.textContent=(item.passed?'✓ ':'○ ')+item.label;return row;}));}
+app.innerHTML = `
+  <div class="lab-shell">
+    <header class="topbar">
+      <div class="identity"><span class="seal" aria-hidden="true">L</span><span><b>Little Grad Student</b><small>Research Lab</small></span></div>
+      <div class="header-actions">
+        <button class="icon-button" id="new" aria-label="New research task" title="New task">+</button>
+        <button class="icon-button" id="settings" aria-label="Open LGS settings" title="Settings">⚙</button>
+      </div>
+    </header>
+    <div class="statusbar"><span class="status-dot" id="status-dot"></span><span id="state">Connecting…</span><button id="usage-link">Usage</button></div>
+    <details class="sessions"><summary><span>Lab notebook</span><span id="session-count">0 sessions</span></summary><div id="chats"></div></details>
+    <nav class="view-tabs" aria-label="Workspace view"><button data-pane="chat" aria-selected="true">Conversation</button><button data-pane="task" aria-selected="false" disabled>Task evidence</button></nav>
+    <div id="error-region" aria-live="assertive"></div>
+    <section id="task-dashboard" aria-live="polite" hidden></section>
+    <main aria-live="polite" id="history">
+      <div class="empty">
+        <div class="folio" aria-hidden="true"><span>LGS</span></div>
+        <h1>Begin an investigation</h1>
+        <p>Describe the engineering outcome and what evidence should prove it complete.</p>
+        <div class="empty-cues"><span>Repository-aware</span><span>Evidence-gated</span><span>Provider-neutral</span></div>
+      </div>
+    </main>
+    <section id="completion" aria-live="polite" hidden>
+      <button id="completion-toggle" type="button" aria-expanded="false"><span><i></i>Committee review</span><span id="completion-progress"></span></button>
+      <div id="completion-checklist" hidden></div>
+    </section>
+    <section class="composer" aria-label="Task composer">
+      <div class="composer-context"><span id="mode-label">Implementation</span><button id="options-toggle" type="button" aria-expanded="false">Run settings</button></div>
+      <div class="options-panel" id="options-panel" hidden>
+        <label><span>Connection</span><select id="profile" aria-label="Advisor provider profile"></select></label>
+        <label><span>Model</span><select id="model" aria-label="Advisor model"><option>Discovering models…</option></select></label>
+        <label><span>Mode</span><select id="mode" aria-label="Task mode"><option value="implementation">Implementation</option><option value="planning">Planning · read only</option></select></label>
+        <label><span>Reasoning</span><select id="thinking" aria-label="Reasoning effort"><option value="off">Standard</option><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option></select></label>
+        <label><span>Commands</span><select id="approval" aria-label="Command approval"><option value="always">Use allowed commands</option><option value="on-request">Ask when required</option><option value="never">Deny commands</option></select></label>
+      </div>
+      <form id="composer-form">
+        <textarea id="input" rows="2" maxlength="4000" placeholder="Describe the task, constraints, and acceptance criteria…" aria-label="Task objective"></textarea>
+        <div class="composer-bottom"><span id="composer-hint">Ctrl/⌘ Enter</span><div><button id="stop" class="stop-button" type="button" aria-label="Stop generation" hidden>Stop</button><button id="send" class="send-button" type="submit" aria-label="Send task"><span>Send</span><b>↑</b></button></div></div>
+      </form>
+    </section>
+  </div>`;
+
+const history = app.querySelector<HTMLElement>('#history')!;
+const input = app.querySelector<HTMLTextAreaElement>('#input')!;
+const send = app.querySelector<HTMLButtonElement>('#send')!;
+const stop = app.querySelector<HTMLButtonElement>('#stop')!;
+const state = app.querySelector<HTMLElement>('#state')!;
+const statusDot = app.querySelector<HTMLElement>('#status-dot')!;
+const profile = app.querySelector<HTMLSelectElement>('#profile')!;
+const model = app.querySelector<HTMLSelectElement>('#model')!;
+const mode = app.querySelector<HTMLSelectElement>('#mode')!;
+const thinking = app.querySelector<HTMLSelectElement>('#thinking')!;
+const approval = app.querySelector<HTMLSelectElement>('#approval')!;
+const chats = app.querySelector<HTMLElement>('#chats')!;
+const completion = app.querySelector<HTMLElement>('#completion')!;
+const completionProgress = app.querySelector<HTMLElement>('#completion-progress')!;
+const completionChecklist = app.querySelector<HTMLElement>('#completion-checklist')!;
+const completionToggle = app.querySelector<HTMLButtonElement>('#completion-toggle')!;
+const taskPanel = app.querySelector<HTMLElement>('#task-dashboard')!;
+const errorRegion = app.querySelector<HTMLElement>('#error-region')!;
+const optionsPanel = app.querySelector<HTMLElement>('#options-panel')!;
+const optionsToggle = app.querySelector<HTMLButtonElement>('#options-toggle')!;
+
+completionToggle.onclick = () => {
+  const expanded = completionToggle.getAttribute('aria-expanded') === 'true';
+  completionToggle.setAttribute('aria-expanded', String(!expanded)); completionChecklist.hidden = expanded;
+};
+optionsToggle.onclick = () => {
+  const expanded = optionsToggle.getAttribute('aria-expanded') === 'true';
+  optionsToggle.setAttribute('aria-expanded', String(!expanded)); optionsPanel.hidden = expanded;
+};
+profile.onchange = () => vscode.postMessage({ type: 'selectProfile', profileId: profile.value });
+model.onchange = () => vscode.postMessage({ type: 'selectModel', model: model.value });
+const syncOptions = () => {
+  const options: ChatOptions = { mode: mode.value as ChatOptions['mode'], thinking: thinking.value as ChatOptions['thinking'], approval: approval.value as ChatOptions['approval'] };
+  app.querySelector('#mode-label')!.textContent = options.mode === 'planning' ? 'Planning · read only' : 'Implementation';
+  input.placeholder = options.mode === 'planning' ? 'Describe the change to investigate and plan…' : 'Describe the task, constraints, and acceptance criteria…';
+  vscode.postMessage({ type: 'setOptions', options });
+};
+mode.onchange = syncOptions; thinking.onchange = syncOptions; approval.onchange = syncOptions;
+app.querySelector('#settings')!.addEventListener('click', () => vscode.postMessage({ type: 'openSettings' }));
+app.querySelector('#usage-link')!.addEventListener('click', () => vscode.postMessage({ type: 'openUsage' }));
+app.querySelector('#new')!.addEventListener('click', () => vscode.postMessage({ type: 'newChat' }));
+app.querySelectorAll<HTMLElement>('[data-pane]').forEach(button => button.addEventListener('click', () => {
+  activePane = button.dataset.pane as 'chat' | 'task'; renderPane();
+}));
+app.querySelector('#composer-form')!.addEventListener('submit', event => {
+  event.preventDefault(); const text = input.value.trim(); if (!text || generating) return;
+  clearError(); addMessage('user', text); input.value = ''; resizeInput(); vscode.postMessage({ type: 'userMessage', text });
+});
+input.addEventListener('keydown', event => { if (event.key === 'Enter' && (event.metaKey || event.ctrlKey)) { event.preventDefault(); (app.querySelector('#composer-form') as HTMLFormElement).requestSubmit(); } });
+input.addEventListener('input', resizeInput);
+stop.onclick = () => vscode.postMessage({ type: 'cancel' });
+
+window.addEventListener('message', ({ data }: MessageEvent<unknown>) => {
+  if (!isHostMessage(data)) return;
+  switch (data.type) {
+    case 'appearance': document.documentElement.dataset.lgsTheme = data.theme; break;
+    case 'profiles':
+      profile.replaceChildren(...data.profiles.map(item => option(item.id, item.name + ' · ' + item.kind)));
+      profile.value = data.selected; break;
+    case 'models':
+      model.replaceChildren(...(data.models.length ? data.models.map(item => option(item.id, item.displayName || item.id)) : [option('', 'No models discovered')]));
+      model.value = data.selected; break;
+    case 'options':
+      mode.value = data.options.mode; thinking.value = data.options.thinking; approval.value = data.options.approval;
+      app.querySelector('#mode-label')!.textContent = data.options.mode === 'planning' ? 'Planning · read only' : 'Implementation'; break;
+    case 'chatList': renderChats(data.chats); break;
+    case 'chatLoaded':
+      history.innerHTML = ''; dashboard = undefined; taskPanel.hidden = true; completion.hidden = true; activePane = 'chat';
+      if (data.messages.length) data.messages.forEach(item => addMessage(item.role, item.text)); else renderEmpty(); renderPane(); break;
+    case 'completionState': if (dashboard) dashboard.completion = data.state; renderCompletion(data.state); if (dashboard) renderDashboard(); break;
+    case 'taskDashboard': dashboard = data.dashboard; app.querySelector<HTMLButtonElement>('[data-pane="task"]')!.disabled = false; renderDashboard(); break;
+    case 'state':
+      state.textContent = data.state; statusDot.dataset.state = /error|no enabled/i.test(data.state) ? 'error' : /connecting/i.test(data.state) ? 'busy' : 'ready'; break;
+    case 'streamStart':
+      generating = true; clearError(); send.disabled = true; stop.hidden = false; input.disabled = true; state.textContent = 'Advisor working…'; statusDot.dataset.state = 'busy'; currentAssistant = addMessage('assistant', '', true); break;
+    case 'textDelta': if (currentAssistant) { currentAssistant.textContent += data.text; history.scrollTop = history.scrollHeight; } break;
+    case 'streamEnd':
+      generating = false; send.disabled = false; stop.hidden = true; input.disabled = false; currentAssistant = undefined; state.textContent = 'Ready'; statusDot.dataset.state = 'ready'; break;
+    case 'error':
+      showError(data.message); generating = false; send.disabled = false; stop.hidden = true; input.disabled = false; break;
+  }
+});
+
+function option(value: string, label: string): HTMLOptionElement { const item = document.createElement('option'); item.value = value; item.textContent = label; return item; }
+function renderChats(items: { id: string; title: string; updatedAt: number }[]): void {
+  app.querySelector('#session-count')!.textContent = `${items.length} ${items.length === 1 ? 'session' : 'sessions'}`;
+  chats.replaceChildren(...items.map(item => {
+    const button = document.createElement('button'); button.className = 'chat-item'; button.dataset.id = item.id;
+    const title = document.createElement('span'); title.textContent = item.title;
+    const date = document.createElement('time'); date.textContent = relativeTime(item.updatedAt); button.append(title, date);
+    button.onclick = () => vscode.postMessage({ type: 'loadChat', chatId: item.id }); return button;
+  }));
+  if (!items.length) { const empty = document.createElement('p'); empty.className = 'sessions-empty'; empty.textContent = 'Completed and active tasks will appear here.'; chats.append(empty); }
+}
+function renderEmpty(): void {
+  history.innerHTML = '<div class="empty"><div class="folio" aria-hidden="true"><span>LGS</span></div><h1>Begin an investigation</h1><p>Describe the engineering outcome and what evidence should prove it complete.</p><div class="empty-cues"><span>Repository-aware</span><span>Evidence-gated</span><span>Provider-neutral</span></div></div>';
+}
+function renderPane(): void {
+  app.querySelectorAll<HTMLElement>('[data-pane]').forEach(button => button.setAttribute('aria-selected', String(button.dataset.pane === activePane)));
+  history.hidden = activePane !== 'chat'; taskPanel.hidden = activePane !== 'task' || !dashboard;
+}
+function renderDashboard(): void {
+  if (!dashboard) { taskPanel.hidden = true; return; }
+  const required = dashboard.completion?.progress.required || 0; const passed = dashboard.completion?.progress.passed || 0;
+  const progress = required ? Math.round(passed / required * 100) : 0;
+  const tabs = [['overview', 'Overview'], ['plan', 'Plan'], ['agents', 'Agents'], ['evidence', 'Evidence'], ['usage', 'Usage']];
+  const detail = activeTaskTab === 'overview'
+    ? sectionList('Acceptance criteria', dashboard.acceptanceCriteria, 'The Advisor has not recorded acceptance criteria yet.') + sectionList('Completed work', dashboard.completed, 'No work is recorded complete.') + sectionList('Remaining', dashboard.remaining, 'No remaining work is recorded.')
+    : activeTaskTab === 'plan' ? sectionList('Current plan', dashboard.plan, 'The task plan has not been recorded.') + sectionList('Changed files', dashboard.files, 'No task changes are recorded.')
+    : activeTaskTab === 'agents' ? (dashboard.agents.map(agent => `<article class="agent-card"><span class="agent-role">${escapeHtml(agent.role)}</span><b>${escapeHtml(agent.model)}</b><small>${escapeHtml(agent.profile)} · ${escapeHtml(agent.state)}</small></article>`).join('') || '<p class="quiet">No logical worker agents have been assigned.</p>')
+    : activeTaskTab === 'evidence' ? evidenceView()
+    : usageView();
+  taskPanel.innerHTML = `<div class="task-hero"><div><span class="eyebrow">Active task · ${escapeHtml(dashboard.taskId)}</span><h1>${escapeHtml(dashboard.objective)}</h1><p>${escapeHtml(dashboard.advisor.model)} · ${escapeHtml(dashboard.advisor.profile)}</p></div><div class="progress-ring" style="--progress:${progress * 3.6}deg"><span>${progress}%</span></div></div><div class="task-facts"><span><b>${dashboard.files.length}</b> files</span><span><b>${dashboard.researchCount}</b> sources</span><span><b>${dashboard.review.findings}</b> findings</span><span><b>${passed}/${required || '—'}</b> gates</span></div><nav class="task-tabs">${tabs.map(([id, label]) => `<button data-task-tab="${id}" aria-selected="${id === activeTaskTab}">${label}</button>`).join('')}</nav><div class="task-detail">${detail}</div><section class="activity"><div class="section-heading"><h2>Observable activity</h2><span>${dashboard.activities.length} events</span></div>${dashboard.activities.length ? dashboard.activities.slice(0, 12).map(item => `<div class="activity-item ${item.status}"><i></i><div><b>${escapeHtml(item.label)}</b><span>${escapeHtml(item.detail)}</span></div><time>${relativeTime(Date.parse(item.at))}</time></div>`).join('') : '<p class="quiet">Tool and evidence events will appear here as they occur.</p>'}</section>`;
+  taskPanel.querySelectorAll<HTMLElement>('[data-task-tab]').forEach(button => button.onclick = () => { activeTaskTab = button.dataset.taskTab || 'overview'; renderDashboard(); });
+  taskPanel.querySelectorAll<HTMLElement>('[data-action]').forEach(button => button.onclick = () => vscode.postMessage({ type: 'taskAction', action: button.dataset.action as Extract<ClientMessage, { type: 'taskAction' }>['action'] }));
+  taskPanel.querySelector<HTMLElement>('#open-usage-detail')?.addEventListener('click', () => vscode.postMessage({ type: 'openUsage' }));
+  renderPane();
+}
+function evidenceView(): string {
+  const checks = dashboard?.completion?.checklist.filter(item => item.required) || [];
+  return `<div class="evidence-actions"><button data-action="viewDiff">Source Control</button><button data-action="viewTaskState">Task state</button><button data-action="viewResearch">Research</button><button data-action="viewLogs">Execution logs</button></div><div class="evidence-list">${checks.length ? checks.map(item => `<div class="evidence-row ${item.passed ? 'passed' : 'blocked'}"><span>${item.passed ? '✓' : '○'}</span><div><b>${escapeHtml(item.label)}</b><small>${escapeHtml(item.detail)}</small></div></div>`).join('') : '<p class="quiet">Completion Guard has not evaluated this task yet.</p>'}</div>`;
+}
+function usageView(): string {
+  const usage = dashboard!.usage; return `<div class="metric-grid"><article><span>Context</span><b>${formatNumber(usage.context)}${usage.contextMaximum ? ` / ${formatNumber(usage.contextMaximum)}` : ''}</b></article><article><span>Tokens</span><b>${formatNumber(usage.tokens)}</b></article><article><span>Generation</span><b>${usage.tokensPerSecond === undefined ? 'Unknown' : usage.tokensPerSecond.toFixed(1) + ' tok/s'}</b></article><article><span>Recorded cost</span><b>${usage.cost === undefined ? 'Unknown' : '$' + usage.cost.toFixed(4)}</b></article></div><button class="text-action" id="open-usage-detail">Open full usage dashboard</button>`;
+}
+function sectionList(title: string, items: string[], empty: string): string { return `<section class="detail-list"><h2>${escapeHtml(title)}</h2>${items.length ? `<ul>${items.map(item => `<li>${escapeHtml(item)}</li>`).join('')}</ul>` : `<p class="quiet">${escapeHtml(empty)}</p>`}</section>`; }
+function renderCompletion(view: Extract<import('../shared/messages.js').HostMessage, { type: 'completionState' }>['state']): void {
+  completion.hidden = false; completion.dataset.status = view.status; completionProgress.textContent = `${view.progress.passed}/${view.progress.required}`;
+  completionChecklist.replaceChildren(...view.checklist.filter(item => item.required).map(item => {
+    const row = document.createElement('div'); row.className = 'completion-item ' + (item.passed ? 'passed' : 'blocked');
+    const mark = document.createElement('span'); mark.textContent = item.passed ? '✓' : '○'; const text = document.createElement('div');
+    const label = document.createElement('b'); label.textContent = item.label; const detail = document.createElement('small'); detail.textContent = item.detail;
+    text.append(label, detail); row.append(mark, text); return row;
+  }));
+}
+function addMessage(kind: string, text: string, loading = false): HTMLElement {
+  history.querySelector('.empty')?.remove(); const wrapper = document.createElement('article'); wrapper.className = `message-row ${kind}`;
+  const label = document.createElement('span'); label.className = 'message-label'; label.textContent = kind === 'user' ? 'You' : kind === 'assistant' ? 'Advisor' : 'LGS';
+  const item = document.createElement('div'); item.className = 'message'; item.textContent = text; if (loading) item.classList.add('streaming');
+  wrapper.append(label, item); history.append(wrapper); history.scrollTop = history.scrollHeight; return item;
+}
+function showError(message: string): void {
+  const box = document.createElement('div'); box.className = 'error-banner'; box.setAttribute('role', 'alert');
+  const content = document.createElement('div'); const title = document.createElement('b'); title.textContent = 'LGS could not continue'; const detail = document.createElement('span'); detail.textContent = message; content.append(title, detail);
+  const close = document.createElement('button'); close.textContent = 'Dismiss'; close.onclick = () => box.remove(); box.append(content, close); errorRegion.replaceChildren(box);
+}
+function clearError(): void { errorRegion.replaceChildren(); }
+function resizeInput(): void { input.style.height = 'auto'; input.style.height = Math.min(160, Math.max(54, input.scrollHeight)) + 'px'; }
+function escapeHtml(value: string): string { return value.replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[character] || character); }
+function formatNumber(value: number): string { return value >= 1_000_000 ? (value / 1_000_000).toFixed(1) + 'M' : value >= 1000 ? (value / 1000).toFixed(value % 1000 ? 1 : 0) + 'K' : String(value); }
+function relativeTime(timestamp: number): string { const minutes = Math.max(0, Math.round((Date.now() - timestamp) / 60000)); return minutes < 1 ? 'now' : minutes < 60 ? `${minutes}m` : minutes < 1440 ? `${Math.round(minutes / 60)}h` : `${Math.round(minutes / 1440)}d`; }
+
+vscode.postMessage({ type: 'ready' });
