@@ -11,17 +11,22 @@ import { ESCALATION_LEVELS, type EscalationLevel, type EscalationRecord, type Es
 import type { LgsMessage } from '../model/types.js';
 import type { ModelRouter } from '../routing/router.js';
 import type { RoutingRole } from '../routing/types.js';
+import { activeBillingForProfile, activeUsageTracker, type UsageRequest, type UsageTracker } from '../usage/index.js';
 
 export type ToolLoopBackendResolver = (profileId: string) => ModelBackend | undefined | Promise<ModelBackend | undefined>;
 
 export class RoutedToolLoopModel implements ToolLoopModel {
   private readonly backends = new Map<string, Promise<ModelBackend>>();
-  constructor(private identity: AgentModelIdentity, private readonly options: GenerationOptions, private readonly resolveBackend: ToolLoopBackendResolver) {}
+  private usageRole = 'manager';
+  constructor(private identity: AgentModelIdentity, private readonly options: GenerationOptions, private readonly resolveBackend: ToolLoopBackendResolver, private readonly usage?: { tracker: UsageTracker; request: Omit<UsageRequest, 'providerConnection'|'model'|'role'> }) {}
   async next(messages: LgsMessage[], tools: ReturnType<ToolRegistry['specifications']>, signal: AbortSignal): Promise<ToolModelTurn> {
     const backend = await this.backend(this.identity.profileId);
-    return new BackendToolLoopModel(backend, this.identity.model, this.options).next(messages, tools, signal);
+    const tracker = this.usage?.tracker ?? activeUsageTracker(); const request = this.usage?.request ?? {};
+    const measurement = tracker?.begin({ ...request, providerConnection: this.identity.profileId, model: this.identity.model, role: this.usageRole === 'cloud' ? 'cloudEscalation' : this.usageRole, billing: request.billing ?? activeBillingForProfile(this.identity.profileId) });
+    return new BackendToolLoopModel(backend, this.identity.model, this.options, event => measurement?.observe(event), () => measurement?.finish()).next(messages, tools, signal);
   }
   switchModel(identity: AgentModelIdentity): void { this.identity = { ...identity }; }
+  setUsageRole(role: string): void { this.usageRole = role; }
   currentModel(): AgentModelIdentity { return { ...this.identity }; }
   private backend(profileId: string): Promise<ModelBackend> {
     let backend = this.backends.get(profileId);
@@ -50,7 +55,7 @@ export class EscalationController {
     const existing = this.read(taskId);
     const duplicate = [...existing].reverse().find(record => record.trigger === trigger && record.taskStateRevision === revision);
     if (duplicate) return duplicate;
-    const target = this.nextRoute();
+    const target = this.nextRoute(taskId);
     const record: EscalationRecord = {
       id: randomUUID(), taskId, trigger, reason: reason.trim().slice(0, 2_000),
       from: { level: this.level, ...this.identity },
@@ -77,11 +82,13 @@ export class EscalationController {
     catch { return []; }
   }
 
-  private nextRoute(): { level: EscalationLevel; identity: AgentModelIdentity } | undefined {
+  private nextRoute(taskId: string): { level: EscalationLevel; identity: AgentModelIdentity } | undefined {
     const start = ESCALATION_LEVELS.indexOf(this.level) + 1;
     for (const level of ESCALATION_LEVELS.slice(start)) {
       const configured = this.configuration.escalationRoutes[level];
       if (configured) {
+        const budget = level === 'cloud' ? activeUsageTracker()?.budgetDecision(taskId) : undefined;
+        if (budget && !budget.allowed) continue;
         const fallback = resolveModel(configured, this.identity.profileId);
         const role: RoutingRole = level === 'cloud' ? 'cloudEscalation' : level;
         const decision = this.router?.route({ role, fallback, roleModel: configured, difficulty: level === 'difficult' || level === 'cloud' ? 'high' : 'medium', needsTools: true });

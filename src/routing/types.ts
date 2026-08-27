@@ -34,6 +34,7 @@ export type RoutingRequest = {
   taskModel?: ConfiguredAgentModel;
   roleModel?: ConfiguredAgentModel;
   provider?: string;
+  taskId?: string;
 };
 export type RoutingDecision = {
   role: RoutingRole;
@@ -43,5 +44,7 @@ export type RoutingDecision = {
   policy: PrivacyPolicy;
   recordedAt: string;
   blocked?: boolean;
+  requiresApproval?: boolean;
 };
 export type ProviderPolicyLookup = (profileId: string) => ProviderDataPolicy | undefined;
+export type RoutingBudgetGate = (request: RoutingRequest, identity: AgentModelIdentity) => { allowed: boolean; warning?: string } | undefined;

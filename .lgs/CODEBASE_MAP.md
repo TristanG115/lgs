@@ -1,6 +1,6 @@
 # LGS Codebase Map
 
-Generated: 2026-08-27T00:17:18.319Z
+Generated: 2026-08-27T01:42:42.745Z
 
 This map is generated deterministically from the filesystem, manifests, and source syntax. Source files remain authoritative.
 
@@ -12,8 +12,8 @@ This map is generated deterministically from the filesystem, manifests, and sour
 
 ## Repository shape
 
-- Files: 143
-- Directories: 25
+- Files: 152
+- Directories: 26
 - Modules: 4
 - Entry points: src/extension.ts
 - Manifests: package-lock.json, package.json, tsconfig.json
@@ -43,7 +43,7 @@ This map is generated deterministically from the filesystem, manifests, and sour
 
 ### src
 - Path: src
-- Files: 112; directories: 22
+- Files: 120; directories: 23
 - Entry points: `src/extension.ts`
   - `src/commit/index.ts` — TypeScript
   - `src/commit/service.ts` — TypeScript
@@ -103,7 +103,7 @@ This map is generated deterministically from the filesystem, manifests, and sour
 
 ### test
 - Path: test
-- Files: 20; directories: 1
+- Files: 21; directories: 1
   - `test/commit.test.ts` — TypeScript (test)
     - Symbols: root, baseline
   - `test/completion.test.ts` — TypeScript (test)
@@ -136,6 +136,7 @@ This map is generated deterministically from the filesystem, manifests, and sour
   - `test/stream.test.ts` — TypeScript (test)
   - `test/tools.test.ts` — TypeScript (test)
     - Symbols: fixture, cleanup, call
+  - `test/usage.test.ts` — TypeScript (test)
   - `test/watchdog.test.ts` — TypeScript (test)
     - Symbols: fixture, cleanup, task
 
@@ -225,6 +226,8 @@ This map is generated deterministically from the filesystem, manifests, and sour
 - `src/extension.ts` → `src/settings/configuration.ts`
 - `src/extension.ts` → `src/settings/panel.ts`
 - `src/extension.ts` → `src/tools/index.ts`
+- `src/extension.ts` → `src/usage/index.ts`
+- `src/extension.ts` → `src/usage/panel.ts`
 - `src/integrations/hub.ts` → `src/orchestration/types.ts`
 - `src/integrations/hub.ts` → `src/tools/types.ts`
 - `src/integrations/hub.ts` → `src/integrations/types.ts`
@@ -259,8 +262,6 @@ This map is generated deterministically from the filesystem, manifests, and sour
 - `src/model/anthropic.ts` → `src/model/backend.ts`
 - `src/model/backend.ts` → `src/model/types.ts`
 - `src/model/ollama.ts` → `src/model/types.ts`
-- `src/model/ollama.ts` → `src/model/backend.ts`
-- `src/model/openai.ts` → `src/model/types.ts`
 
 ## Reverse dependencies
 
@@ -308,7 +309,7 @@ This map is generated deterministically from the filesystem, manifests, and sour
 - `src/model/openai.ts` ← `src/model/profiles.ts`
 - `src/model/profiles.ts` ← `src/extension.ts`, `src/model/registry.ts`, `src/routing/types.ts`, `src/settings/panel.ts`, `test/settings.test.ts`
 - `src/model/registry.ts` ← `src/extension.ts`, `test/settings.test.ts`
-- `src/model/types.ts` ← `src/documentation/analyzer.ts`, `src/extension.ts`, `src/model/anthropic.ts`, `src/model/backend.ts`, `src/model/ollama.ts`, `src/model/openai.ts`, `src/orchestration/inference.ts`, `src/orchestration/orchestrator.ts`, `src/orchestration/tools.ts`, `src/orchestration/types.ts`, `src/review/analyzer.ts`, `src/tools/loop.ts`, `src/watchdog/analyzer.ts`, `src/watchdog/escalation.ts`, `test/completion.test.ts`, `test/orchestration.test.ts`, `test/tools.test.ts`, `test/watchdog.test.ts`
+- `src/model/types.ts` ← `src/documentation/analyzer.ts`, `src/extension.ts`, `src/model/anthropic.ts`, `src/model/backend.ts`, `src/model/ollama.ts`, `src/model/openai.ts`, `src/orchestration/inference.ts`, `src/orchestration/orchestrator.ts`, `src/orchestration/tools.ts`, `src/orchestration/types.ts`, `src/review/analyzer.ts`, `src/tools/loop.ts`, `src/usage/service.ts`, `src/watchdog/analyzer.ts`, `src/watchdog/escalation.ts`, `test/completion.test.ts`, `test/orchestration.test.ts`, `test/tools.test.ts`, `test/watchdog.test.ts`
 - `src/orchestration/config.ts` ← `src/orchestration/index.ts`, `src/settings/configuration.ts`, `src/verification/config.ts`
 - `src/orchestration/index.ts` ← `src/tools/index.ts`, `src/tools/workspace.ts`, `test/orchestration.test.ts`
 - `src/orchestration/inference.ts` ← `src/orchestration/index.ts`
@@ -335,7 +336,7 @@ This map is generated deterministically from the filesystem, manifests, and sour
 - `src/review/tools.ts` ← `src/review/index.ts`
 - `src/review/types.ts` ← `src/completion/types.ts`, `src/review/analyzer.ts`, `src/review/context.ts`, `src/review/index.ts`, `src/review/reviewer.ts`, `src/review/store.ts`, `src/review/tools.ts`
 - `src/routing/config.ts` ← `src/routing/index.ts`, `src/settings/configuration.ts`, `src/verification/config.ts`
-- `src/routing/index.ts` ← `src/tools/index.ts`, `test/routing.test.ts`
+- `src/routing/index.ts` ← `src/tools/index.ts`, `test/routing.test.ts`, `test/usage.test.ts`
 - `src/routing/router.ts` ← `src/routing/index.ts`, `src/watchdog/escalation.ts`
 - `src/routing/types.ts` ← `src/routing/config.ts`, `src/routing/index.ts`, `src/routing/router.ts`, `src/verification/config.ts`, `src/watchdog/escalation.ts`
 - `src/runtime/browser.ts` ← `src/runtime/index.ts`, `src/runtime/service.ts`
@@ -351,7 +352,7 @@ This map is generated deterministically from the filesystem, manifests, and sour
 - `src/settings/registry.ts` ← `src/settings/configuration.ts`, `src/settings/defaults.ts`, `test/settings.test.ts`
 - `src/shared/logger.ts` ← `src/extension.ts`
 - `src/shared/messages.ts` ← `src/extension.ts`, `src/webview/main.ts`, `test/messages.test.ts`
-- `src/tools/framework.ts` ← `src/commit/tools.ts`, `src/completion/tools.ts`, `src/documentation/tools.ts`, `src/integrations/tools.ts`, `src/knowledge/tools.ts`, `src/localruntime/tools.ts`, `src/orchestration/tools.ts`, `src/planning/tools.ts`, `src/research/tools.ts`, `src/review/tools.ts`, `src/runtime/tools.ts`, `src/tools/git.ts`, `src/tools/index.ts`, `src/tools/loop.ts`, `src/tools/repository.ts`, `src/tools/workspace.ts`, `src/verification/tools.ts`, `src/watchdog/escalation.ts`, `src/watchdog/tools.ts`
+- `src/tools/framework.ts` ← `src/commit/tools.ts`, `src/completion/tools.ts`, `src/documentation/tools.ts`, `src/integrations/tools.ts`, `src/knowledge/tools.ts`, `src/localruntime/tools.ts`, `src/orchestration/tools.ts`, `src/planning/tools.ts`, `src/research/tools.ts`, `src/review/tools.ts`, `src/runtime/tools.ts`, `src/tools/git.ts`, `src/tools/index.ts`, `src/tools/loop.ts`, `src/tools/repository.ts`, `src/tools/workspace.ts`, `src/usage/tools.ts`, `src/verification/tools.ts`, `src/watchdog/escalation.ts`, `src/watchdog/tools.ts`
 - `src/tools/git.ts` ← `src/commit/service.ts`, `src/documentation/agent.ts`, `src/documentation/context.ts`, `src/review/context.ts`, `src/review/reviewer.ts`, `src/tools/index.ts`, `src/tools/workspace.ts`
 - `src/tools/index.ts` ← `src/extension.ts`, `test/commit.test.ts`, `test/completion.test.ts`, `test/documentation.test.ts`, `test/execution.test.ts`, `test/git.test.ts`, `test/integrations.test.ts`, `test/knowledge.test.ts`, `test/localruntime.test.ts`, `test/planning.test.ts`, `test/research.test.ts`, `test/review.test.ts`, `test/runtime.test.ts`, `test/tools.test.ts`, `test/watchdog.test.ts`
 - `src/tools/loop.ts` ← `src/tools/index.ts`, `src/watchdog/escalation.ts`
@@ -359,6 +360,14 @@ This map is generated deterministically from the filesystem, manifests, and sour
 - `src/tools/schema.ts` ← `src/tools/framework.ts`, `src/tools/index.ts`
 - `src/tools/types.ts` ← `src/commit/tools.ts`, `src/completion/tools.ts`, `src/documentation/tools.ts`, `src/integrations/hub.ts`, `src/integrations/tools.ts`, `src/integrations/types.ts`, `src/knowledge/tools.ts`, `src/localruntime/tools.ts`, `src/orchestration/tools.ts`, `src/planning/tools.ts`, `src/research/tools.ts`, `src/review/tools.ts`, `src/runtime/tools.ts`, `src/tools/framework.ts`, `src/tools/git.ts`, `src/tools/index.ts`, `src/tools/loop.ts`, `src/tools/repository.ts`, `src/tools/schema.ts`, `src/verification/tools.ts`, `src/watchdog/tools.ts`, `src/watchdog/triggers.ts`
 - `src/tools/workspace.ts` ← `src/tools/index.ts`
+- `src/usage/config.ts` ← `src/settings/configuration.ts`, `src/usage/index.ts`, `src/verification/config.ts`
+- `src/usage/index.ts` ← `src/extension.ts`, `src/orchestration/inference.ts`, `src/tools/index.ts`, `src/tools/workspace.ts`, `src/watchdog/escalation.ts`, `test/usage.test.ts`
+- `src/usage/panel.ts` ← `src/extension.ts`
+- `src/usage/runtime.ts` ← `src/usage/index.ts`
+- `src/usage/service.ts` ← `src/usage/index.ts`, `src/usage/panel.ts`, `src/usage/runtime.ts`, `src/usage/tools.ts`
+- `src/usage/store.ts` ← `src/usage/index.ts`, `src/usage/service.ts`, `src/usage/tools.ts`
+- `src/usage/tools.ts` ← `src/usage/index.ts`
+- `src/usage/types.ts` ← `src/usage/config.ts`, `src/usage/index.ts`, `src/usage/panel.ts`, `src/usage/runtime.ts`, `src/usage/service.ts`, `src/usage/store.ts`, `src/usage/tools.ts`, `src/verification/config.ts`
 - `src/verification/config.ts` ← `src/completion/guard.ts`, `src/settings/configuration.ts`, `src/verification/index.ts`, `src/verification/runner.ts`, `src/verification/tools.ts`
 - `src/verification/index.ts` ← `src/tools/index.ts`, `src/tools/workspace.ts`
 - `src/verification/runner.ts` ← `src/verification/index.ts`, `src/verification/tools.ts`
@@ -391,9 +400,9 @@ This map is generated deterministically from the filesystem, manifests, and sour
 
 ## Incremental update
 
-- Reused: 131
-- Added: 5
-- Changed: 7
+- Reused: 146
+- Added: 0
+- Changed: 6
 - Removed: 0
 - Renamed: 0
 

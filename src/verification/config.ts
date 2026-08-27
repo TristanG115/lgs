@@ -15,6 +15,8 @@ import type { RuntimeConfiguration } from '../runtime/types.js';
 import type { IntegrationConfiguration } from '../integrations/types.js';
 import { parseRoutingConfiguration } from '../routing/config.js';
 import type { RoutingConfiguration } from '../routing/types.js';
+import { parseUsageConfiguration } from '../usage/config.js';
+import type { UsageConfiguration } from '../usage/types.js';
 
 export const VERIFICATION_STEPS = ['install', 'typecheck', 'lint', 'targetedTest', 'test', 'build', 'start'] as const;
 export type VerificationStep = typeof VERIFICATION_STEPS[number];
@@ -30,6 +32,7 @@ export type WorkspaceConfiguration = {
   runtime?: Record<string, unknown>;
   integrations?: Record<string, unknown>;
   routing?: Record<string, unknown>;
+  usage?: Record<string, unknown>;
 };
 export type LoadedWorkspaceConfiguration = {
   settings: Record<string, unknown>;
@@ -42,11 +45,12 @@ export type LoadedWorkspaceConfiguration = {
   runtime: RuntimeConfiguration;
   integrations?: IntegrationConfiguration;
   routing: RoutingConfiguration;
+  usage: UsageConfiguration;
   errors: string[];
 };
 
 export function loadWorkspaceConfiguration(root: string): LoadedWorkspaceConfiguration {
-  const empty: LoadedWorkspaceConfiguration = { settings: {}, verification: {}, permissions: {}, completion: parseCompletionConfiguration(), agents: parseOrchestrationConfiguration(), watchdog: parseWatchdogConfiguration(), research: parseResearchConfiguration(), runtime: parseRuntimeConfiguration(), integrations: { required: [], recommended: [], optional: [], mcp: {} }, routing: parseRoutingConfiguration(), errors: [] };
+  const empty: LoadedWorkspaceConfiguration = { settings: {}, verification: {}, permissions: {}, completion: parseCompletionConfiguration(), agents: parseOrchestrationConfiguration(), watchdog: parseWatchdogConfiguration(), research: parseResearchConfiguration(), runtime: parseRuntimeConfiguration(), integrations: { required: [], recommended: [], optional: [], mcp: {} }, routing: parseRoutingConfiguration(), usage: parseUsageConfiguration(), errors: [] };
   const file = path.join(root, '.lgs', 'config.yaml');
   if (!fs.existsSync(file)) return empty;
   try {
@@ -59,6 +63,7 @@ export function loadWorkspaceConfiguration(root: string): LoadedWorkspaceConfigu
     const rawResearch = parsed.research === undefined ? {} : requireRecord(parsed.research, 'research');
     const rawRuntime = parsed.runtime;
     const rawRouting = parsed.routing === undefined ? {} : requireRecord(parsed.routing, 'routing');
+    const rawUsage = parsed.usage === undefined ? {} : requireRecord(parsed.usage, 'usage');
     const verification = parseVerification(parsed.verification, empty.errors);
     const permissions = parsePermissions(parsed.permissions, empty.errors);
     const completion = parseCompletionConfiguration(rawCompletion, empty.errors);
@@ -68,7 +73,8 @@ export function loadWorkspaceConfiguration(root: string): LoadedWorkspaceConfigu
     const runtime = parseRuntimeConfiguration(rawRuntime, empty.errors);
     const integrations = parseIntegrations(parsed.integrations, empty.errors);
     const routing = parseRoutingConfiguration(rawRouting, empty.errors);
-    return { settings, verification, permissions, completion, agents, watchdog, research, runtime, integrations, routing, errors: empty.errors };
+    const usage = parseUsageConfiguration(rawUsage, empty.errors);
+    return { settings, verification, permissions, completion, agents, watchdog, research, runtime, integrations, routing, usage, errors: empty.errors };
   } catch (error) {
     empty.errors.push(error instanceof Error ? error.message : 'Malformed workspace configuration.');
     return empty;

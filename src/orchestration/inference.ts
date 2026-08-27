@@ -1,6 +1,7 @@
 import type { ModelBackend } from '../model/backend.js';
 import { textMessage } from '../model/types.js';
 import type { AgentInference, AgentInferenceRequest } from './types.js';
+import { activeBillingForProfile, activeUsageTracker } from '../usage/index.js';
 
 export type AgentBackendResolver = (profileId: string) => ModelBackend | undefined | Promise<ModelBackend | undefined>;
 
@@ -12,10 +13,11 @@ export class BackendAgentInference implements AgentInference {
     const backend = await this.backend(request.model.profileId);
     let output = '';
     let failure: string | undefined;
-    for await (const event of backend.streamChat(request.model.model, [textMessage('system', agentInstructions(request.role, request.objective)), ...request.messages], {}, request.signal)) {
-      if (event.type === 'textDelta') output += event.text;
+    const measurement = activeUsageTracker()?.begin({ providerConnection: request.model.profileId, model: request.model.model, agent: request.agentId, role: request.role, billing: activeBillingForProfile(request.model.profileId) });
+    try { for await (const event of backend.streamChat(request.model.model, [textMessage('system', agentInstructions(request.role, request.objective)), ...request.messages], {}, request.signal)) {
+      measurement?.observe(event); if (event.type === 'textDelta') output += event.text;
       if (event.type === 'error') failure = event.error.message;
-    }
+    } } finally { measurement?.finish(); }
     if (failure) throw new Error(failure);
     return output;
   }

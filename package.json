@@ -15,7 +15,8 @@
     "onView:lgs.sidebar",
     "onCommand:lgs.open",
     "onCommand:lgs.rebuildIndex",
-    "onCommand:lgs.openCodebaseMap"
+    "onCommand:lgs.openCodebaseMap",
+    "onCommand:lgs.openUsage"
   ],
   "main": "./dist/extension.js",
   "contributes": {
@@ -35,6 +36,10 @@
       {
         "command": "lgs.openCodebaseMap",
         "title": "LGS: Open Codebase Map"
+      },
+      {
+        "command": "lgs.openUsage",
+        "title": "LGS: Open Usage Dashboard"
       }
     ],
     "viewsContainers": {

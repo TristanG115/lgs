@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "generatedAt": "2026-08-27T00:17:18.319Z",
+  "generatedAt": "2026-08-27T01:42:42.745Z",
   "root": "/home/tristan/Documents/Github/lgs",
   "directories": [
     ".vscode",
@@ -24,6 +24,7 @@
     "src/settings",
     "src/shared",
     "src/tools",
+    "src/usage",
     "src/verification",
     "src/watchdog",
     "src/webview",
@@ -34,9 +35,9 @@
       "path": ".gitignore",
       "fileType": "unknown",
       "language": "",
-      "size": 101,
-      "mtimeMs": 1787788745114.0662,
-      "hash": "59d65ee87beeb93ddb5008858135afcd760ee4f6",
+      "size": 136,
+      "mtimeMs": 1787794773123.1047,
+      "hash": "59da030e658a1a42873c99e0902132fa84800beb",
       "imports": [],
       "exports": [],
       "symbols": [],
@@ -79,9 +80,9 @@
       "path": "README.md",
       "fileType": "md",
       "language": "Markdown/Text",
-      "size": 36725,
-      "mtimeMs": 1787789797214.486,
-      "hash": "7dc7bca102c8848e3eb9071304f2508abaf96d7b",
+      "size": 38995,
+      "mtimeMs": 1787794823116.1377,
+      "hash": "568014bf4bb9498ce8170a478b210127231cd8ec",
       "imports": [],
       "exports": [],
       "symbols": [],
@@ -166,9 +167,9 @@
       "path": "package.json",
       "fileType": "json",
       "language": "JSON",
-      "size": 1788,
-      "mtimeMs": 1787779174409.001,
-      "hash": "326c989c2274d03fab6e323de27f9ed213a69e22",
+      "size": 1917,
+      "mtimeMs": 1787794951491.3103,
+      "hash": "f7085a9e967b423508bb0a679881b83cc28f6366",
       "imports": [],
       "exports": [],
       "symbols": [],
@@ -887,9 +888,9 @@
       "path": "src/extension.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 15954,
-      "mtimeMs": 1787789809381.511,
-      "hash": "e843690e1676ce02d755f3c2a9b2052dce253c42",
+      "size": 16632,
+      "mtimeMs": 1787794922267.2673,
+      "hash": "3cfa9f25fc22a70f702f2f75407e66a637dc8343",
       "imports": [
         "vscode",
         "./shared/messages.js",
@@ -903,7 +904,9 @@
         "node:path",
         "./settings/configuration.js",
         "./settings/panel.js",
-        "./tools/index.js"
+        "./tools/index.js",
+        "./usage/index.js",
+        "./usage/panel.js"
       ],
       "exports": [
         "activate",
@@ -1333,9 +1336,9 @@
       "path": "src/model/anthropic.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 2793,
-      "mtimeMs": 1787788114127.549,
-      "hash": "2c42d020e39c22fe3b44cffa6223188677db52c6",
+      "size": 2990,
+      "mtimeMs": 1787794444780.2083,
+      "hash": "af84d3c42da628e3e7e868d5287d34d8cfd7631c",
       "imports": [
         "./types.js",
         "./backend.js"
@@ -1408,9 +1411,9 @@
       "path": "src/model/openai.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 2906,
-      "mtimeMs": 1787788061620.422,
-      "hash": "f620d74067528e67b01b77edd28d3b9a057f2cb3",
+      "size": 3457,
+      "mtimeMs": 1787794415643.4663,
+      "hash": "ca6ef883cd2715098a1fa51b3576daaf9a7c6946",
       "imports": [
         "./types.js",
         "./backend.js"
@@ -1493,9 +1496,9 @@
       "path": "src/model/types.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 2068,
-      "mtimeMs": 1787788061585.4219,
-      "hash": "9bea3bc8e157e09cd996ed74c6a95d0828375cf8",
+      "size": 2151,
+      "mtimeMs": 1787794415590.4663,
+      "hash": "b82bb36144b56f1b8e7b02aa2133e8bb62d45682",
       "imports": [],
       "exports": [
         "Role",
@@ -1596,13 +1599,14 @@
       "path": "src/orchestration/inference.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 2075,
-      "mtimeMs": 1787757046531.342,
-      "hash": "01506485f27a45747245f62719b3877a08f74513",
+      "size": 2461,
+      "mtimeMs": 1787794946376.3027,
+      "hash": "c69d525a9d75db1a3ff0ca0a1b7a0a79175b4fc5",
       "imports": [
         "../model/backend.js",
         "../model/types.js",
-        "./types.js"
+        "./types.js",
+        "../usage/index.js"
       ],
       "exports": [
         "AgentBackendResolver",
@@ -2339,9 +2343,9 @@
       "path": "src/routing/router.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 4948,
-      "mtimeMs": 1787789776808.4443,
-      "hash": "3d49fda2acf7107040780de6522122b7fb416bf2",
+      "size": 5527,
+      "mtimeMs": 1787794550807.0078,
+      "hash": "a7687d507570cf9a65dcf4b5732e2a67878b368b",
       "imports": [
         "../orchestration/types.js",
         "./types.js",
@@ -2366,9 +2370,9 @@
       "path": "src/routing/types.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 1551,
-      "mtimeMs": 1787789677348.2407,
-      "hash": "ef54fa1aba71462214758a76b57cf7757e72d3e7",
+      "size": 1743,
+      "mtimeMs": 1787794550758.0076,
+      "hash": "f3d524fd38d5bf2c8e2bf9d56f393b9c164a7137",
       "imports": [
         "../orchestration/types.js",
         "../model/profiles.js"
@@ -2383,7 +2387,8 @@
         "RoutingConfiguration",
         "RoutingRequest",
         "RoutingDecision",
-        "ProviderPolicyLookup"
+        "ProviderPolicyLookup",
+        "RoutingBudgetGate"
       ],
       "symbols": [
         "ROUTING_ROLES",
@@ -2395,7 +2400,8 @@
         "RoutingConfiguration",
         "RoutingRequest",
         "RoutingDecision",
-        "ProviderPolicyLookup"
+        "ProviderPolicyLookup",
+        "RoutingBudgetGate"
       ],
       "likelyTest": false,
       "likelyDocumentation": false,
@@ -2603,9 +2609,9 @@
       "path": "src/settings/configuration.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 3718,
-      "mtimeMs": 1787789578941.0393,
-      "hash": "1d63982d64e4987274ad9183a8eb8789e39912f6",
+      "size": 3810,
+      "mtimeMs": 1787794524031.8752,
+      "hash": "61f489e1a09c6d403b70836ff9e1dcc4214b0d5a",
       "imports": [
         "node:fs",
         "node:path",
@@ -2619,7 +2625,8 @@
         "../watchdog/config.js",
         "../research/config.js",
         "../runtime/config.js",
-        "../routing/config.js"
+        "../routing/config.js",
+        "../usage/config.js"
       ],
       "exports": [
         "SettingsManager"
@@ -2892,9 +2899,9 @@
       "path": "src/tools/index.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 797,
-      "mtimeMs": 1787789669592.2249,
-      "hash": "ddc3da3e2eba24b4b31202c6af09c76bbdf2a332",
+      "size": 832,
+      "mtimeMs": 1787794470525.6328,
+      "hash": "f9ff70edd77db2bb704c099545603d65ef7eff1e",
       "imports": [
         "./types.js",
         "./schema.js",
@@ -2917,7 +2924,8 @@
         "../planning/index.js",
         "../integrations/index.js",
         "../localruntime/index.js",
-        "../routing/index.js"
+        "../routing/index.js",
+        "../usage/index.js"
       ],
       "exports": [],
       "symbols": [],
@@ -2930,9 +2938,9 @@
       "path": "src/tools/loop.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 10831,
-      "mtimeMs": 1787760072477.709,
-      "hash": "27b8a41cc991065b793cd8ec3a62d9de45e5fcd5",
+      "size": 11193,
+      "mtimeMs": 1787794651682.2136,
+      "hash": "a0cc43b9091ceab30c05493afae957917efa9c8c",
       "imports": [
         "../model/backend.js",
         "../model/types.js",
@@ -3112,9 +3120,9 @@
       "path": "src/tools/workspace.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 4771,
-      "mtimeMs": 1787788745078.066,
-      "hash": "846fb56f618eeb64da3b54942ff0e1f8b59e3f3f",
+      "size": 5016,
+      "mtimeMs": 1787794565988.083,
+      "hash": "8e117eaaf30e3f5d348a925a72555ddeb3dc462d",
       "imports": [
         "./git.js",
         "./repository.js",
@@ -3132,7 +3140,8 @@
         "../knowledge/index.js",
         "../planning/index.js",
         "../integrations/index.js",
-        "../localruntime/index.js"
+        "../localruntime/index.js",
+        "../usage/index.js"
       ],
       "exports": [
         "createWorkspaceToolRegistry"
@@ -3146,12 +3155,239 @@
       "module": "src"
     },
     {
+      "path": "src/usage/config.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 3533,
+      "mtimeMs": 1787794783845.111,
+      "hash": "1b745d16fa621255d5abd4c05e60b87c6c6444cf",
+      "imports": [
+        "./types.js"
+      ],
+      "exports": [
+        "DEFAULT_USAGE_CONFIGURATION",
+        "parseUsageConfiguration"
+      ],
+      "symbols": [
+        "DEFAULT_BUDGETS",
+        "DEFAULT_USAGE_CONFIGURATION",
+        "parseUsageConfiguration",
+        "number",
+        "decimal",
+        "numberIfPresent",
+        "record"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/usage",
+      "module": "src"
+    },
+    {
+      "path": "src/usage/index.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 173,
+      "mtimeMs": 1787794792777.1172,
+      "hash": "9bbf92ca635da3131041012fa48c3c84df1c81fc",
+      "imports": [
+        "./types.js",
+        "./config.js",
+        "./store.js",
+        "./service.js",
+        "./tools.js",
+        "./runtime.js"
+      ],
+      "exports": [],
+      "symbols": [],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/usage",
+      "module": "src"
+    },
+    {
+      "path": "src/usage/panel.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 4412,
+      "mtimeMs": 1787794898922.4973,
+      "hash": "18257c4b22249959c2248030fe717c2d557e3c78",
+      "imports": [
+        "vscode",
+        "./types.js",
+        "./service.js"
+      ],
+      "exports": [
+        "UsageDashboardPanel"
+      ],
+      "symbols": [
+        "UsageDashboardPanel",
+        "html",
+        "escape"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/usage",
+      "module": "src"
+    },
+    {
+      "path": "src/usage/runtime.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 728,
+      "mtimeMs": 1787794922154.267,
+      "hash": "425c342b3064dbf30e17d272cb946b18aaf1eee0",
+      "imports": [
+        "./types.js",
+        "./service.js"
+      ],
+      "exports": [
+        "setActiveUsageTracker",
+        "activeUsageTracker",
+        "activeBillingForProfile"
+      ],
+      "symbols": [
+        "active",
+        "billingForProfile",
+        "setActiveUsageTracker",
+        "activeUsageTracker",
+        "activeBillingForProfile"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/usage",
+      "module": "src"
+    },
+    {
+      "path": "src/usage/service.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 8043,
+      "mtimeMs": 1787794595950.1836,
+      "hash": "49325c7812076102964edab0e61f86d5a3544b90",
+      "imports": [
+        "node:crypto",
+        "../model/types.js",
+        "./types.js",
+        "./store.js"
+      ],
+      "exports": [
+        "UsageRequest",
+        "UsageTracker",
+        "UsageMeasurement"
+      ],
+      "symbols": [
+        "UsageRequest",
+        "UsageTracker",
+        "UsageMeasurement",
+        "estimate",
+        "aggregate",
+        "combine",
+        "budgetWarnings",
+        "rounded",
+        "stripUndefined"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/usage",
+      "module": "src"
+    },
+    {
+      "path": "src/usage/store.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 2348,
+      "mtimeMs": 1787794335480.3003,
+      "hash": "799860ac6dce77015a23ace79a10c7463e8f3969",
+      "imports": [
+        "node:fs",
+        "node:path",
+        "./types.js"
+      ],
+      "exports": [
+        "FileUsageStore",
+        "FilePricingStore"
+      ],
+      "symbols": [
+        "FileUsageStore",
+        "FilePricingStore",
+        "validRecord",
+        "validPricing"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/usage",
+      "module": "src"
+    },
+    {
+      "path": "src/usage/tools.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 2696,
+      "mtimeMs": 1787794550860.008,
+      "hash": "a1de99ce5154aa12f590d1f2275558381af86616",
+      "imports": [
+        "../tools/framework.js",
+        "./service.js",
+        "./store.js",
+        "./types.js"
+      ],
+      "exports": [
+        "registerUsageTools"
+      ],
+      "symbols": [
+        "READ",
+        "WRITE",
+        "registerUsageTools"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/usage",
+      "module": "src"
+    },
+    {
+      "path": "src/usage/types.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 2350,
+      "mtimeMs": 1787794335366.3,
+      "hash": "d4f33533bfe30a803e19d7917db21c4c463b7762",
+      "imports": [],
+      "exports": [
+        "UsageBillingKind",
+        "ContextBreakdown",
+        "ContextSavings",
+        "UsageRecord",
+        "PricingEntry",
+        "UsageBudgets",
+        "UsageConfiguration",
+        "UsageGroup",
+        "UsageAggregate",
+        "UsageDashboard"
+      ],
+      "symbols": [
+        "UsageBillingKind",
+        "ContextBreakdown",
+        "ContextSavings",
+        "UsageRecord",
+        "PricingEntry",
+        "UsageBudgets",
+        "UsageConfiguration",
+        "UsageGroup",
+        "UsageAggregate",
+        "UsageDashboard"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/usage",
+      "module": "src"
+    },
+    {
       "path": "src/verification/config.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 10391,
-      "mtimeMs": 1787789546365.9624,
-      "hash": "d4a42b38f821dd72b6647519a3ab763dbeb9a3e9",
+      "size": 10779,
+      "mtimeMs": 1787794470474.6328,
+      "hash": "7f3484b9bff0c043563b6a83cc40936c68865f73",
       "imports": [
         "node:fs",
         "node:path",
@@ -3169,7 +3405,9 @@
         "../runtime/types.js",
         "../integrations/types.js",
         "../routing/config.js",
-        "../routing/types.js"
+        "../routing/types.js",
+        "../usage/config.js",
+        "../usage/types.js"
       ],
       "exports": [
         "VERIFICATION_STEPS",
@@ -3362,9 +3600,9 @@
       "path": "src/watchdog/escalation.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 5450,
-      "mtimeMs": 1787789741089.3713,
-      "hash": "a3dda293e4649822da64f46ef202010ccf2a678e",
+      "size": 6405,
+      "mtimeMs": 1787794935445.2869,
+      "hash": "c7f03147842da597a710b3e66bbfd6cc6b4f5daf",
       "imports": [
         "node:crypto",
         "node:fs",
@@ -3377,7 +3615,8 @@
         "./state.js",
         "./types.js",
         "../routing/router.js",
-        "../routing/types.js"
+        "../routing/types.js",
+        "../usage/index.js"
       ],
       "exports": [
         "ToolLoopBackendResolver",
@@ -4094,6 +4333,28 @@
       "module": "test"
     },
     {
+      "path": "test/usage.test.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 3308,
+      "mtimeMs": 1787794773071.1047,
+      "hash": "609ab44f298b935f05a66f26e27b66993877f25a",
+      "imports": [
+        "vitest",
+        "node:fs",
+        "node:os",
+        "node:path",
+        "../src/usage/index.js",
+        "../src/routing/index.js"
+      ],
+      "exports": [],
+      "symbols": [],
+      "likelyTest": true,
+      "likelyDocumentation": false,
+      "directory": "test",
+      "module": "test"
+    },
+    {
       "path": "test/watchdog.test.ts",
       "fileType": "ts",
       "language": "TypeScript",
@@ -4179,6 +4440,7 @@
         "src/settings",
         "src/shared",
         "src/tools",
+        "src/usage",
         "src/verification",
         "src/watchdog",
         "src/webview",
@@ -4290,6 +4552,14 @@
         "src/tools/schema.ts",
         "src/tools/types.ts",
         "src/tools/workspace.ts",
+        "src/usage/config.ts",
+        "src/usage/index.ts",
+        "src/usage/panel.ts",
+        "src/usage/runtime.ts",
+        "src/usage/service.ts",
+        "src/usage/store.ts",
+        "src/usage/tools.ts",
+        "src/usage/types.ts",
         "src/verification/config.ts",
         "src/verification/index.ts",
         "src/verification/runner.ts",
@@ -4325,6 +4595,7 @@
         "test/settings.test.ts",
         "test/stream.test.ts",
         "test/tools.test.ts",
+        "test/usage.test.ts",
         "test/watchdog.test.ts",
         "tsconfig.json",
         "vitest.config.ts"
@@ -4395,6 +4666,7 @@
           "src/settings",
           "src/shared",
           "src/tools",
+          "src/usage",
           "src/verification",
           "src/watchdog",
           "src/webview"
@@ -4496,6 +4768,14 @@
           "src/tools/schema.ts",
           "src/tools/types.ts",
           "src/tools/workspace.ts",
+          "src/usage/config.ts",
+          "src/usage/index.ts",
+          "src/usage/panel.ts",
+          "src/usage/runtime.ts",
+          "src/usage/service.ts",
+          "src/usage/store.ts",
+          "src/usage/tools.ts",
+          "src/usage/types.ts",
           "src/verification/config.ts",
           "src/verification/index.ts",
           "src/verification/runner.ts",
@@ -4544,6 +4824,7 @@
           "test/settings.test.ts",
           "test/stream.test.ts",
           "test/tools.test.ts",
+          "test/usage.test.ts",
           "test/watchdog.test.ts"
         ],
         "entryPoints": []
@@ -4888,6 +5169,14 @@
       "to": "src/tools/index.ts"
     },
     {
+      "from": "src/extension.ts",
+      "to": "src/usage/index.ts"
+    },
+    {
+      "from": "src/extension.ts",
+      "to": "src/usage/panel.ts"
+    },
+    {
       "from": "src/integrations/hub.ts",
       "to": "src/orchestration/types.ts"
     },
@@ -5102,6 +5391,10 @@
     {
       "from": "src/orchestration/inference.ts",
       "to": "src/orchestration/types.ts"
+    },
+    {
+      "from": "src/orchestration/inference.ts",
+      "to": "src/usage/index.ts"
     },
     {
       "from": "src/orchestration/orchestrator.ts",
@@ -5540,6 +5833,10 @@
       "to": "src/routing/config.ts"
     },
     {
+      "from": "src/settings/configuration.ts",
+      "to": "src/usage/config.ts"
+    },
+    {
       "from": "src/settings/defaults.ts",
       "to": "src/settings/registry.ts"
     },
@@ -5658,6 +5955,10 @@
     {
       "from": "src/tools/index.ts",
       "to": "src/routing/index.ts"
+    },
+    {
+      "from": "src/tools/index.ts",
+      "to": "src/usage/index.ts"
     },
     {
       "from": "src/tools/loop.ts",
@@ -5784,6 +6085,86 @@
       "to": "src/localruntime/index.ts"
     },
     {
+      "from": "src/tools/workspace.ts",
+      "to": "src/usage/index.ts"
+    },
+    {
+      "from": "src/usage/config.ts",
+      "to": "src/usage/types.ts"
+    },
+    {
+      "from": "src/usage/index.ts",
+      "to": "src/usage/types.ts"
+    },
+    {
+      "from": "src/usage/index.ts",
+      "to": "src/usage/config.ts"
+    },
+    {
+      "from": "src/usage/index.ts",
+      "to": "src/usage/store.ts"
+    },
+    {
+      "from": "src/usage/index.ts",
+      "to": "src/usage/service.ts"
+    },
+    {
+      "from": "src/usage/index.ts",
+      "to": "src/usage/tools.ts"
+    },
+    {
+      "from": "src/usage/index.ts",
+      "to": "src/usage/runtime.ts"
+    },
+    {
+      "from": "src/usage/panel.ts",
+      "to": "src/usage/types.ts"
+    },
+    {
+      "from": "src/usage/panel.ts",
+      "to": "src/usage/service.ts"
+    },
+    {
+      "from": "src/usage/runtime.ts",
+      "to": "src/usage/types.ts"
+    },
+    {
+      "from": "src/usage/runtime.ts",
+      "to": "src/usage/service.ts"
+    },
+    {
+      "from": "src/usage/service.ts",
+      "to": "src/model/types.ts"
+    },
+    {
+      "from": "src/usage/service.ts",
+      "to": "src/usage/types.ts"
+    },
+    {
+      "from": "src/usage/service.ts",
+      "to": "src/usage/store.ts"
+    },
+    {
+      "from": "src/usage/store.ts",
+      "to": "src/usage/types.ts"
+    },
+    {
+      "from": "src/usage/tools.ts",
+      "to": "src/tools/framework.ts"
+    },
+    {
+      "from": "src/usage/tools.ts",
+      "to": "src/usage/service.ts"
+    },
+    {
+      "from": "src/usage/tools.ts",
+      "to": "src/usage/store.ts"
+    },
+    {
+      "from": "src/usage/tools.ts",
+      "to": "src/usage/types.ts"
+    },
+    {
       "from": "src/verification/config.ts",
       "to": "src/execution/types.ts"
     },
@@ -5838,6 +6219,14 @@
     {
       "from": "src/verification/config.ts",
       "to": "src/routing/types.ts"
+    },
+    {
+      "from": "src/verification/config.ts",
+      "to": "src/usage/config.ts"
+    },
+    {
+      "from": "src/verification/config.ts",
+      "to": "src/usage/types.ts"
     },
     {
       "from": "src/verification/index.ts",
@@ -5946,6 +6335,10 @@
     {
       "from": "src/watchdog/escalation.ts",
       "to": "src/routing/types.ts"
+    },
+    {
+      "from": "src/watchdog/escalation.ts",
+      "to": "src/usage/index.ts"
     },
     {
       "from": "src/watchdog/index.ts",
@@ -6180,6 +6573,14 @@
       "to": "src/model/types.ts"
     },
     {
+      "from": "test/usage.test.ts",
+      "to": "src/usage/index.ts"
+    },
+    {
+      "from": "test/usage.test.ts",
+      "to": "src/routing/index.ts"
+    },
+    {
       "from": "test/watchdog.test.ts",
       "to": "src/tools/index.ts"
     },
@@ -6240,6 +6641,7 @@
       "src/tools/loop.ts",
       "src/tools/repository.ts",
       "src/tools/workspace.ts",
+      "src/usage/tools.ts",
       "src/verification/tools.ts",
       "src/watchdog/escalation.ts",
       "src/watchdog/tools.ts"
@@ -6401,6 +6803,7 @@
       "src/orchestration/types.ts",
       "src/review/analyzer.ts",
       "src/tools/loop.ts",
+      "src/usage/service.ts",
       "src/watchdog/analyzer.ts",
       "src/watchdog/escalation.ts",
       "test/completion.test.ts",
@@ -6499,6 +6902,17 @@
       "test/runtime.test.ts",
       "test/tools.test.ts",
       "test/watchdog.test.ts"
+    ],
+    "src/usage/index.ts": [
+      "src/extension.ts",
+      "src/orchestration/inference.ts",
+      "src/tools/index.ts",
+      "src/tools/workspace.ts",
+      "src/watchdog/escalation.ts",
+      "test/usage.test.ts"
+    ],
+    "src/usage/panel.ts": [
+      "src/extension.ts"
     ],
     "src/orchestration/types.ts": [
       "src/integrations/hub.ts",
@@ -6705,6 +7119,11 @@
       "src/watchdog/index.ts",
       "test/routing.test.ts"
     ],
+    "src/usage/config.ts": [
+      "src/settings/configuration.ts",
+      "src/usage/index.ts",
+      "src/verification/config.ts"
+    ],
     "src/tools/schema.ts": [
       "src/tools/framework.ts",
       "src/tools/index.ts"
@@ -6781,7 +7200,8 @@
     ],
     "src/routing/index.ts": [
       "src/tools/index.ts",
-      "test/routing.test.ts"
+      "test/routing.test.ts",
+      "test/usage.test.ts"
     ],
     "src/watchdog/triggers.ts": [
       "src/tools/loop.ts",
@@ -6800,6 +7220,33 @@
       "src/tools/loop.ts",
       "src/watchdog/index.ts",
       "src/watchdog/tools.ts"
+    ],
+    "src/usage/types.ts": [
+      "src/usage/config.ts",
+      "src/usage/index.ts",
+      "src/usage/panel.ts",
+      "src/usage/runtime.ts",
+      "src/usage/service.ts",
+      "src/usage/store.ts",
+      "src/usage/tools.ts",
+      "src/verification/config.ts"
+    ],
+    "src/usage/store.ts": [
+      "src/usage/index.ts",
+      "src/usage/service.ts",
+      "src/usage/tools.ts"
+    ],
+    "src/usage/service.ts": [
+      "src/usage/index.ts",
+      "src/usage/panel.ts",
+      "src/usage/runtime.ts",
+      "src/usage/tools.ts"
+    ],
+    "src/usage/tools.ts": [
+      "src/usage/index.ts"
+    ],
+    "src/usage/runtime.ts": [
+      "src/usage/index.ts"
     ],
     "src/verification/runner.ts": [
       "src/verification/index.ts",
@@ -6848,12 +7295,14 @@
     ".lgs/tasks/",
     ".lgs/runtime/",
     ".lgs/memory.json",
-    ".lgs/benchmarks.json"
+    ".lgs/benchmarks.json",
+    ".lgs/usage.jsonl",
+    ".lgs/pricing.json"
   ],
   "freshness": {
     "index": "current",
     "codebaseMap": "current",
-    "checkedAt": "2026-08-27T00:17:18.320Z",
+    "checkedAt": "2026-08-27T01:42:42.745Z",
     "staleEntries": []
   },
   "incremental": {
@@ -6861,11 +7310,11 @@
       ".gitignore",
       ".vscode/launch.json",
       ".vscode/tasks.json",
+      "README.md",
       "esbuild.mjs",
       "eslint.config.mjs",
       "media/lgs.svg",
       "package-lock.json",
-      "package.json",
       "src/commit/index.ts",
       "src/commit/service.ts",
       "src/commit/tools.ts",
@@ -6890,7 +7339,6 @@
       "src/execution/permissions.ts",
       "src/execution/service.ts",
       "src/execution/types.ts",
-      "src/extension.ts",
       "src/integrations/hub.ts",
       "src/integrations/index.ts",
       "src/integrations/tools.ts",
@@ -6909,11 +7357,11 @@
       "src/model/backend.ts",
       "src/model/ollama.ts",
       "src/model/openai.ts",
+      "src/model/profiles.ts",
       "src/model/registry.ts",
       "src/model/types.ts",
       "src/orchestration/config.ts",
       "src/orchestration/index.ts",
-      "src/orchestration/inference.ts",
       "src/orchestration/orchestrator.ts",
       "src/orchestration/report.ts",
       "src/orchestration/scheduler.ts",
@@ -6936,6 +7384,10 @@
       "src/review/store.ts",
       "src/review/tools.ts",
       "src/review/types.ts",
+      "src/routing/config.ts",
+      "src/routing/index.ts",
+      "src/routing/router.ts",
+      "src/routing/types.ts",
       "src/runtime/browser.ts",
       "src/runtime/config.ts",
       "src/runtime/index.ts",
@@ -6943,17 +7395,27 @@
       "src/runtime/service.ts",
       "src/runtime/tools.ts",
       "src/runtime/types.ts",
+      "src/settings/configuration.ts",
       "src/settings/defaults.ts",
+      "src/settings/panel.ts",
       "src/settings/registry.ts",
       "src/shared/logger.ts",
       "src/shared/messages.ts",
       "src/tools/framework.ts",
       "src/tools/git.ts",
+      "src/tools/index.ts",
       "src/tools/loop.ts",
       "src/tools/repository.ts",
       "src/tools/schema.ts",
       "src/tools/types.ts",
       "src/tools/workspace.ts",
+      "src/usage/config.ts",
+      "src/usage/index.ts",
+      "src/usage/service.ts",
+      "src/usage/store.ts",
+      "src/usage/tools.ts",
+      "src/usage/types.ts",
+      "src/verification/config.ts",
       "src/verification/index.ts",
       "src/verification/runner.ts",
       "src/verification/tools.ts",
@@ -6982,28 +7444,23 @@
       "test/planning.test.ts",
       "test/research.test.ts",
       "test/review.test.ts",
+      "test/routing.test.ts",
       "test/runtime.test.ts",
       "test/settings.test.ts",
       "test/stream.test.ts",
       "test/tools.test.ts",
+      "test/usage.test.ts",
       "test/watchdog.test.ts",
       "tsconfig.json",
       "vitest.config.ts"
     ],
-    "added": [
-      "src/routing/config.ts",
-      "src/routing/index.ts",
-      "src/routing/router.ts",
-      "src/routing/types.ts",
-      "test/routing.test.ts"
-    ],
+    "added": [],
     "changed": [
-      "README.md",
-      "src/model/profiles.ts",
-      "src/settings/configuration.ts",
-      "src/settings/panel.ts",
-      "src/tools/index.ts",
-      "src/verification/config.ts",
+      "package.json",
+      "src/extension.ts",
+      "src/orchestration/inference.ts",
+      "src/usage/panel.ts",
+      "src/usage/runtime.ts",
       "src/watchdog/escalation.ts"
     ],
     "removed": [],

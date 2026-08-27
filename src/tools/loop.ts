@@ -1,5 +1,5 @@
 import type { ModelBackend } from '../model/backend.js';
-import { textMessage, type GenerationOptions, type LgsMessage } from '../model/types.js';
+import { textMessage, type GenerationOptions, type LgsMessage, type StreamEvent } from '../model/types.js';
 import type { ToolExecutor, ToolRegistry } from './framework.js';
 import type { ToolIdentity, ToolResult } from './types.js';
 import type { CompletionEvaluation, CompletionGuard } from '../completion/index.js';
@@ -13,6 +13,7 @@ export type ToolModelTurn = { text?: string; toolCalls?: unknown[] };
 export interface ToolLoopModel {
   next(messages: LgsMessage[], tools: ReturnType<ToolRegistry['specifications']>, signal: AbortSignal): Promise<ToolModelTurn>;
   switchModel?(identity: { profileId: string; model: string }): void | Promise<void>;
+  setUsageRole?(role: string): void;
 }
 export type ToolLoopOutcome = {
   status: 'complete' | 'cancelled' | 'limit';
@@ -96,21 +97,22 @@ async function applyEscalation(model: ToolLoopModel, controller: EscalationContr
   const priorLevel = controller.currentLevel();
   const record = controller.escalate(taskId, candidate.trigger, candidate.reason);
   if (!record.to || controller.currentLevel() === priorLevel) return false;
+  if ('setUsageRole' in model && typeof model.setUsageRole === 'function') model.setUsageRole(record.to.level === 'cloud' ? 'cloud' : record.to.level);
   await model.switchModel?.({ profileId: record.to.profileId, model: record.to.model });
   return true;
 }
 
 export class BackendToolLoopModel implements ToolLoopModel {
-  constructor(private readonly backend: ModelBackend, private readonly model: string, private readonly options: GenerationOptions = {}) {}
+  constructor(private readonly backend: ModelBackend, private readonly model: string, private readonly options: GenerationOptions = {}, private readonly observe?: (event: StreamEvent) => void, private readonly finish?: () => void) {}
 
   async next(messages: LgsMessage[], tools: ReturnType<ToolRegistry['specifications']>, signal: AbortSignal): Promise<ToolModelTurn> {
     const instructions = textMessage('system', toolInstructions(tools));
     let text = '';
     let failure: string | undefined;
-    for await (const event of this.backend.streamChat(this.model, [instructions, ...messages], this.options, signal)) {
-      if (event.type === 'textDelta') text += event.text;
+    try { for await (const event of this.backend.streamChat(this.model, [instructions, ...messages], this.options, signal)) {
+      this.observe?.(event); if (event.type === 'textDelta') text += event.text;
       if (event.type === 'error') failure = event.error.message;
-    }
+    } } finally { this.finish?.(); }
     if (failure) throw new Error(failure);
     return parseModelTurn(text);
   }

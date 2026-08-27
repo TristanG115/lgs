@@ -15,8 +15,9 @@ import { registerKnowledgeTools, ProjectMemoryStore, WorkspaceSkillStore } from 
 import { registerPlanningTools } from '../planning/index.js';
 import { registerIntegrationTools, type IntegrationHub } from '../integrations/index.js';
 import { BenchmarkStore, LocalRuntimeDiscovery, registerLocalRuntimeTools } from '../localruntime/index.js';
+import { FilePricingStore, registerUsageTools, type UsageTracker } from '../usage/index.js';
 
-export function createWorkspaceToolRegistry(options: { gitBaseline?: GitBaseline; gitRunner?: GitCommandRunner; verificationRunner?: VerificationRunner; executionLogs?: RawExecutionLogStore; completionGuard?: CompletionGuard; completionEvidence?: FileCompletionEvidenceStore; orchestrator?: Orchestrator; managerAgentId?: string; taskState?: FileTaskStateStore; watchdog?: WatchdogService; research?: ResearchService; researchStore?: FileResearchStore; documentationAgent?: DocumentationAgent; documentationStore?: FileDocumentationAuditStore; independentReviewer?: IndependentReviewer; reviewStore?: FileReviewStore; processes?: ManagedProcessManager; runtimeVerifier?: RuntimeVerifier; runtimeStore?: FileRuntimeStore; commitService?: VerifiedCommitService; skills?: WorkspaceSkillStore; memories?: ProjectMemoryStore; integrations?: IntegrationHub } = {}): ToolRegistry {
+export function createWorkspaceToolRegistry(options: { gitBaseline?: GitBaseline; gitRunner?: GitCommandRunner; verificationRunner?: VerificationRunner; executionLogs?: RawExecutionLogStore; completionGuard?: CompletionGuard; completionEvidence?: FileCompletionEvidenceStore; orchestrator?: Orchestrator; managerAgentId?: string; taskState?: FileTaskStateStore; watchdog?: WatchdogService; research?: ResearchService; researchStore?: FileResearchStore; documentationAgent?: DocumentationAgent; documentationStore?: FileDocumentationAuditStore; independentReviewer?: IndependentReviewer; reviewStore?: FileReviewStore; processes?: ManagedProcessManager; runtimeVerifier?: RuntimeVerifier; runtimeStore?: FileRuntimeStore; commitService?: VerifiedCommitService; skills?: WorkspaceSkillStore; memories?: ProjectMemoryStore; integrations?: IntegrationHub; usage?: UsageTracker; pricing?: FilePricingStore } = {}): ToolRegistry {
   const registry = registerGitTools(createRepositoryToolRegistry(), { baseline: options.gitBaseline, runner: options.gitRunner });
   if (options.verificationRunner && options.executionLogs) registerVerificationTools(registry, options.verificationRunner, options.executionLogs);
   if (options.completionGuard && options.completionEvidence) registerCompletionTools(registry, options.completionGuard, options.completionEvidence);
@@ -36,5 +37,6 @@ export function createWorkspaceToolRegistry(options: { gitBaseline?: GitBaseline
   if (options.taskState) registerPlanningTools(registry, options.taskState);
   if (options.integrations) registerIntegrationTools(registry, options.integrations);
   if (options.gitBaseline) registerLocalRuntimeTools(registry, new LocalRuntimeDiscovery(), new BenchmarkStore(options.gitBaseline.workspaceRoot));
+  if (options.usage && options.pricing) registerUsageTools(registry, options.usage, options.pricing);
   return registry;
 }

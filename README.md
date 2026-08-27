@@ -200,6 +200,29 @@ routing:
 
 Use the Models & Providers Settings page to declare each connection's data policy: `local`, `repository_allowed`, or `metadata_only`. `local_only` and `ask_before_cloud` both prevent automatic repository-source routing to cloud connections; `metadata_only` is never eligible for repository-aware work. The Phase 11 escalation controller accepts the same router and skips a forbidden escalation destination instead of sending source silently. Existing `watchdog.escalation.routes` remain explicit route pins and retain their original ordering.
 
+## Usage, context and cost observatory
+
+Phase 22 records one local, normalized metric record for each observed model request in `.lgs/usage.jsonl`. Records contain only identity, numeric usage, timing, context, savings, and cost metadata—never prompts, source text, tool payloads, or completions. Fields a provider does not report remain absent. The **LGS: Open Usage Dashboard** command groups requests by agent, task, session, model, provider connection, workspace, and day; it answers which models consumed tokens, which agents consumed context, how much candidate context was avoided, local-model speed, task cost, and cloud-escalation frequency.
+
+Context values are presented as `21.8K / 32K` and `68%` whenever both known values are available. Request producers may optionally identify objective/task, Codebase Map, source, Git, research, memory, tools, conversation, and reserve tokens; the same record can hold raw candidate context, selected context, tokens avoided, and reduction percentage. LGS does not estimate missing token counts from text length.
+
+Provider-reported cost and LGS-estimated cost are separate. Pricing is maintained independently in ignored `.lgs/pricing.json`, keyed by `connectionId` or `connectionId:model`; commercial entries declare per-million input, cached-input, and output prices. Set a connection or model to `institution_provided` for arrangements such as Purdue GenAI—LGS will not misrepresent this as `$0.00` commercial API cost. Local connections are marked `local` with API monetary cost not applicable; that does not claim that local electricity or hardware is free.
+
+```yaml
+usage:
+  retentionDays: 90
+  maxRecords: 10000
+  budgets:
+    maxCloudSpendPerTask: 2.50
+    maxCloudSpendPerPeriod: 25.00
+    periodDays: 30
+    warnAtPercent: 80
+    askBeforeCloudEscalation: true
+    contextUtilizationTarget: 75
+```
+
+The router can receive the usage budget gate, so exhausted task/period budgets and required cloud-escalation confirmation block automatic cloud candidates while retaining the current route. `get_usage_dashboard`, `get_usage_records`, `cleanup_usage_records`, and `configure_usage_pricing` expose the same local-only controls to agents. Retention cleanup applies the configured age and record-count limits.
+
 ## Watchdog and automatic escalation
 
 Phase 11 stores compact task state in `.lgs/tasks/<task-id>/state.json`, independently of whichever model is active. The objective is initialized from the original user request. Agents update acceptance criteria, the current plan, completed and remaining work, recent modifications, and explicit uncertainty through `update_task_state`. Verification failures are read directly from command evidence rather than self-reported. This state survives model escalation and is available through `get_task_state`; runtime task files remain ignored by Git and Repository Intelligence.

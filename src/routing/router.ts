@@ -1,12 +1,12 @@
 import type { AgentModelIdentity } from '../orchestration/types.js';
-import type { ModelRoute, RoutingConfiguration, RoutingDecision, RoutingRequest, ProviderPolicyLookup } from './types.js';
+import type { ModelRoute, RoutingBudgetGate, RoutingConfiguration, RoutingDecision, RoutingRequest, ProviderPolicyLookup } from './types.js';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 
 const COST = { low: 0, medium: 1, high: 2 } as const;
 
 export class ModelRouter {
-  constructor(private readonly configuration: RoutingConfiguration, private readonly providerPolicy: ProviderPolicyLookup = () => undefined) {}
+  constructor(private readonly configuration: RoutingConfiguration, private readonly providerPolicy: ProviderPolicyLookup = () => undefined, private readonly budgetGate?: RoutingBudgetGate) {}
 
   route(request: RoutingRequest): RoutingDecision {
     const pin = request.taskModel ?? request.roleModel ?? request.provider ? { model: request.roleModel?.model ?? request.taskModel?.model ?? request.fallback.model, profileId: request.provider ?? request.roleModel?.profileId ?? request.taskModel?.profileId ?? request.fallback.profileId } : undefined;
@@ -15,6 +15,8 @@ export class ModelRouter {
     const automatic = !pin;
     const reason = pin ? 'Manual pin selected.' : configured === request.fallback ? 'No eligible configured route; retained active model.' : this.reason(configured, request, identity);
     if (!this.permitted(identity.profileId)) return { role: request.role, identity: request.fallback, automatic, policy: this.configuration.policy.privacy, recordedAt: new Date().toISOString(), blocked: true, reason: `Blocked ${identity.profileId}:${identity.model}; ${this.configuration.policy.privacy} forbids repository source to that provider.` };
+    const budget = this.providerPolicy(identity.profileId) === 'local' ? undefined : this.budgetGate?.(request, identity);
+    if (budget && !budget.allowed) return { role: request.role, identity: request.fallback, automatic, policy: this.configuration.policy.privacy, recordedAt: new Date().toISOString(), blocked: true, requiresApproval: /confirmation/i.test(budget.warning ?? ''), reason: `Blocked ${identity.profileId}:${identity.model}; ${budget.warning ?? 'cloud budget policy disallows this route.'}` };
     return { role: request.role, identity, automatic, policy: this.configuration.policy.privacy, recordedAt: new Date().toISOString(), reason };
   }
 

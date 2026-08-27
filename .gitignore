@@ -6,3 +6,5 @@ dist/
 .lgs/runtime/
 .lgs/memory.json
 .lgs/benchmarks.json
+.lgs/usage.jsonl
+.lgs/pricing.json
