@@ -39,7 +39,7 @@ API secrets are retrieved from VS Code `SecretStorage`. They are never placed in
 
 ## Communication architecture
 
-The compact LGS webview has a compact header, chat history list, centered empty state, and bottom composer. The backend profile, discovered model, thinking level, and approval level are selected from the composer. VS Code theme tokens (`--vscode-*`) provide colors, typography, borders, and controls, so the UI follows the active light, dark, or high-contrast theme.
+The compact LGS webview is a research workspace: a notebook-like session list, quiet monogram empty state, Advisor profile/model controls, Committee Review completion checks, and a bottom composer. Its design system uses semantic `--lgs-*` tokens for backgrounds, surfaces, text, borders, primary/accent actions, and success/warning/danger states; components never select palette values directly. Keyboard focus follows VS Code conventions, motion is reduced for `prefers-reduced-motion`, and all controls have accessible labels.
 
 Chat history is persisted in VS Code global extension state (up to 100 conversations) and is sent back to the selected model as normalized message history. API keys are never persisted with chats.
 
@@ -81,7 +81,7 @@ Configuration precedence is built-in default → user setting → workspace sett
 
 Provider connections are independent profiles, so multiple OpenAI-compatible endpoints can coexist. Profiles support enablement, ordinary headers, secret custom headers, model aliases, capability overrides, connection testing, and model discovery. API keys and secret header values remain in VS Code SecretStorage; the Settings webview receives only metadata such as whether a secret exists.
 
-The General, Appearance, Models & Providers, Agents, Integrations, Context, Verification, Git, Usage & Budgets, Memory, Skills, Permissions, and Advanced sections are navigable. Unimplemented sections show explicit placeholders rather than nonfunctional controls. Appearance supports Follow VS Code plus initial LGS light and dark semantic palettes.
+The General, Appearance, Models & Providers, Agents, Integrations, Context, Verification, Git, Usage & Budgets, Memory, Skills, Permissions, and Advanced sections are navigable. Unimplemented sections show explicit placeholders rather than nonfunctional controls. Appearance changes apply to open LGS webviews without restarting VS Code: **Follow VS Code** maps every semantic role to native `--vscode-*` variables, while **Research Paper / Light** and **Research Lab / Dark** use restrained parchment/forest and navy/sage palettes respectively. The setting may be stored per-user or per-workspace.
 
 ## Controlled command execution
 

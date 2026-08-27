@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "generatedAt": "2026-08-27T02:00:56.387Z",
+  "generatedAt": "2026-08-27T02:29:17.119Z",
   "root": "/home/tristan/Documents/Github/lgs",
   "directories": [
     ".vscode",
@@ -81,9 +81,9 @@
       "path": "README.md",
       "fileType": "md",
       "language": "Markdown/Text",
-      "size": 40724,
-      "mtimeMs": 1787795982490.0007,
-      "hash": "f3db002b349452a8a7a519b3b50c1a35bc95fa39",
+      "size": 41136,
+      "mtimeMs": 1787797574697.2734,
+      "hash": "a91d3f86dc959074bbf129c80e6ab2fd53afb1f5",
       "imports": [],
       "exports": [],
       "symbols": [],
@@ -2758,9 +2758,9 @@
       "path": "src/settings/defaults.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 2332,
-      "mtimeMs": 1787711624410.2932,
-      "hash": "80d72858f060b13ea2b5d53ec2378b3bb3a1b0cd",
+      "size": 2381,
+      "mtimeMs": 1787797536508.1653,
+      "hash": "2ead5604c0bf523823af153a9947df41736d4b51",
       "imports": [
         "./registry.js"
       ],
@@ -2783,9 +2783,9 @@
       "path": "src/settings/panel.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 11847,
-      "mtimeMs": 1787789658247.2017,
-      "hash": "b4d5f5a1b70684a5f43fccb156c4755addb10672",
+      "size": 13835,
+      "mtimeMs": 1787797748598.766,
+      "hash": "7d60816ec2a277eabe54c1a65f2507c5cea7fadf",
       "imports": [
         "vscode",
         "../model/profiles.js",
@@ -3941,9 +3941,9 @@
       "path": "src/webview/main.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 6757,
-      "mtimeMs": 1787756568304.2595,
-      "hash": "edc1d658f3c4706e8105937a3b4937909506e0c8",
+      "size": 7246,
+      "mtimeMs": 1787797506246.0796,
+      "hash": "f3f26a0b4f4a432f2ccb4020279ffaa672fcbe9c",
       "imports": [
         "./styles.css",
         "../shared/messages.js"
@@ -3982,9 +3982,9 @@
       "path": "src/webview/styles.css",
       "fileType": "css",
       "language": "CSS",
-      "size": 5455,
-      "mtimeMs": 1787756410528.654,
-      "hash": "cf832273b2b28aa2d4eb428d6e1bcb5117affa43",
+      "size": 6914,
+      "mtimeMs": 1787797431654.8684,
+      "hash": "f4878770a39571e6034e889c81bac9e6ded83836",
       "imports": [],
       "exports": [],
       "symbols": [],
@@ -4414,9 +4414,9 @@
       "path": "test/settings.test.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 2330,
-      "mtimeMs": 1787711994771.0776,
-      "hash": "e38096df072723e9efd43f5127a9668365f1e653",
+      "size": 2647,
+      "mtimeMs": 1787797669068.5408,
+      "hash": "38d575404abc9c06285cad0be506ede1d87bb760",
       "imports": [
         "vitest",
         "node:fs",
@@ -7561,7 +7561,7 @@
   "freshness": {
     "index": "current",
     "codebaseMap": "current",
-    "checkedAt": "2026-08-27T02:00:56.387Z",
+    "checkedAt": "2026-08-27T02:29:17.119Z",
     "staleEntries": []
   },
   "incremental": {
@@ -7663,7 +7663,6 @@
       "src/runtime/types.ts",
       "src/settings/configuration.ts",
       "src/settings/defaults.ts",
-      "src/settings/panel.ts",
       "src/settings/registry.ts",
       "src/shared/logger.ts",
       "src/shared/messages.ts",
@@ -7693,12 +7692,15 @@
       "src/watchdog/escalation.ts",
       "src/watchdog/index.ts",
       "src/watchdog/service.ts",
+      "src/watchdog/state.ts",
+      "src/watchdog/tools.ts",
       "src/watchdog/triggers.ts",
       "src/watchdog/types.ts",
       "src/webview/main.ts",
       "src/webview/styles.css",
       "test/commit.test.ts",
       "test/completion.test.ts",
+      "test/context.test.ts",
       "test/documentation.test.ts",
       "test/execution.test.ts",
       "test/git.test.ts",
@@ -7723,9 +7725,7 @@
     ],
     "added": [],
     "changed": [
-      "src/watchdog/state.ts",
-      "src/watchdog/tools.ts",
-      "test/context.test.ts"
+      "src/settings/panel.ts"
     ],
     "removed": [],
     "renamed": []

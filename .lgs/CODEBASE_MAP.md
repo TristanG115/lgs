@@ -1,6 +1,6 @@
 # LGS Codebase Map
 
-Generated: 2026-08-27T02:00:56.387Z
+Generated: 2026-08-27T02:29:17.119Z
 
 This map is generated deterministically from the filesystem, manifests, and source syntax. Source files remain authoritative.
 
@@ -406,9 +406,9 @@ This map is generated deterministically from the filesystem, manifests, and sour
 
 ## Incremental update
 
-- Reused: 154
+- Reused: 156
 - Added: 0
-- Changed: 3
+- Changed: 1
 - Removed: 0
 - Renamed: 0
 
