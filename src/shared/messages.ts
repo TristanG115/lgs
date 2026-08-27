@@ -1,6 +1,10 @@
 import type { CompletionViewState } from '../completion/types.js';
+import type { ContextLifecycleState } from '../context/types.js';
+import type { PlanningArtifact, TaskMode } from '../planning/types.js';
+import type { AutoResearchMode, ResearchNotebook } from '../research/types.js';
 
-export type ChatOptions = { mode: 'implementation' | 'planning'; thinking: 'off' | 'low' | 'medium' | 'high'; approval: 'always' | 'on-request' | 'never' };
+export type ChatOptions = { mode: TaskMode; thinking: 'auto' | 'low' | 'medium' | 'high'; autoResearch: AutoResearchMode; capabilities: { web: boolean; code: boolean; terminal: boolean; browser: boolean; computer: boolean; integrations: boolean }; approval: 'always' | 'on-request' | 'never' };
+export type ComposerAttachment = { id: string; name: string; mediaType: string; bytes: number; dataBase64: string; source: 'composer' | 'clipboard' | 'drop' | 'screenshot' };
 export type TaskActivity = { label: string; detail: string; status: 'active' | 'completed' | 'warning'; at: string };
 export type TaskDashboard = {
   taskId: string;
@@ -18,12 +22,16 @@ export type TaskDashboard = {
   git: { modified: number; commit?: string };
   review: { findings: number; status?: string };
   researchCount: number;
+  planArtifact?: PlanningArtifact;
+  research?: ResearchNotebook;
+  contextLifecycle?: ContextLifecycleState;
+  usageDetails?: { searches: number; rotations: number; compactionSaved: number; byAgent: { agent: string; tokens: number; cost?: number }[] };
 };
 
-export type TaskAction = 'viewDiff' | 'viewLogs' | 'viewResearch' | 'viewTaskState';
+export type TaskAction = 'viewDiff' | 'viewLogs' | 'viewResearch' | 'viewTaskState' | 'viewPlan' | 'editPlan' | 'approvePlan' | 'regeneratePlan' | 'beginImplementation';
 export type ClientMessage =
   | { type: 'ready' }
-  | { type: 'userMessage'; text: string }
+  | { type: 'userMessage'; text: string; attachments?: ComposerAttachment[] }
   | { type: 'cancel' }
   | { type: 'selectProfile'; profileId: string }
   | { type: 'selectModel'; model: string }
@@ -37,7 +45,7 @@ export type ClientMessage =
 
 export type HostMessage =
   | { type: 'profiles'; profiles: { id: string; name: string; kind: string }[]; selected: string }
-  | { type: 'models'; models: { id: string; displayName?: string }[]; selected: string }
+  | { type: 'models'; models: { id: string; displayName?: string; reasoning?: boolean; vision?: boolean }[]; selected: string }
   | { type: 'state'; state: string }
   | { type: 'streamStart'; backend: string; model: string }
   | { type: 'textDelta'; text: string }
@@ -54,9 +62,9 @@ export function parseClientMessage(value: unknown): ClientMessage | undefined {
   if (typeof value !== 'object' || value === null || Array.isArray(value)) return;
   const message = value as Record<string, unknown>;
   if (['ready', 'cancel', 'listModels', 'newChat', 'openSettings', 'openUsage'].includes(String(message.type))) return { type: message.type } as ClientMessage;
-  if (message.type === 'taskAction' && ['viewDiff', 'viewLogs', 'viewResearch', 'viewTaskState'].includes(String(message.action))) return { type: 'taskAction', action: message.action as TaskAction };
+  if (message.type === 'taskAction' && ['viewDiff', 'viewLogs', 'viewResearch', 'viewTaskState', 'viewPlan', 'editPlan', 'approvePlan', 'regeneratePlan', 'beginImplementation'].includes(String(message.action))) return { type: 'taskAction', action: message.action as TaskAction };
   if (message.type === 'userMessage' && typeof message.text === 'string') {
-    const text = message.text.trim(); return text && text.length <= 4000 ? { type: 'userMessage', text } : undefined;
+    const text = message.text.trim(); const attachments = parseAttachments(message.attachments); return text && text.length <= 4000 && attachments !== undefined ? { type: 'userMessage', text, ...(attachments.length ? { attachments } : {}) } : undefined;
   }
   if (message.type === 'selectProfile' || message.type === 'selectModel' || message.type === 'loadChat') {
     const key = message.type === 'selectProfile' ? 'profileId' : message.type === 'selectModel' ? 'model' : 'chatId';
@@ -67,10 +75,24 @@ export function parseClientMessage(value: unknown): ClientMessage | undefined {
   }
   if (message.type === 'setOptions' && typeof message.options === 'object' && message.options !== null) {
     const options = message.options as Record<string, unknown>;
-    if (['implementation', 'planning'].includes(String(options.mode)) && ['off', 'low', 'medium', 'high'].includes(String(options.thinking)) && ['always', 'on-request', 'never'].includes(String(options.approval))) {
-      return { type: 'setOptions', options: { mode: options.mode as ChatOptions['mode'], thinking: options.thinking as ChatOptions['thinking'], approval: options.approval as ChatOptions['approval'] } };
+    const capabilities = options.capabilities;
+    if (['chat', 'plan', 'implement', 'research', 'review'].includes(String(options.mode)) && ['auto', 'low', 'medium', 'high'].includes(String(options.thinking)) && ['off', 'when-uncertain', 'proactive'].includes(String(options.autoResearch)) && validCapabilities(capabilities) && ['always', 'on-request', 'never'].includes(String(options.approval))) {
+      return { type: 'setOptions', options: { mode: options.mode as ChatOptions['mode'], thinking: options.thinking as ChatOptions['thinking'], autoResearch: options.autoResearch as AutoResearchMode, capabilities: capabilities as ChatOptions['capabilities'], approval: options.approval as ChatOptions['approval'] } };
     }
   }
+}
+
+function validCapabilities(value: unknown): boolean { if (typeof value !== 'object' || value === null || Array.isArray(value)) return false; const candidate = value as Record<string, unknown>; return ['web', 'code', 'terminal', 'browser', 'computer', 'integrations'].every(key => typeof candidate[key] === 'boolean'); }
+function parseAttachments(value: unknown): ComposerAttachment[] | undefined {
+  if (value === undefined) return [];
+  if (!Array.isArray(value) || value.length > 20) return;
+  const parsed: ComposerAttachment[] = [];
+  for (const item of value) {
+    if (typeof item !== 'object' || item === null || Array.isArray(item)) return; const candidate = item as Record<string, unknown>;
+    if (typeof candidate.id !== 'string' || typeof candidate.name !== 'string' || typeof candidate.mediaType !== 'string' || !Number.isInteger(candidate.bytes) || Number(candidate.bytes) < 1 || Number(candidate.bytes) > 25 * 1024 * 1024 || typeof candidate.dataBase64 !== 'string' || candidate.dataBase64.length > 35_000_000 || !['composer', 'clipboard', 'drop', 'screenshot'].includes(String(candidate.source))) return;
+    parsed.push(candidate as ComposerAttachment);
+  }
+  return parsed;
 }
 
 export function isHostMessage(value: unknown): value is HostMessage {

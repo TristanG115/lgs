@@ -4,6 +4,7 @@ import type { CompletionEvaluation, ExecutionEvidenceReader } from '../completio
 import { ruleBasedFinding } from './analyzer.js';
 import { FileTaskStateStore } from './state.js';
 import type { WatchdogAnalyzer, WatchdogEvaluation, WatchdogInput } from './types.js';
+import { detectResearchTriggers, type AutoResearchMode, type FileResearchRequirementStore } from '../research/index.js';
 
 export class WatchdogService {
   constructor(
@@ -11,8 +12,16 @@ export class WatchdogService {
     private readonly taskState: FileTaskStateStore,
     private readonly executions: ExecutionEvidenceReader,
     private readonly analyzer: WatchdogAnalyzer,
-    readonly intervalTurns: number
+    readonly intervalTurns: number,
+    private readonly researchRequirements?: FileResearchRequirementStore,
+    private readonly autoResearch: AutoResearchMode = 'when-uncertain'
   ) {}
+
+  observeStatement(taskId: string, statement: string): void {
+    if (!this.researchRequirements || this.autoResearch === 'off') return;
+    for (const trigger of detectResearchTriggers(statement, this.autoResearch)) this.researchRequirements.require(taskId, trigger, statement.slice(0, 2_000));
+  }
+  pendingResearch(taskId: string): string[] { return this.researchRequirements?.active(taskId).map(item => item.reason) ?? []; }
 
   async evaluate(taskId: string, completion?: CompletionEvaluation, signal?: AbortSignal): Promise<WatchdogEvaluation> {
     const state = this.taskState.read(taskId);
@@ -29,6 +38,7 @@ export class WatchdogService {
     try { finding = await this.analyzer.analyze(input, signal); }
     catch { finding = ruleBasedFinding(input); }
     const evaluation: WatchdogEvaluation = { ...finding, taskId, evaluatedAt: new Date().toISOString(), stateRevision: state.revision };
+    if (finding.classification === 'NEEDS_RESEARCH') this.researchRequirements?.require(taskId, 'watchdog-needs-research', finding.explanation);
     const entries = this.read(taskId); entries.push(evaluation); this.write(taskId, entries.slice(-100));
     return evaluation;
   }

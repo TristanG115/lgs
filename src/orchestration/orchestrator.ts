@@ -11,7 +11,9 @@ type AgentSession = AgentDescriptor & { context: LgsMessage[]; controller?: Abor
 
 const DEFAULT_ACCESS: Record<CreateAgentRequest['role'], AgentAccess> = {
   manager: 'write', explorer: 'read-only', researcher: 'read-only', implementer: 'write',
-  'test-engineer': 'write', 'documentation-agent': 'write', reviewer: 'read-only', debugger: 'write', verifier: 'read-only'
+  'test-engineer': 'write', 'documentation-agent': 'write', reviewer: 'read-only', debugger: 'write', verifier: 'read-only',
+  'official-docs-researcher': 'read-only', 'source-researcher': 'read-only', 'experiment-implementer': 'write',
+  'result-analyzer': 'read-only', 'research-supervisor': 'read-only'
 };
 
 export class Orchestrator {

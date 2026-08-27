@@ -7,12 +7,12 @@ export const COMPLETION_REQUIREMENTS = [
   'acceptance_criteria_addressed', 'implementation_complete', 'relevant_tests_added_or_updated',
   'targeted_tests_pass', 'full_tests_pass', 'typecheck_passes', 'lint_passes', 'build_succeeds',
   'documentation_current', 'codebase_map_current', 'runtime_verification_passes',
-  'independent_review_passes', 'no_unresolved_task_failures'
+  'independent_review_passes', 'no_unresolved_task_failures', 'research_conclusion_supported'
 ] as const;
 
 export type CompletionRequirement = typeof COMPLETION_REQUIREMENTS[number];
 export type CompletionStatus = 'passed' | 'blocked';
-export type CompletionEvidenceSource = 'task-record' | 'execution' | 'repository-intelligence' | 'documentation-audit' | 'independent-review';
+export type CompletionEvidenceSource = 'task-record' | 'execution' | 'repository-intelligence' | 'documentation-audit' | 'independent-review' | 'research';
 
 export type CompletionEvidence = {
   id: string;

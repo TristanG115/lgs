@@ -1,5 +1,5 @@
 import './styles.css';
-import { isHostMessage, type ChatOptions, type ClientMessage, type TaskDashboard } from '../shared/messages.js';
+import { isHostMessage, type ChatOptions, type ClientMessage, type ComposerAttachment, type TaskDashboard } from '../shared/messages.js';
 
 declare const acquireVsCodeApi: () => { postMessage(message: ClientMessage): void };
 const vscode = acquireVsCodeApi();
@@ -9,13 +9,14 @@ let currentAssistant: HTMLElement | undefined;
 let dashboard: TaskDashboard | undefined;
 let activeTaskTab = 'overview';
 let activePane: 'chat' | 'task' = 'chat';
+let attachments: ComposerAttachment[] = [];
 
 app.innerHTML = `
   <div class="lab-shell">
     <header class="topbar">
-      <div class="identity"><span class="seal" aria-hidden="true">L</span><span><b>Little Grad Student</b><small>Research Lab</small></span></div>
+      <div class="identity"><span class="seal" aria-hidden="true">L</span><span><b>LGS</b></span></div>
       <div class="header-actions">
-        <button class="icon-button" id="new" aria-label="New research task" title="New task">+</button>
+        <button class="icon-button" id="new" aria-label="New task" title="New task">+</button>
         <button class="icon-button" id="settings" aria-label="Open LGS settings" title="Settings">⚙</button>
       </div>
     </header>
@@ -26,10 +27,7 @@ app.innerHTML = `
     <section id="task-dashboard" aria-live="polite" hidden></section>
     <main aria-live="polite" id="history">
       <div class="empty">
-        <div class="folio" aria-hidden="true"><span>LGS</span></div>
-        <h1>Begin an investigation</h1>
-        <p>Describe the engineering outcome and what evidence should prove it complete.</p>
-        <div class="empty-cues"><span>Repository-aware</span><span>Evidence-gated</span><span>Provider-neutral</span></div>
+        <p>Ask LGS to do something…</p>
       </div>
     </main>
     <section id="completion" aria-live="polite" hidden>
@@ -41,13 +39,17 @@ app.innerHTML = `
       <div class="options-panel" id="options-panel" hidden>
         <label><span>Connection</span><select id="profile" aria-label="Advisor provider profile"></select></label>
         <label><span>Model</span><select id="model" aria-label="Advisor model"><option>Discovering models…</option></select></label>
-        <label><span>Mode</span><select id="mode" aria-label="Task mode"><option value="implementation">Implementation</option><option value="planning">Planning · read only</option></select></label>
-        <label><span>Reasoning</span><select id="thinking" aria-label="Reasoning effort"><option value="off">Standard</option><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option></select></label>
+        <label><span>Mode</span><select id="mode" aria-label="Task mode"><option value="chat">Chat</option><option value="plan">Plan · read only</option><option value="implement">Implement</option><option value="research">Research</option><option value="review">Review</option></select></label>
+        <label><span>Reasoning</span><select id="thinking" aria-label="Reasoning effort"><option value="auto">Auto</option><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option></select><small id="reasoning-support">Provider support is checked per model.</small></label>
+        <label><span>Auto Research</span><select id="auto-research" aria-label="Auto Research"><option value="off">Off</option><option value="when-uncertain">When uncertain</option><option value="proactive">Proactive</option></select></label>
         <label><span>Commands</span><select id="approval" aria-label="Command approval"><option value="always">Use allowed commands</option><option value="on-request">Ask when required</option><option value="never">Deny commands</option></select></label>
+        <fieldset class="capabilities"><legend>Capabilities</legend>${['web','code','terminal','browser','computer','integrations'].map(value => `<label><input type="checkbox" data-capability="${value}" checked> ${value}</label>`).join('')}</fieldset>
       </div>
       <form id="composer-form">
+        <div id="attachment-chips" class="attachment-chips" aria-live="polite"></div>
         <textarea id="input" rows="2" maxlength="4000" placeholder="Describe the task, constraints, and acceptance criteria…" aria-label="Task objective"></textarea>
-        <div class="composer-bottom"><span id="composer-hint">Ctrl/⌘ Enter</span><div><button id="stop" class="stop-button" type="button" aria-label="Stop generation" hidden>Stop</button><button id="send" class="send-button" type="submit" aria-label="Send task"><span>Send</span><b>↑</b></button></div></div>
+        <input id="attachment-input" type="file" multiple hidden>
+        <div class="composer-bottom"><div><button id="attach" class="attach-button" type="button" aria-label="Add context" title="Attach files, images, documents, or code">+</button><span id="composer-hint">Ctrl/⌘ Enter</span></div><div><button id="stop" class="stop-button" type="button" aria-label="Stop generation" hidden>Stop</button><button id="send" class="send-button" type="submit" aria-label="Send task"><span>Send</span><b>↑</b></button></div></div>
       </form>
     </section>
   </div>`;
@@ -63,6 +65,8 @@ const model = app.querySelector<HTMLSelectElement>('#model')!;
 const mode = app.querySelector<HTMLSelectElement>('#mode')!;
 const thinking = app.querySelector<HTMLSelectElement>('#thinking')!;
 const approval = app.querySelector<HTMLSelectElement>('#approval')!;
+const autoResearch = app.querySelector<HTMLSelectElement>('#auto-research')!;
+const attachmentInput = app.querySelector<HTMLInputElement>('#attachment-input')!;
 const chats = app.querySelector<HTMLElement>('#chats')!;
 const completion = app.querySelector<HTMLElement>('#completion')!;
 const completionProgress = app.querySelector<HTMLElement>('#completion-progress')!;
@@ -84,12 +88,14 @@ optionsToggle.onclick = () => {
 profile.onchange = () => vscode.postMessage({ type: 'selectProfile', profileId: profile.value });
 model.onchange = () => vscode.postMessage({ type: 'selectModel', model: model.value });
 const syncOptions = () => {
-  const options: ChatOptions = { mode: mode.value as ChatOptions['mode'], thinking: thinking.value as ChatOptions['thinking'], approval: approval.value as ChatOptions['approval'] };
-  app.querySelector('#mode-label')!.textContent = options.mode === 'planning' ? 'Planning · read only' : 'Implementation';
-  input.placeholder = options.mode === 'planning' ? 'Describe the change to investigate and plan…' : 'Describe the task, constraints, and acceptance criteria…';
+  const capabilities = Object.fromEntries(Array.from(app.querySelectorAll<HTMLInputElement>('[data-capability]')).map(item => [item.dataset.capability!, item.checked])) as ChatOptions['capabilities'];
+  const options: ChatOptions = { mode: mode.value as ChatOptions['mode'], thinking: thinking.value as ChatOptions['thinking'], autoResearch: autoResearch.value as ChatOptions['autoResearch'], capabilities, approval: approval.value as ChatOptions['approval'] };
+  app.querySelector('#mode-label')!.textContent = options.mode === 'plan' ? 'Plan · read only' : options.mode[0].toUpperCase() + options.mode.slice(1);
+  input.placeholder = options.mode === 'plan' ? 'Describe the change to investigate and plan…' : options.mode === 'research' ? 'State the research question and desired evidence…' : 'Describe the task, constraints, and acceptance criteria…';
   vscode.postMessage({ type: 'setOptions', options });
 };
-mode.onchange = syncOptions; thinking.onchange = syncOptions; approval.onchange = syncOptions;
+mode.onchange = syncOptions; thinking.onchange = syncOptions; autoResearch.onchange = syncOptions; approval.onchange = syncOptions;
+app.querySelectorAll<HTMLInputElement>('[data-capability]').forEach(item => item.onchange = syncOptions);
 app.querySelector('#settings')!.addEventListener('click', () => vscode.postMessage({ type: 'openSettings' }));
 app.querySelector('#usage-link')!.addEventListener('click', () => vscode.postMessage({ type: 'openUsage' }));
 app.querySelector('#new')!.addEventListener('click', () => vscode.postMessage({ type: 'newChat' }));
@@ -98,11 +104,16 @@ app.querySelectorAll<HTMLElement>('[data-pane]').forEach(button => button.addEve
 }));
 app.querySelector('#composer-form')!.addEventListener('submit', event => {
   event.preventDefault(); const text = input.value.trim(); if (!text || generating) return;
-  clearError(); addMessage('user', text); input.value = ''; resizeInput(); vscode.postMessage({ type: 'userMessage', text });
+  clearError(); addMessage('user', text); input.value = ''; resizeInput(); vscode.postMessage({ type: 'userMessage', text, attachments }); attachments = []; renderAttachments();
 });
 input.addEventListener('keydown', event => { if (event.key === 'Enter' && (event.metaKey || event.ctrlKey)) { event.preventDefault(); (app.querySelector('#composer-form') as HTMLFormElement).requestSubmit(); } });
 input.addEventListener('input', resizeInput);
 stop.onclick = () => vscode.postMessage({ type: 'cancel' });
+app.querySelector('#attach')!.addEventListener('click', () => attachmentInput.click());
+attachmentInput.addEventListener('change', () => { void addFiles(attachmentInput.files, 'composer'); attachmentInput.value = ''; });
+app.querySelector('.composer')!.addEventListener('dragover', event => { event.preventDefault(); });
+app.querySelector('.composer')!.addEventListener('drop', event => { event.preventDefault(); void addFiles((event as DragEvent).dataTransfer?.files, 'drop'); });
+input.addEventListener('paste', event => { const files = event.clipboardData?.files; if (files?.length) { event.preventDefault(); void addFiles(files, 'clipboard'); } });
 
 window.addEventListener('message', ({ data }: MessageEvent<unknown>) => {
   if (!isHostMessage(data)) return;
@@ -113,10 +124,11 @@ window.addEventListener('message', ({ data }: MessageEvent<unknown>) => {
       profile.value = data.selected; break;
     case 'models':
       model.replaceChildren(...(data.models.length ? data.models.map(item => option(item.id, item.displayName || item.id)) : [option('', 'No models discovered')]));
-      model.value = data.selected; break;
+      model.value = data.selected; updateReasoningSupport(data.models.find(item => item.id === data.selected)?.reasoning); break;
     case 'options':
-      mode.value = data.options.mode; thinking.value = data.options.thinking; approval.value = data.options.approval;
-      app.querySelector('#mode-label')!.textContent = data.options.mode === 'planning' ? 'Planning · read only' : 'Implementation'; break;
+      mode.value = data.options.mode; thinking.value = data.options.thinking; autoResearch.value = data.options.autoResearch; approval.value = data.options.approval;
+      Object.entries(data.options.capabilities).forEach(([key, enabled]) => { const control = app.querySelector<HTMLInputElement>(`[data-capability="${key}"]`); if (control) control.checked = enabled; });
+      app.querySelector('#mode-label')!.textContent = data.options.mode === 'plan' ? 'Plan · read only' : data.options.mode[0].toUpperCase() + data.options.mode.slice(1); break;
     case 'chatList': renderChats(data.chats); break;
     case 'chatLoaded':
       history.innerHTML = ''; dashboard = undefined; taskPanel.hidden = true; completion.hidden = true; activePane = 'chat';
@@ -147,7 +159,7 @@ function renderChats(items: { id: string; title: string; updatedAt: number }[]):
   if (!items.length) { const empty = document.createElement('p'); empty.className = 'sessions-empty'; empty.textContent = 'Completed and active tasks will appear here.'; chats.append(empty); }
 }
 function renderEmpty(): void {
-  history.innerHTML = '<div class="empty"><div class="folio" aria-hidden="true"><span>LGS</span></div><h1>Begin an investigation</h1><p>Describe the engineering outcome and what evidence should prove it complete.</p><div class="empty-cues"><span>Repository-aware</span><span>Evidence-gated</span><span>Provider-neutral</span></div></div>';
+  history.innerHTML = '<div class="empty"><p>Ask LGS to do something…</p></div>';
 }
 function renderPane(): void {
   app.querySelectorAll<HTMLElement>('[data-pane]').forEach(button => button.setAttribute('aria-selected', String(button.dataset.pane === activePane)));
@@ -157,10 +169,12 @@ function renderDashboard(): void {
   if (!dashboard) { taskPanel.hidden = true; return; }
   const required = dashboard.completion?.progress.required || 0; const passed = dashboard.completion?.progress.passed || 0;
   const progress = required ? Math.round(passed / required * 100) : 0;
-  const tabs = [['overview', 'Overview'], ['plan', 'Plan'], ['agents', 'Agents'], ['evidence', 'Evidence'], ['usage', 'Usage']];
+  const tabs = [['overview', 'Overview'], ['plan', 'Plan'], ['research', 'Research'], ['context', 'Context'], ['agents', 'Agents'], ['evidence', 'Evidence'], ['usage', 'Usage']];
   const detail = activeTaskTab === 'overview'
     ? sectionList('Acceptance criteria', dashboard.acceptanceCriteria, 'The Advisor has not recorded acceptance criteria yet.') + sectionList('Completed work', dashboard.completed, 'No work is recorded complete.') + sectionList('Remaining', dashboard.remaining, 'No remaining work is recorded.')
-    : activeTaskTab === 'plan' ? sectionList('Current plan', dashboard.plan, 'The task plan has not been recorded.') + sectionList('Changed files', dashboard.files, 'No task changes are recorded.')
+    : activeTaskTab === 'plan' ? planView()
+    : activeTaskTab === 'research' ? researchView()
+    : activeTaskTab === 'context' ? contextView()
     : activeTaskTab === 'agents' ? (dashboard.agents.map(agent => `<article class="agent-card"><span class="agent-role">${escapeHtml(agent.role)}</span><b>${escapeHtml(agent.model)}</b><small>${escapeHtml(agent.profile)} · ${escapeHtml(agent.state)}</small></article>`).join('') || '<p class="quiet">No logical worker agents have been assigned.</p>')
     : activeTaskTab === 'evidence' ? evidenceView()
     : usageView();
@@ -170,12 +184,40 @@ function renderDashboard(): void {
   taskPanel.querySelector<HTMLElement>('#open-usage-detail')?.addEventListener('click', () => vscode.postMessage({ type: 'openUsage' }));
   renderPane();
 }
+
+function researchView(): string {
+  const research = dashboard?.research; if (!research) return '<p class="quiet">No Research Notebook has been created.</p>';
+  const active = [...research.cycles].reverse().find(item => item.status === 'active');
+  return `<div class="notebook-view"><span class="eyebrow">${escapeHtml(research.status)}</span><h2>${escapeHtml(research.researchQuestion)}</h2>${active ? `<article class="hypothesis"><b>Active hypothesis · ${Math.round(active.confidence * 100)}%</b><p>${escapeHtml(active.hypothesis)}</p><small>${escapeHtml(active.experiment.proposedExperiment)}</small></article>` : '<p class="quiet">No experiment is active.</p>'}${sectionList('Established evidence', research.establishedFacts.map(item => `[${item.state}] ${item.claim}`), 'No established facts.')}${sectionList('Previous experiments', research.experiments.map(item => `#${item.sequence} ${item.status} · ${item.conclusion || 'pending'} · ${item.learned || item.proposedExperiment}`), 'No experiments recorded.')}${sectionList('Rejected approaches', research.rejectedApproaches, 'No approaches rejected.')}<button class="text-action" data-action="viewResearch">Open RESEARCH.md</button></div>`;
+}
+function planView(): string {
+  const plan = dashboard?.planArtifact; if (!plan) return sectionList('Current plan', dashboard?.plan ?? [], 'The task plan has not been recorded.');
+  const revisions = plan.revisions.map(item => `Revision ${item.revision}: ${item.changed} - ${item.reason}`);
+  return `<div class="plan-actions"><button data-action="viewPlan">Open PLAN.md</button><button data-action="editPlan">Edit</button><button data-action="approvePlan" ${plan.status === 'approved' ? 'disabled' : ''}>Approve</button><button data-action="regeneratePlan">Regenerate</button><button data-action="beginImplementation" ${plan.status !== 'approved' && plan.handoff === 'wait-for-approval' ? 'disabled' : ''}>Begin implementation</button></div>${sectionList('Implementation stages', plan.implementationStages, 'No stages recorded.')}${sectionList('Verification plan', plan.verificationPlan, 'No verification recorded.')}${sectionList('Risks', plan.risks, 'No risks recorded.')}${sectionList('Revision history', revisions, 'No revisions recorded.')}`;
+}
+function contextView(): string {
+  const context = dashboard?.contextLifecycle; if (!context) return '<p class="quiet">Context lifecycle metrics are not available yet.</p>';
+  return `<div class="metric-grid"><article><span>Current context</span><b>${context.contextTokens.toLocaleString()} / ${context.contextMaximum.toLocaleString()}</b></article><article><span>Utilization</span><b>${context.utilizationPercent}%</b></article><article><span>Compaction</span><b>${escapeHtml(context.compactionStatus)}</b></article><article><span>Rotations</span><b>${context.rotations}</b></article><article><span>Persistent knowledge</span><b>${context.persistentKnowledgeBytes.toLocaleString()} bytes</b></article><article><span>Tokens saved</span><b>${context.compactedTokensSaved.toLocaleString()}</b></article></div>`;
+}
+
+async function addFiles(files: FileList | null | undefined, source: ComposerAttachment['source']): Promise<void> {
+  if (!files) return;
+  for (const file of Array.from(files).slice(0, 20 - attachments.length)) {
+    if (file.size > 25 * 1024 * 1024) { showError(`${file.name} exceeds the 25 MB attachment limit.`); continue; }
+    const dataBase64 = await fileBase64(file); attachments.push({ id: crypto.randomUUID(), name: file.name, mediaType: file.type || 'application/octet-stream', bytes: file.size, dataBase64, source });
+  }
+  renderAttachments();
+}
+function fileBase64(file: File): Promise<string> { return new Promise((resolve, reject) => { const reader = new FileReader(); reader.onerror = () => reject(reader.error); reader.onload = () => resolve(String(reader.result).split(',')[1] || ''); reader.readAsDataURL(file); }); }
+function renderAttachments(): void { const target = app.querySelector<HTMLElement>('#attachment-chips')!; target.replaceChildren(...attachments.map(item => { const chip = document.createElement('span'); chip.className = 'attachment-chip'; chip.textContent = `${item.name} · ${formatBytes(item.bytes)}`; const remove = document.createElement('button'); remove.type = 'button'; remove.textContent = '×'; remove.setAttribute('aria-label', `Remove ${item.name}`); remove.onclick = () => { attachments = attachments.filter(value => value.id !== item.id); renderAttachments(); }; chip.append(remove); return chip; })); }
+function updateReasoningSupport(supported: boolean | undefined): void { const label = app.querySelector<HTMLElement>('#reasoning-support')!; label.textContent = supported === false ? 'Unavailable for selected model.' : supported === true ? 'Supported by selected model.' : 'Support not advertised; Auto omits parameters.'; thinking.title = label.textContent; }
+function formatBytes(value: number): string { return value < 1024 ? `${value} B` : value < 1024 * 1024 ? `${Math.round(value / 1024)} KB` : `${Math.round(value / 1024 / 1024 * 10) / 10} MB`; }
 function evidenceView(): string {
   const checks = dashboard?.completion?.checklist.filter(item => item.required) || [];
   return `<div class="evidence-actions"><button data-action="viewDiff">Source Control</button><button data-action="viewTaskState">Task state</button><button data-action="viewResearch">Research</button><button data-action="viewLogs">Execution logs</button></div><div class="evidence-list">${checks.length ? checks.map(item => `<div class="evidence-row ${item.passed ? 'passed' : 'blocked'}"><span>${item.passed ? '✓' : '○'}</span><div><b>${escapeHtml(item.label)}</b><small>${escapeHtml(item.detail)}</small></div></div>`).join('') : '<p class="quiet">Completion Guard has not evaluated this task yet.</p>'}</div>`;
 }
 function usageView(): string {
-  const usage = dashboard!.usage; return `<div class="metric-grid"><article><span>Context</span><b>${formatNumber(usage.context)}${usage.contextMaximum ? ` / ${formatNumber(usage.contextMaximum)}` : ''}</b></article><article><span>Tokens</span><b>${formatNumber(usage.tokens)}</b></article><article><span>Generation</span><b>${usage.tokensPerSecond === undefined ? 'Unknown' : usage.tokensPerSecond.toFixed(1) + ' tok/s'}</b></article><article><span>Recorded cost</span><b>${usage.cost === undefined ? 'Unknown' : '$' + usage.cost.toFixed(4)}</b></article></div><button class="text-action" id="open-usage-detail">Open full usage dashboard</button>`;
+  const usage = dashboard!.usage; const details = dashboard!.usageDetails; return `<div class="metric-grid"><article><span>Context</span><b>${formatNumber(usage.context)}${usage.contextMaximum ? ` / ${formatNumber(usage.contextMaximum)}` : ''}</b></article><article><span>Tokens</span><b>${formatNumber(usage.tokens)}</b></article><article><span>Generation</span><b>${usage.tokensPerSecond === undefined ? 'Unknown' : usage.tokensPerSecond.toFixed(1) + ' tok/s'}</b></article><article><span>Recorded cost</span><b>${usage.cost === undefined ? 'Unknown' : '$' + usage.cost.toFixed(4)}</b></article>${details ? `<article><span>Research searches</span><b>${details.searches}</b></article><article><span>Context rotations</span><b>${details.rotations}</b></article><article><span>Compaction saved</span><b>${formatNumber(details.compactionSaved)}</b></article>` : ''}</div>${details ? sectionList('Agent usage', details.byAgent.map(item => `${item.agent}: ${formatNumber(item.tokens)} tokens${item.cost === undefined ? '' : ` · $${item.cost.toFixed(4)}`}`), 'No agent usage recorded.') : ''}<button class="text-action" id="open-usage-detail">Open full usage dashboard</button>`;
 }
 function sectionList(title: string, items: string[], empty: string): string { return `<section class="detail-list"><h2>${escapeHtml(title)}</h2>${items.length ? `<ul>${items.map(item => `<li>${escapeHtml(item)}</li>`).join('')}</ul>` : `<p class="quiet">${escapeHtml(empty)}</p>`}</section>`; }
 function renderCompletion(view: Extract<import('../shared/messages.js').HostMessage, { type: 'completionState' }>['state']): void {

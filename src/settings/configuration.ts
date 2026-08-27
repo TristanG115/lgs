@@ -11,6 +11,7 @@ import { parseRuntimeConfiguration } from '../runtime/config.js';
 import { parseUsageConfiguration } from '../usage/config.js';
 import { loadWorkspaceConfiguration, type LoadedWorkspaceConfiguration } from '../verification/config.js';
 import { parseWatchdogConfiguration } from '../watchdog/config.js';
+import { parseContextLifecycleConfiguration } from '../context/lifecycle.js';
 import { createDefaultRegistry } from './defaults.js';
 import { resolveSetting, type EffectiveSetting, type SettingsRegistry } from './registry.js';
 
@@ -36,7 +37,7 @@ export class SettingsManager {
       research: parseResearchConfiguration(), runtime: parseRuntimeConfiguration(),
       integrations: { required: [], recommended: [], optional: [], mcp: {} },
       routing: parseRoutingConfiguration(), usage: parseUsageConfiguration(),
-      computer: parseComputerConfiguration(), errors: [],
+      computer: parseComputerConfiguration(), context: parseContextLifecycleConfiguration(), errors: [],
     };
     const effective = new Map(this.effective().map(setting => [setting.id, setting]));
     const structuredComputer = this.structuredComputerKeys();

@@ -50,7 +50,7 @@ The compact LGS webview is a research workspace: a notebook-like session list, q
 
 The sidebar separates **Conversation** from **Task evidence**. When a persisted task exists, the task view shows the objective, Advisor profile/model, Completion Guard progress, changed files, sources, reviewer findings, agent assignments, compact observable activity, and usage. Its tabs are **Overview**, **Plan**, **Agents**, **Evidence**, and **Usage**. The evidence view opens Source Control, durable task state, retained research, or execution logs; it does not invent approval, retry, or lifecycle actions that the host cannot perform.
 
-The composer exposes provider profile, model, implementation/planning mode, reasoning effort, and command approval. Stop cancels the active model/tool signal. New task and session selection update real persisted chat state. Agent cards identify the logical role, provider/model, and current state; the activity feed is intentionally compact and records structured tool outcomes rather than private reasoning.
+The composer exposes provider profile, model, Chat/Plan/Implement/Research/Review mode, normalized reasoning, Auto Research, independent capabilities, and command approval. Stop cancels the active model/tool signal. New task and session selection update real persisted chat state. Agent cards identify the logical role, provider/model, and current state; the activity feed is intentionally compact and records structured tool outcomes rather than private reasoning.
 
 Chat history is persisted in VS Code global extension state (up to 100 conversations) and is sent back to the selected model as normalized message history. API keys are never persisted with chats.
 
@@ -404,7 +404,7 @@ Long-term memory is local durable knowledge in ignored `.lgs/memory.json`, delib
 
 ## Planning and reasoning controls
 
-LGS normalizes reasoning as `{ enabled, effort: low | medium | high }` and exposes capability metadata instead of claiming unsupported controls are active. Connections report reasoning unsupported by default; an OpenAI-compatible connection can opt in through an explicit capability override, which maps the normalized effort to `reasoning_effort`. Planning Mode permits repository reads, research, and Git history, while the tool executor rejects file mutations and mutating commands. An approved plan can be persisted with `create_plan_task`, including its objective, acceptance criteria, and subtasks. LGS does not reveal hidden chain-of-thought; provider-emitted thinking should be summarized as concise actions.
+The composer exposes Chat, Plan, Implement, Research, and Review independently from Web, Code, Terminal, Browser, Computer, and Integration capabilities. Reasoning is normalized as Auto, Low, Medium, or High and provider-specific parameters are emitted only when support is advertised. Planning persists `PLAN.md`; Research persists experiment records and `RESEARCH.md`; long-running tasks checkpoint and rotate disposable model contexts before overflow. See [Planning, Research, and Long-Running Sessions](docs/research-workflows.md) for Auto Research enforcement, evidence states, novelty checks, budgets, attachments, vision routing, and BrowserAgent confirmation policy. LGS never exposes hidden chain-of-thought.
 
 ## Integrations
 

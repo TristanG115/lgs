@@ -1,12 +1,17 @@
 {
   "version": 2,
-  "generatedAt": "2026-08-27T12:50:27.216Z",
+  "generatedAt": "2026-08-27T20:15:48.075Z",
   "root": "/home/tristan/Documents/Github/lgs",
   "directories": [
+    ".agents",
+    ".agents/skills",
+    ".agents/skills/lgs-frontend",
+    ".agents/skills/lgs-frontend/references",
     ".vscode",
     "docs",
     "media",
     "src",
+    "src/artifacts",
     "src/commit",
     "src/completion",
     "src/computer",
@@ -35,6 +40,66 @@
     "test"
   ],
   "files": [
+    {
+      "path": ".agents/skills/lgs-frontend/SKILL.md",
+      "fileType": "md",
+      "language": "Markdown/Text",
+      "size": 2752,
+      "mtimeMs": 1787861152205.7512,
+      "hash": "969b59b645c4e6729104a7f7a0b6ef2058b4c829",
+      "imports": [],
+      "exports": [],
+      "symbols": [],
+      "likelyTest": false,
+      "likelyDocumentation": true,
+      "directory": ".agents/skills/lgs-frontend",
+      "module": ""
+    },
+    {
+      "path": ".agents/skills/lgs-frontend/references/anti-patterns.md",
+      "fileType": "md",
+      "language": "Markdown/Text",
+      "size": 1670,
+      "mtimeMs": 1787861219471.8574,
+      "hash": "2cdffd1642b8056ecf82377a13285f9dc3d5627d",
+      "imports": [],
+      "exports": [],
+      "symbols": [],
+      "likelyTest": false,
+      "likelyDocumentation": true,
+      "directory": ".agents/skills/lgs-frontend/references",
+      "module": ""
+    },
+    {
+      "path": ".agents/skills/lgs-frontend/references/interaction-patterns.md",
+      "fileType": "md",
+      "language": "Markdown/Text",
+      "size": 4077,
+      "mtimeMs": 1787861204943.8342,
+      "hash": "fa2b4e1bdf6ca2d09a9f2e76200e601de818df0b",
+      "imports": [],
+      "exports": [],
+      "symbols": [],
+      "likelyTest": false,
+      "likelyDocumentation": true,
+      "directory": ".agents/skills/lgs-frontend/references",
+      "module": ""
+    },
+    {
+      "path": ".agents/skills/lgs-frontend/references/visual-language.md",
+      "fileType": "md",
+      "language": "Markdown/Text",
+      "size": 2092,
+      "mtimeMs": 1787861179975.7944,
+      "hash": "c6e560fa3ad9bd4e1e8557fa2116b9d540e30ae1",
+      "imports": [],
+      "exports": [],
+      "symbols": [],
+      "likelyTest": false,
+      "likelyDocumentation": true,
+      "directory": ".agents/skills/lgs-frontend/references",
+      "module": ""
+    },
     {
       "path": ".gitignore",
       "fileType": "unknown",
@@ -81,12 +146,27 @@
       "module": ""
     },
     {
+      "path": "AGENTS.md",
+      "fileType": "md",
+      "language": "Markdown/Text",
+      "size": 308,
+      "mtimeMs": 1787861332344.4873,
+      "hash": "236c80e4d015642a1feee0072214017174cee00c",
+      "imports": [],
+      "exports": [],
+      "symbols": [],
+      "likelyTest": false,
+      "likelyDocumentation": true,
+      "directory": "",
+      "module": ""
+    },
+    {
       "path": "README.md",
       "fileType": "md",
       "language": "Markdown/Text",
-      "size": 47590,
-      "mtimeMs": 1787834999931.9514,
-      "hash": "0677ff4a3ecba880181bfeb8ef77aebd06dee6d1",
+      "size": 47648,
+      "mtimeMs": 1787861725246.3635,
+      "hash": "6431ab653f5c1a97881ddb4519041474552a683d",
       "imports": [],
       "exports": [],
       "symbols": [],
@@ -99,9 +179,9 @@
       "path": "docs/architecture.md",
       "fileType": "md",
       "language": "Markdown/Text",
-      "size": 2831,
-      "mtimeMs": 1787832969495.96,
-      "hash": "8a98fab67e67ec1cace5def69ee0edc52d9edcc6",
+      "size": 3361,
+      "mtimeMs": 1787861252574.91,
+      "hash": "593cabd58d367306241b1c25dace740d2f27f811",
       "imports": [],
       "exports": [],
       "symbols": [],
@@ -144,9 +224,24 @@
       "path": "docs/providers.md",
       "fileType": "md",
       "language": "Markdown/Text",
-      "size": 4206,
-      "mtimeMs": 1787835000001.9514,
-      "hash": "36931f9f36cc62842d7f6ccd6d25168a626a4c75",
+      "size": 4350,
+      "mtimeMs": 1787861260077.9219,
+      "hash": "b0822573c9efd2c8947f9e0e2b111b12fcf5aac4",
+      "imports": [],
+      "exports": [],
+      "symbols": [],
+      "likelyTest": false,
+      "likelyDocumentation": true,
+      "directory": "docs",
+      "module": "docs"
+    },
+    {
+      "path": "docs/research-workflows.md",
+      "fileType": "md",
+      "language": "Markdown/Text",
+      "size": 7672,
+      "mtimeMs": 1787861230715.8752,
+      "hash": "d1932ce1599e56913db2833c1a068739790f9f44",
       "imports": [],
       "exports": [],
       "symbols": [],
@@ -159,9 +254,9 @@
       "path": "docs/settings.md",
       "fileType": "md",
       "language": "Markdown/Text",
-      "size": 4361,
-      "mtimeMs": 1787834999966.9514,
-      "hash": "18a8c41ed07a68996067ebe8feceb3149025b115",
+      "size": 5398,
+      "mtimeMs": 1787861252609.91,
+      "hash": "cd48f48293e9cc0e22daa2501fac202a96bd495f",
       "imports": [],
       "exports": [],
       "symbols": [],
@@ -259,6 +354,115 @@
       "module": ""
     },
     {
+      "path": "src/artifacts/index.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 88,
+      "mtimeMs": 1787861004391.6504,
+      "hash": "a34ebb7f2478134632f53f261c53d95c2bfc1aeb",
+      "imports": [
+        "./types.js",
+        "./pipeline.js",
+        "./vision.js"
+      ],
+      "exports": [],
+      "symbols": [],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/artifacts",
+      "module": "src"
+    },
+    {
+      "path": "src/artifacts/pipeline.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 7587,
+      "mtimeMs": 1787861314119.0076,
+      "hash": "b748da4b5e2533ee3788fdf80b48d41da8e974c6",
+      "imports": [
+        "node:crypto",
+        "node:fs",
+        "node:path",
+        "../computer/agent.js",
+        "./types.js"
+      ],
+      "exports": [
+        "TaskArtifactPipeline"
+      ],
+      "symbols": [
+        "MAX_ATTACHMENT_BYTES",
+        "CHUNK_CHARACTERS",
+        "TaskArtifactPipeline",
+        "chunksOf",
+        "formatOf",
+        "mediaTypeOf",
+        "sanitizeName",
+        "tokens",
+        "validTaskId",
+        "validateTaskId",
+        "clone"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/artifacts",
+      "module": "src"
+    },
+    {
+      "path": "src/artifacts/types.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 734,
+      "mtimeMs": 1787860485738.1814,
+      "hash": "d67697bed301af1bcd635658461b91f13a83d3c3",
+      "imports": [],
+      "exports": [
+        "ARTIFACT_FORMATS",
+        "ArtifactFormat",
+        "TaskArtifact",
+        "ArtifactChunk"
+      ],
+      "symbols": [
+        "ARTIFACT_FORMATS",
+        "ArtifactFormat",
+        "TaskArtifact",
+        "ArtifactChunk"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/artifacts",
+      "module": "src"
+    },
+    {
+      "path": "src/artifacts/vision.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 2078,
+      "mtimeMs": 1787861004354.6504,
+      "hash": "b9d25baa69f0603c947024416c2ee2555e9f28a0",
+      "imports": [
+        "node:fs",
+        "node:path",
+        "./pipeline.js",
+        "./types.js"
+      ],
+      "exports": [
+        "VisionObservation",
+        "VisionAnalyzer",
+        "VisionRouter"
+      ],
+      "symbols": [
+        "VisionObservation",
+        "VisionAnalyzer",
+        "VisionRouter",
+        "list",
+        "bounded"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/artifacts",
+      "module": "src"
+    },
+    {
       "path": "src/commit/index.ts",
       "fileType": "ts",
       "language": "TypeScript",
@@ -335,9 +539,9 @@
       "path": "src/completion/config.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 2368,
-      "mtimeMs": 1787756358731.703,
-      "hash": "41335b5c28ed3cc26dd931af32b5ef82c9ec347f",
+      "size": 2407,
+      "mtimeMs": 1787860962476.6008,
+      "hash": "efb628332b7a50f35d71df33de9813f3e11699e9",
       "imports": [
         "./types.js"
       ],
@@ -414,9 +618,9 @@
       "path": "src/completion/guard.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 12339,
-      "mtimeMs": 1787799297994.5913,
-      "hash": "20e016be547f8b57e90646b92ce4722f412e1778",
+      "size": 14084,
+      "mtimeMs": 1787860967686.607,
+      "hash": "25f9466c552f349b26f7a692fde124378f364c9d",
       "imports": [
         "node:fs",
         "node:path",
@@ -499,9 +703,9 @@
       "path": "src/completion/types.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 2652,
-      "mtimeMs": 1787779532058.7708,
-      "hash": "0b8266c37450b5879349e0f710e4e381c8c0fd8b",
+      "size": 2698,
+      "mtimeMs": 1787860967650.607,
+      "hash": "6ed8b8251249ae9159c3eead329df7075a54c692",
       "imports": [
         "../execution/types.js",
         "../documentation/types.js",
@@ -789,13 +993,14 @@
       "path": "src/context/index.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 85,
-      "mtimeMs": 1787795836383.5762,
-      "hash": "8dad8611927186b650681da2da135ed5f03eb5cd",
+      "size": 117,
+      "mtimeMs": 1787860433591.1687,
+      "hash": "b7275fd676345d0a68039e456e08f0a3d7ce2689",
       "imports": [
         "./types.js",
         "./broker.js",
-        "./tools.js"
+        "./tools.js",
+        "./lifecycle.js"
       ],
       "exports": [],
       "symbols": [],
@@ -805,19 +1010,57 @@
       "module": "src"
     },
     {
+      "path": "src/context/lifecycle.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 7183,
+      "mtimeMs": 1787860433555.1687,
+      "hash": "884cffdb8a236c04d593b3af942517c74ddfdc38",
+      "imports": [
+        "node:fs",
+        "node:path",
+        "../model/types.js",
+        "./types.js"
+      ],
+      "exports": [
+        "DEFAULT_CONTEXT_LIFECYCLE",
+        "parseContextLifecycleConfiguration",
+        "ContextLifecycleManager"
+      ],
+      "symbols": [
+        "DEFAULT_CONTEXT_LIFECYCLE",
+        "parseContextLifecycleConfiguration",
+        "ContextLifecycleManager",
+        "actionFor",
+        "validateCheckpoint",
+        "knowledgeBytes",
+        "validTaskId",
+        "validateTaskId",
+        "bounded",
+        "rounded",
+        "clone",
+        "record"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/context",
+      "module": "src"
+    },
+    {
       "path": "src/context/tools.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 2159,
-      "mtimeMs": 1787795836348.5762,
-      "hash": "e45e1ad68317c0d423d6ffbc11b31e51101578c0",
+      "size": 5596,
+      "mtimeMs": 1787860933918.567,
+      "hash": "ffa37b5e26d9c4145c95ccf63ebd8928da56e441",
       "imports": [
         "node:fs",
         "node:path",
         "../tools/types.js",
         "../tools/framework.js",
         "../intelligence/indexer.js",
-        "./broker.js"
+        "./broker.js",
+        "./lifecycle.js"
       ],
       "exports": [
         "registerContextTools"
@@ -825,6 +1068,7 @@
       "symbols": [
         "READ",
         "registerContextTools",
+        "registerLifecycleTools",
         "loadIndex"
       ],
       "likelyTest": false,
@@ -836,9 +1080,9 @@
       "path": "src/context/types.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 1314,
-      "mtimeMs": 1787795836275.576,
-      "hash": "bcb76e6442aef21133d3bb679a7aa4e2f2b84fbd",
+      "size": 2253,
+      "mtimeMs": 1787860433518.1687,
+      "hash": "3b6c3f4ec4d126053622b617f9ac22b0253be204",
       "imports": [
         "../usage/types.js"
       ],
@@ -848,7 +1092,11 @@
         "ContextCategory",
         "ContextCandidate",
         "ContextRequest",
-        "ContextSelection"
+        "ContextSelection",
+        "ContextLifecycleConfiguration",
+        "ContextLifecycleAction",
+        "AgentCheckpoint",
+        "ContextLifecycleState"
       ],
       "symbols": [
         "CONTEXT_LEVELS",
@@ -856,7 +1104,11 @@
         "ContextCategory",
         "ContextCandidate",
         "ContextRequest",
-        "ContextSelection"
+        "ContextSelection",
+        "ContextLifecycleConfiguration",
+        "ContextLifecycleAction",
+        "AgentCheckpoint",
+        "ContextLifecycleState"
       ],
       "likelyTest": false,
       "likelyDocumentation": false,
@@ -1395,9 +1647,9 @@
       "path": "src/extension.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 32696,
-      "mtimeMs": 1787834825781.848,
-      "hash": "215bfd6c0d59c985f546349fed6a7ba78208df31",
+      "size": 39943,
+      "mtimeMs": 1787861735403.376,
+      "hash": "616f5cd3390100394ea09accce65c0c7e34ca78d",
       "imports": [
         "node:fs",
         "node:path",
@@ -1429,6 +1681,8 @@
         "LgsViewProvider",
         "configuredIntegrations",
         "providerPolicy",
+        "capabilityBlock",
+        "contextState",
         "toolLabel",
         "newestFile",
         "getHtml",
@@ -2243,9 +2497,9 @@
       "path": "src/orchestration/orchestrator.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 8136,
-      "mtimeMs": 1787757046569.342,
-      "hash": "fd257a48f843f7b15771ad6b8fc36c1b59296024",
+      "size": 8318,
+      "mtimeMs": 1787860661107.2903,
+      "hash": "a6a6cd53ddb9718f208a63ee94ad0bd9f82b3c43",
       "imports": [
         "node:crypto",
         "../model/types.js",
@@ -2358,9 +2612,9 @@
       "path": "src/orchestration/types.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 2012,
-      "mtimeMs": 1787756991333.2922,
-      "hash": "0f27ce5836fbf28121253cb765bef1a8e47d0acb",
+      "size": 2131,
+      "mtimeMs": 1787860661072.2903,
+      "hash": "1027cced7f9ac7abbab4a62f05c0a1cabeedd000",
       "imports": [
         "../model/types.js"
       ],
@@ -2404,14 +2658,49 @@
       "module": "src"
     },
     {
+      "path": "src/planning/artifact.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 6812,
+      "mtimeMs": 1787860157975.3599,
+      "hash": "50a0cb14af5f8907f78ed5bd040cafeb64b9df3c",
+      "imports": [
+        "node:fs",
+        "node:path",
+        "../watchdog/state.js",
+        "./types.js"
+      ],
+      "exports": [
+        "PlanningArtifactStore"
+      ],
+      "symbols": [
+        "PlanningArtifactStore",
+        "normalizePlan",
+        "revisionOf",
+        "renderPlan",
+        "list",
+        "bounded",
+        "validTaskId",
+        "validateTaskId",
+        "clone",
+        "validArtifact"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/planning",
+      "module": "src"
+    },
+    {
       "path": "src/planning/index.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 28,
-      "mtimeMs": 1787788082327.4722,
-      "hash": "767ac0796c659877c1d20c845ba46093d91218ab",
+      "size": 87,
+      "mtimeMs": 1787860158011.3596,
+      "hash": "aa31e805082df67ac99d3b4edcc655cda7ff643c",
       "imports": [
-        "./tools.js"
+        "./tools.js",
+        "./types.js",
+        "./artifact.js"
       ],
       "exports": [],
       "symbols": [],
@@ -2424,21 +2713,55 @@
       "path": "src/planning/tools.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 1621,
-      "mtimeMs": 1787788082296.4722,
-      "hash": "835c81192938ad8185bce057001238da66087808",
+      "size": 3985,
+      "mtimeMs": 1787860888737.5203,
+      "hash": "7ac95a5574e5581534701665727aefe7a36c5619",
       "imports": [
         "../tools/types.js",
         "../tools/framework.js",
-        "../watchdog/state.js"
+        "../watchdog/state.js",
+        "./artifact.js",
+        "./types.js"
       ],
       "exports": [
         "registerPlanningTools"
       ],
       "symbols": [
         "PLAN_PERMISSION",
+        "READ_PERMISSION",
         "LIST",
-        "registerPlanningTools"
+        "PLAN_PROPERTIES",
+        "registerPlanningTools",
+        "planOf"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/planning",
+      "module": "src"
+    },
+    {
+      "path": "src/planning/types.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 807,
+      "mtimeMs": 1787860157938.3599,
+      "hash": "8518212d6394caf2746e523c6d5f26b4959fb33a",
+      "imports": [],
+      "exports": [
+        "TASK_MODES",
+        "TaskMode",
+        "PlanHandoff",
+        "PlanSection",
+        "PlanRevision",
+        "PlanningArtifact"
+      ],
+      "symbols": [
+        "TASK_MODES",
+        "TaskMode",
+        "PlanHandoff",
+        "PlanSection",
+        "PlanRevision",
+        "PlanningArtifact"
       ],
       "likelyTest": false,
       "likelyDocumentation": false,
@@ -2449,9 +2772,9 @@
       "path": "src/research/config.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 3033,
-      "mtimeMs": 1787758876879.8606,
-      "hash": "26f3c7be2a813c0ef4ba3ef07d669289f6bcda3a",
+      "size": 5738,
+      "mtimeMs": 1787861725285.3635,
+      "hash": "5d9967070e1cafb58b0bd00d06e4d36e8714fd13",
       "imports": [
         "./types.js"
       ],
@@ -2460,9 +2783,50 @@
       ],
       "symbols": [
         "parseResearchConfiguration",
+        "budgetInteger",
         "integer",
         "validEndpoint",
         "record"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/research",
+      "module": "src"
+    },
+    {
+      "path": "src/research/cycles.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 13638,
+      "mtimeMs": 1787860332414.1987,
+      "hash": "161c2a4706287421595a204866ba64c328774161",
+      "imports": [
+        "node:crypto",
+        "node:fs",
+        "node:path",
+        "./types.js"
+      ],
+      "exports": [
+        "RepeatedApproachError",
+        "FileResearchCycleStore",
+        "ResearchCycleEngine"
+      ],
+      "symbols": [
+        "RepeatedApproachError",
+        "FileResearchCycleStore",
+        "ResearchCycleEngine",
+        "repeatedExperiment",
+        "budgetReason",
+        "renderNotebook",
+        "tokens",
+        "jaccard",
+        "confidence",
+        "unique",
+        "bounded",
+        "clone",
+        "validTaskId",
+        "validateTaskId",
+        "validNotebook"
       ],
       "likelyTest": false,
       "likelyDocumentation": false,
@@ -2501,9 +2865,9 @@
       "path": "src/research/index.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 209,
-      "mtimeMs": 1787758609976.7175,
-      "hash": "33f75aaa688e176eb4387218122103a5b7d1b7c8",
+      "size": 300,
+      "mtimeMs": 1787860332520.1985,
+      "hash": "7ce445eddff85c5d3e6498cd694ea1c58c922e55",
       "imports": [
         "./types.js",
         "./config.js",
@@ -2511,10 +2875,49 @@
         "./store.js",
         "./provider.js",
         "./service.js",
-        "./tools.js"
+        "./tools.js",
+        "./cycles.js",
+        "./policy.js",
+        "./supervisor.js"
       ],
       "exports": [],
       "symbols": [],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/research",
+      "module": "src"
+    },
+    {
+      "path": "src/research/policy.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 5332,
+      "mtimeMs": 1787861615347.2673,
+      "hash": "f11462797ae11a4024261f11a5b4f61f6cfbf166",
+      "imports": [
+        "node:crypto",
+        "node:fs",
+        "node:path",
+        "../tools/types.js",
+        "./types.js"
+      ],
+      "exports": [
+        "detectResearchTriggers",
+        "FileResearchRequirementStore",
+        "ResearchExecutionGuard"
+      ],
+      "symbols": [
+        "UNCERTAINTY",
+        "VERSION_SENSITIVE",
+        "EXTERNAL_ASSUMPTION",
+        "detectResearchTriggers",
+        "FileResearchRequirementStore",
+        "ResearchExecutionGuard",
+        "researchTool",
+        "relevant",
+        "validTaskId",
+        "validateTaskId"
+      ],
       "likelyTest": false,
       "likelyDocumentation": false,
       "directory": "src/research",
@@ -2613,18 +3016,45 @@
       "module": "src"
     },
     {
+      "path": "src/research/supervisor.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 2298,
+      "mtimeMs": 1787861151013.7505,
+      "hash": "48a0fe12ef9b825c91885956e0ee5d7248516e76",
+      "imports": [
+        "./types.js"
+      ],
+      "exports": [
+        "ResearchSupervision",
+        "ResearchSupervisor"
+      ],
+      "symbols": [
+        "ResearchSupervision",
+        "ResearchSupervisor",
+        "related",
+        "finding"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/research",
+      "module": "src"
+    },
+    {
       "path": "src/research/tools.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 5588,
-      "mtimeMs": 1787759011713.929,
-      "hash": "c2ab201d200fa5c8f7dc83355dd11b1967c3438d",
+      "size": 11327,
+      "mtimeMs": 1787861615310.2673,
+      "hash": "3ac9453dc9b35aa62e2737d0d718a587dc70b119",
       "imports": [
         "../tools/types.js",
         "../tools/framework.js",
         "./provider.js",
         "./store.js",
         "./service.js",
+        "./cycles.js",
+        "./policy.js",
         "./types.js"
       ],
       "exports": [
@@ -2636,7 +3066,8 @@
         "COMMON",
         "registerResearchTools",
         "registerSearch",
-        "executeResearch"
+        "executeResearch",
+        "registerCycleTools"
       ],
       "likelyTest": false,
       "likelyDocumentation": false,
@@ -2647,9 +3078,9 @@
       "path": "src/research/types.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 2242,
-      "mtimeMs": 1787758563909.7039,
-      "hash": "47fcddebf754010d5982554cef8f5b2ff5fb2044",
+      "size": 4712,
+      "mtimeMs": 1787860236197.2383,
+      "hash": "d84f5dfdbbffc067c0db9090dddd59196be279ee",
       "imports": [],
       "exports": [
         "RESEARCH_OPERATIONS",
@@ -2662,7 +3093,20 @@
         "ResearchRequest",
         "ResearchResult",
         "ResearchProvider",
-        "ResearchConfiguration"
+        "ResearchConfiguration",
+        "AUTO_RESEARCH_MODES",
+        "AutoResearchMode",
+        "EVIDENCE_STATES",
+        "EvidenceState",
+        "RESEARCH_CONCLUSIONS",
+        "ResearchConclusion",
+        "EvidenceRecord",
+        "ResearchExperiment",
+        "ResearchCycle",
+        "ResearchNotebook",
+        "ResearchBudgets",
+        "ResearchTrigger",
+        "ResearchRequirement"
       ],
       "symbols": [
         "RESEARCH_OPERATIONS",
@@ -2675,7 +3119,20 @@
         "ResearchRequest",
         "ResearchResult",
         "ResearchProvider",
-        "ResearchConfiguration"
+        "ResearchConfiguration",
+        "AUTO_RESEARCH_MODES",
+        "AutoResearchMode",
+        "EVIDENCE_STATES",
+        "EvidenceState",
+        "RESEARCH_CONCLUSIONS",
+        "ResearchConclusion",
+        "EvidenceRecord",
+        "ResearchExperiment",
+        "ResearchCycle",
+        "ResearchNotebook",
+        "ResearchBudgets",
+        "ResearchTrigger",
+        "ResearchRequirement"
       ],
       "likelyTest": false,
       "likelyDocumentation": false,
@@ -3026,6 +3483,36 @@
       "module": "src"
     },
     {
+      "path": "src/runtime/browser-agent.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 4567,
+      "mtimeMs": 1787860563914.21,
+      "hash": "27971287bf9a7553667cc200c97bf65122225962",
+      "imports": [
+        "node:crypto",
+        "node:fs",
+        "node:path",
+        "./browser.js",
+        "./types.js"
+      ],
+      "exports": [
+        "BrowserAgent"
+      ],
+      "symbols": [
+        "CONSEQUENTIAL",
+        "SENSITIVE_INPUT",
+        "BrowserAgent",
+        "safeUrl",
+        "local",
+        "external"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/runtime",
+      "module": "src"
+    },
+    {
       "path": "src/runtime/browser.ts",
       "fileType": "ts",
       "language": "TypeScript",
@@ -3056,9 +3543,9 @@
       "path": "src/runtime/config.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 5399,
-      "mtimeMs": 1787779593753.9385,
-      "hash": "dc4168dc1d15dc7099e120098496ceb6c6a5524e",
+      "size": 5933,
+      "mtimeMs": 1787860535111.1995,
+      "hash": "addb8ffbb746443e4bd202d9a5db5f3f17712d4e",
       "imports": [
         "./types.js"
       ],
@@ -3082,14 +3569,15 @@
       "path": "src/runtime/index.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 177,
-      "mtimeMs": 1787779419737.465,
-      "hash": "2e9c254c40963ca9147320efa6b72b6c08094649",
+      "size": 213,
+      "mtimeMs": 1787860529114.1973,
+      "hash": "b2f3b7012ce8a555cf607e20e81822a6b2ec28f6",
       "imports": [
         "./types.js",
         "./config.js",
         "./processes.js",
         "./browser.js",
+        "./browser-agent.js",
         "./service.js",
         "./tools.js"
       ],
@@ -3132,16 +3620,17 @@
       "path": "src/runtime/service.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 6469,
-      "mtimeMs": 1787779419659.465,
-      "hash": "40f77f2e76e4f027ceed86771bd638c09e7f1d0e",
+      "size": 6749,
+      "mtimeMs": 1787860563947.21,
+      "hash": "662fc73b642fa71a13e293fcc51a9dd842127eb6",
       "imports": [
         "node:crypto",
         "node:fs",
         "node:path",
         "./types.js",
         "./processes.js",
-        "./browser.js"
+        "./browser.js",
+        "./browser-agent.js"
       ],
       "exports": [
         "FileRuntimeStore",
@@ -3163,9 +3652,9 @@
       "path": "src/runtime/tools.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 6401,
-      "mtimeMs": 1787779419698.465,
-      "hash": "464fa33bae11a3121b2eb23406387dfd70d085c5",
+      "size": 7010,
+      "mtimeMs": 1787860563978.21,
+      "hash": "dec0d4c027b00145e4b7d163bb8d7eaaccd1ab68",
       "imports": [
         "../tools/framework.js",
         "../tools/types.js",
@@ -3191,9 +3680,9 @@
       "path": "src/runtime/types.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 1677,
-      "mtimeMs": 1787779310746.1687,
-      "hash": "2c2dbaf4ace7d8c36cf83726e16f33e8bf374dd8",
+      "size": 2207,
+      "mtimeMs": 1787860529011.1973,
+      "hash": "5a31fda8591b22e58e4c77f4a044a7f3f0c537f3",
       "imports": [
         "../execution/types.js"
       ],
@@ -3201,7 +3690,11 @@
         "RuntimeStartConfiguration",
         "RuntimeHealthcheck",
         "BrowserAcceptanceCheck",
+        "BrowserPermissionPolicy",
         "RuntimeConfiguration",
+        "BrowserAction",
+        "BrowserConfirmationPrompt",
+        "BrowserAgentRecord",
         "ManagedProcessState",
         "ManagedProcessRecord",
         "RuntimeVerificationRecord",
@@ -3211,7 +3704,11 @@
         "RuntimeStartConfiguration",
         "RuntimeHealthcheck",
         "BrowserAcceptanceCheck",
+        "BrowserPermissionPolicy",
         "RuntimeConfiguration",
+        "BrowserAction",
+        "BrowserConfirmationPrompt",
+        "BrowserAgentRecord",
         "ManagedProcessState",
         "ManagedProcessRecord",
         "RuntimeVerificationRecord",
@@ -3226,9 +3723,9 @@
       "path": "src/settings/configuration.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 6258,
-      "mtimeMs": 1787801325545.6648,
-      "hash": "c81373b2dd6d2a75499feecb33299553970ec2b0",
+      "size": 6383,
+      "mtimeMs": 1787860677856.3223,
+      "hash": "e686bf9d09a14b7498d5f5f0768a8d7ac36572d7",
       "imports": [
         "node:fs",
         "node:path",
@@ -3243,6 +3740,7 @@
         "../usage/config.js",
         "../verification/config.js",
         "../watchdog/config.js",
+        "../context/lifecycle.js",
         "./defaults.js",
         "./registry.js"
       ],
@@ -3498,9 +3996,9 @@
       "path": "src/settings/styles.css",
       "fileType": "css",
       "language": "CSS",
-      "size": 20109,
-      "mtimeMs": 1787834825851.848,
-      "hash": "6d70fe72cb155defe5c204873ea75cf5993ceaa3",
+      "size": 20228,
+      "mtimeMs": 1787835250162.1206,
+      "hash": "a19e0daf9f1a391091e7c8215f8007315467eda9",
       "imports": [],
       "exports": [],
       "symbols": [],
@@ -3532,14 +4030,18 @@
       "path": "src/shared/messages.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 4638,
-      "mtimeMs": 1787831995538.209,
-      "hash": "727b12888e390879d230be21daa49d619b77be10",
+      "size": 7294,
+      "mtimeMs": 1787861580862.2498,
+      "hash": "a588f02beb04bfbe9b5b3336488f5259c47e754e",
       "imports": [
-        "../completion/types.js"
+        "../completion/types.js",
+        "../context/types.js",
+        "../planning/types.js",
+        "../research/types.js"
       ],
       "exports": [
         "ChatOptions",
+        "ComposerAttachment",
         "TaskActivity",
         "TaskDashboard",
         "TaskAction",
@@ -3550,12 +4052,15 @@
       ],
       "symbols": [
         "ChatOptions",
+        "ComposerAttachment",
         "TaskActivity",
         "TaskDashboard",
         "TaskAction",
         "ClientMessage",
         "HostMessage",
         "parseClientMessage",
+        "validCapabilities",
+        "parseAttachments",
         "isHostMessage"
       ],
       "likelyTest": false,
@@ -3567,9 +4072,9 @@
       "path": "src/tools/framework.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 11126,
-      "mtimeMs": 1787798886139.6409,
-      "hash": "d5cb7db2104d4e924b7deaadf69f15ab5b01f726",
+      "size": 12557,
+      "mtimeMs": 1787861598831.259,
+      "hash": "39686e4f0f317a17de89f23d0815a2c981ebaf43",
       "imports": [
         "./schema.js",
         "./types.js"
@@ -3593,6 +4098,9 @@
         "errorResult",
         "elapsed",
         "planningTool",
+        "reviewTool",
+        "researchTool",
+        "guardMessage",
         "toolError",
         "throwIfCancelled",
         "redactSecrets",
@@ -3692,9 +4200,9 @@
       "path": "src/tools/index.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 944,
-      "mtimeMs": 1787831569704.9844,
-      "hash": "5ab7bf51f6cbfb9f0b97b54069f31b1fffe6fb88",
+      "size": 983,
+      "mtimeMs": 1787860485842.1814,
+      "hash": "534e51d125b12cc8a37170666f0f0c1c21785199",
       "imports": [
         "./types.js",
         "./schema.js",
@@ -3721,7 +4229,8 @@
         "../usage/index.js",
         "../context/index.js",
         "../computer/index.js",
-        "../editing/index.js"
+        "../editing/index.js",
+        "../artifacts/index.js"
       ],
       "exports": [],
       "symbols": [],
@@ -3734,9 +4243,9 @@
       "path": "src/tools/loop.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 11496,
-      "mtimeMs": 1787795982418.0005,
-      "hash": "62c8e8fe51af6c96b5dc9840ca1e24ee5dfd096b",
+      "size": 13044,
+      "mtimeMs": 1787861625659.2725,
+      "hash": "05e962862868a7ecee242868f82ae85a1df73f77",
       "imports": [
         "../model/backend.js",
         "../model/types.js",
@@ -3762,6 +4271,7 @@
         "ToolLoopModel",
         "ToolLoopOutcome",
         "runToolLoop",
+        "automaticHandoff",
         "applyEscalation",
         "BackendToolLoopModel",
         "parseModelTurn",
@@ -3870,9 +4380,9 @@
       "path": "src/tools/types.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 3457,
-      "mtimeMs": 1787801406969.7776,
-      "hash": "5d1ad0bf73a764da35e81e23905c2c15d01bbd11",
+      "size": 3621,
+      "mtimeMs": 1787860390312.1777,
+      "hash": "c88413668d7ea770971d4462e99d9cc1742572b3",
       "imports": [],
       "exports": [
         "JsonSchema",
@@ -3882,6 +4392,7 @@
         "ToolResultMetadata",
         "ToolResult",
         "ToolIdentity",
+        "ToolExecutionGuard",
         "ToolAuditRecord",
         "ToolAuditSink",
         "ToolExecutionContext",
@@ -3899,6 +4410,7 @@
         "ToolResultMetadata",
         "ToolResult",
         "ToolIdentity",
+        "ToolExecutionGuard",
         "ToolAuditRecord",
         "ToolAuditSink",
         "ToolExecutionContext",
@@ -3917,9 +4429,9 @@
       "path": "src/tools/workspace.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 6143,
-      "mtimeMs": 1787831569738.9844,
-      "hash": "833ca16c3ebe0aa0493d836c7feb35b996aba548",
+      "size": 6449,
+      "mtimeMs": 1787860933954.567,
+      "hash": "2c1660e4a979e82402d2268494cdec570b943cdb",
       "imports": [
         "./git.js",
         "./repository.js",
@@ -4195,9 +4707,9 @@
       "path": "src/verification/config.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 12301,
-      "mtimeMs": 1787801353676.7039,
-      "hash": "d90784e10ae2cc2852ce6c1a1be6002a558bb8bd",
+      "size": 12846,
+      "mtimeMs": 1787860673527.314,
+      "hash": "9126a841b4263c82d86b51987c6305c1f7a1d2ec",
       "imports": [
         "node:fs",
         "node:path",
@@ -4219,7 +4731,9 @@
         "../usage/config.js",
         "../usage/types.js",
         "../computer/config.js",
-        "../computer/types.js"
+        "../computer/types.js",
+        "../context/lifecycle.js",
+        "../context/types.js"
       ],
       "exports": [
         "VERIFICATION_STEPS",
@@ -4475,16 +4989,17 @@
       "path": "src/watchdog/service.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 2969,
-      "mtimeMs": 1787757711818.5305,
-      "hash": "595914bd4edbbdccd65fe46aba9b37d141728c22",
+      "size": 3811,
+      "mtimeMs": 1787861625624.2725,
+      "hash": "5349c1eb871b9016475f3727882e52d2f3552632",
       "imports": [
         "node:fs",
         "node:path",
         "../completion/types.js",
         "./analyzer.js",
         "./state.js",
-        "./types.js"
+        "./types.js",
+        "../research/index.js"
       ],
       "exports": [
         "WatchdogService"
@@ -4502,9 +5017,9 @@
       "path": "src/watchdog/state.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 5726,
-      "mtimeMs": 1787798886212.6409,
-      "hash": "a3aee660d80029eb867a55a904ebaa5feec709eb",
+      "size": 5718,
+      "mtimeMs": 1787860158048.3596,
+      "hash": "9e3ce1cd7e94e8acf377e99259fcd5a656f8cac3",
       "imports": [
         "node:fs",
         "node:path",
@@ -4636,9 +5151,9 @@
       "path": "src/webview/main.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 20153,
-      "mtimeMs": 1787831995607.209,
-      "hash": "33113767f3d354d2326f2804a630840cd3847990",
+      "size": 27977,
+      "mtimeMs": 1787861580897.2498,
+      "hash": "0ead596b6ddc049726ce57a3e9bd48b6faa48677",
       "imports": [
         "./styles.css",
         "../shared/messages.js"
@@ -4653,6 +5168,7 @@
         "dashboard",
         "activeTaskTab",
         "activePane",
+        "attachments",
         "history",
         "input",
         "send",
@@ -4664,6 +5180,8 @@
         "mode",
         "thinking",
         "approval",
+        "autoResearch",
+        "attachmentInput",
         "chats",
         "completion",
         "completionProgress",
@@ -4679,6 +5197,14 @@
         "renderEmpty",
         "renderPane",
         "renderDashboard",
+        "researchView",
+        "planView",
+        "contextView",
+        "addFiles",
+        "fileBase64",
+        "renderAttachments",
+        "updateReasoningSupport",
+        "formatBytes",
         "evidenceView",
         "usageView",
         "sectionList",
@@ -4700,9 +5226,9 @@
       "path": "src/webview/styles.css",
       "fileType": "css",
       "language": "CSS",
-      "size": 17946,
-      "mtimeMs": 1787800656595.5935,
-      "hash": "23b6651039142e988d76f7f3123de23dd18dabb9",
+      "size": 19715,
+      "mtimeMs": 1787861401021.1458,
+      "hash": "6a5e25b8623e6f4f942689464800e5f52816c6f5",
       "imports": [],
       "exports": [],
       "symbols": [],
@@ -5019,9 +5545,9 @@
       "path": "test/messages.test.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 1857,
-      "mtimeMs": 1787831995641.2087,
-      "hash": "f5a1c6f042fc911b3db72b8c0ced13ef39d349dc",
+      "size": 2481,
+      "mtimeMs": 1787861102484.7212,
+      "hash": "cc729dab10c8474a332e4763b30caf7ed3b52941",
       "imports": [
         "vitest",
         "../src/shared/messages.js"
@@ -5052,6 +5578,32 @@
         "RecordingInference",
         "configuration",
         "manager"
+      ],
+      "likelyTest": true,
+      "likelyDocumentation": false,
+      "directory": "test",
+      "module": "test"
+    },
+    {
+      "path": "test/phase28.test.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 12982,
+      "mtimeMs": 1787861650497.2852,
+      "hash": "b5ee5074ee1c6fb81263e0730730abe2500463dc",
+      "imports": [
+        "vitest",
+        "node:fs",
+        "node:os",
+        "node:path",
+        "../src/tools/index.js",
+        "../src/model/types.js"
+      ],
+      "exports": [],
+      "symbols": [
+        "fixture",
+        "cleanup",
+        "evidence"
       ],
       "likelyTest": true,
       "likelyDocumentation": false,
@@ -5215,9 +5767,9 @@
       "path": "test/settings-ui.mjs",
       "fileType": "mjs",
       "language": "JavaScript",
-      "size": 5435,
-      "mtimeMs": 1787834880867.8806,
-      "hash": "9b202b77856144f99e6e3ae5202fa429210f1730",
+      "size": 6145,
+      "mtimeMs": 1787861314155.0078,
+      "hash": "1c510de795daa69c8ad64e8563c84c82a6bb5ac4",
       "imports": [
         "node:assert/strict",
         "node:path",
@@ -5226,13 +5778,7 @@
       "exports": [],
       "symbols": [
         "root",
-        "browser",
-        "page",
-        "setting",
-        "statistics",
-        "baseState",
-        "dispatch",
-        "connection"
+        "browser"
       ],
       "likelyTest": true,
       "likelyDocumentation": false,
@@ -5419,10 +5965,15 @@
     "repository": {
       "path": "",
       "directories": [
+        ".agents",
+        ".agents/skills",
+        ".agents/skills/lgs-frontend",
+        ".agents/skills/lgs-frontend/references",
         ".vscode",
         "docs",
         "media",
         "src",
+        "src/artifacts",
         "src/commit",
         "src/completion",
         "src/computer",
@@ -5451,20 +6002,30 @@
         "test"
       ],
       "files": [
+        ".agents/skills/lgs-frontend/SKILL.md",
+        ".agents/skills/lgs-frontend/references/anti-patterns.md",
+        ".agents/skills/lgs-frontend/references/interaction-patterns.md",
+        ".agents/skills/lgs-frontend/references/visual-language.md",
         ".gitignore",
         ".vscode/launch.json",
         ".vscode/tasks.json",
+        "AGENTS.md",
         "README.md",
         "docs/architecture.md",
         "docs/audit-readiness-2026-08-27.md",
         "docs/development.md",
         "docs/providers.md",
+        "docs/research-workflows.md",
         "docs/settings.md",
         "esbuild.mjs",
         "eslint.config.mjs",
         "media/lgs.svg",
         "package-lock.json",
         "package.json",
+        "src/artifacts/index.ts",
+        "src/artifacts/pipeline.ts",
+        "src/artifacts/types.ts",
+        "src/artifacts/vision.ts",
         "src/commit/index.ts",
         "src/commit/service.ts",
         "src/commit/tools.ts",
@@ -5483,6 +6044,7 @@
         "src/computer/types.ts",
         "src/context/broker.ts",
         "src/context/index.ts",
+        "src/context/lifecycle.ts",
         "src/context/tools.ts",
         "src/context/types.ts",
         "src/documentation/agent.ts",
@@ -5535,14 +6097,19 @@
         "src/orchestration/scheduler.ts",
         "src/orchestration/tools.ts",
         "src/orchestration/types.ts",
+        "src/planning/artifact.ts",
         "src/planning/index.ts",
         "src/planning/tools.ts",
+        "src/planning/types.ts",
         "src/research/config.ts",
+        "src/research/cycles.ts",
         "src/research/dependencies.ts",
         "src/research/index.ts",
+        "src/research/policy.ts",
         "src/research/provider.ts",
         "src/research/service.ts",
         "src/research/store.ts",
+        "src/research/supervisor.ts",
         "src/research/tools.ts",
         "src/research/types.ts",
         "src/review/analyzer.ts",
@@ -5556,6 +6123,7 @@
         "src/routing/index.ts",
         "src/routing/router.ts",
         "src/routing/types.ts",
+        "src/runtime/browser-agent.ts",
         "src/runtime/browser.ts",
         "src/runtime/config.ts",
         "src/runtime/index.ts",
@@ -5619,6 +6187,7 @@
         "test/localruntime.test.ts",
         "test/messages.test.ts",
         "test/orchestration.test.ts",
+        "test/phase28.test.ts",
         "test/planning.test.ts",
         "test/provider-management.test.ts",
         "test/research.test.ts",
@@ -5650,12 +6219,21 @@
         "path": "",
         "packageManifest": "package.json",
         "directories": [
+          ".agents",
+          ".agents/skills",
+          ".agents/skills/lgs-frontend",
+          ".agents/skills/lgs-frontend/references",
           ".vscode"
         ],
         "files": [
+          ".agents/skills/lgs-frontend/SKILL.md",
+          ".agents/skills/lgs-frontend/references/anti-patterns.md",
+          ".agents/skills/lgs-frontend/references/interaction-patterns.md",
+          ".agents/skills/lgs-frontend/references/visual-language.md",
           ".gitignore",
           ".vscode/launch.json",
           ".vscode/tasks.json",
+          "AGENTS.md",
           "README.md",
           "esbuild.mjs",
           "eslint.config.mjs",
@@ -5678,6 +6256,7 @@
           "docs/audit-readiness-2026-08-27.md",
           "docs/development.md",
           "docs/providers.md",
+          "docs/research-workflows.md",
           "docs/settings.md"
         ],
         "entryPoints": []
@@ -5700,6 +6279,7 @@
         "path": "src",
         "directories": [
           "src",
+          "src/artifacts",
           "src/commit",
           "src/completion",
           "src/computer",
@@ -5727,6 +6307,10 @@
           "src/webview"
         ],
         "files": [
+          "src/artifacts/index.ts",
+          "src/artifacts/pipeline.ts",
+          "src/artifacts/types.ts",
+          "src/artifacts/vision.ts",
           "src/commit/index.ts",
           "src/commit/service.ts",
           "src/commit/tools.ts",
@@ -5745,6 +6329,7 @@
           "src/computer/types.ts",
           "src/context/broker.ts",
           "src/context/index.ts",
+          "src/context/lifecycle.ts",
           "src/context/tools.ts",
           "src/context/types.ts",
           "src/documentation/agent.ts",
@@ -5797,14 +6382,19 @@
           "src/orchestration/scheduler.ts",
           "src/orchestration/tools.ts",
           "src/orchestration/types.ts",
+          "src/planning/artifact.ts",
           "src/planning/index.ts",
           "src/planning/tools.ts",
+          "src/planning/types.ts",
           "src/research/config.ts",
+          "src/research/cycles.ts",
           "src/research/dependencies.ts",
           "src/research/index.ts",
+          "src/research/policy.ts",
           "src/research/provider.ts",
           "src/research/service.ts",
           "src/research/store.ts",
+          "src/research/supervisor.ts",
           "src/research/tools.ts",
           "src/research/types.ts",
           "src/review/analyzer.ts",
@@ -5818,6 +6408,7 @@
           "src/routing/index.ts",
           "src/routing/router.ts",
           "src/routing/types.ts",
+          "src/runtime/browser-agent.ts",
           "src/runtime/browser.ts",
           "src/runtime/config.ts",
           "src/runtime/index.ts",
@@ -5894,6 +6485,7 @@
           "test/localruntime.test.ts",
           "test/messages.test.ts",
           "test/orchestration.test.ts",
+          "test/phase28.test.ts",
           "test/planning.test.ts",
           "test/provider-management.test.ts",
           "test/research.test.ts",
@@ -5913,6 +6505,34 @@
     ]
   },
   "moduleRelationships": [
+    {
+      "from": "src/artifacts/index.ts",
+      "to": "src/artifacts/types.ts"
+    },
+    {
+      "from": "src/artifacts/index.ts",
+      "to": "src/artifacts/pipeline.ts"
+    },
+    {
+      "from": "src/artifacts/index.ts",
+      "to": "src/artifacts/vision.ts"
+    },
+    {
+      "from": "src/artifacts/pipeline.ts",
+      "to": "src/computer/agent.ts"
+    },
+    {
+      "from": "src/artifacts/pipeline.ts",
+      "to": "src/artifacts/types.ts"
+    },
+    {
+      "from": "src/artifacts/vision.ts",
+      "to": "src/artifacts/pipeline.ts"
+    },
+    {
+      "from": "src/artifacts/vision.ts",
+      "to": "src/artifacts/types.ts"
+    },
     {
       "from": "src/commit/index.ts",
       "to": "src/commit/service.ts"
@@ -6146,6 +6766,18 @@
       "to": "src/context/tools.ts"
     },
     {
+      "from": "src/context/index.ts",
+      "to": "src/context/lifecycle.ts"
+    },
+    {
+      "from": "src/context/lifecycle.ts",
+      "to": "src/model/types.ts"
+    },
+    {
+      "from": "src/context/lifecycle.ts",
+      "to": "src/context/types.ts"
+    },
+    {
       "from": "src/context/tools.ts",
       "to": "src/tools/types.ts"
     },
@@ -6160,6 +6792,10 @@
     {
       "from": "src/context/tools.ts",
       "to": "src/context/broker.ts"
+    },
+    {
+      "from": "src/context/tools.ts",
+      "to": "src/context/lifecycle.ts"
     },
     {
       "from": "src/context/types.ts",
@@ -6738,8 +7374,24 @@
       "to": "src/model/types.ts"
     },
     {
+      "from": "src/planning/artifact.ts",
+      "to": "src/watchdog/state.ts"
+    },
+    {
+      "from": "src/planning/artifact.ts",
+      "to": "src/planning/types.ts"
+    },
+    {
       "from": "src/planning/index.ts",
       "to": "src/planning/tools.ts"
+    },
+    {
+      "from": "src/planning/index.ts",
+      "to": "src/planning/types.ts"
+    },
+    {
+      "from": "src/planning/index.ts",
+      "to": "src/planning/artifact.ts"
     },
     {
       "from": "src/planning/tools.ts",
@@ -6754,7 +7406,19 @@
       "to": "src/watchdog/state.ts"
     },
     {
+      "from": "src/planning/tools.ts",
+      "to": "src/planning/artifact.ts"
+    },
+    {
+      "from": "src/planning/tools.ts",
+      "to": "src/planning/types.ts"
+    },
+    {
       "from": "src/research/config.ts",
+      "to": "src/research/types.ts"
+    },
+    {
+      "from": "src/research/cycles.ts",
       "to": "src/research/types.ts"
     },
     {
@@ -6794,6 +7458,26 @@
       "to": "src/research/tools.ts"
     },
     {
+      "from": "src/research/index.ts",
+      "to": "src/research/cycles.ts"
+    },
+    {
+      "from": "src/research/index.ts",
+      "to": "src/research/policy.ts"
+    },
+    {
+      "from": "src/research/index.ts",
+      "to": "src/research/supervisor.ts"
+    },
+    {
+      "from": "src/research/policy.ts",
+      "to": "src/tools/types.ts"
+    },
+    {
+      "from": "src/research/policy.ts",
+      "to": "src/research/types.ts"
+    },
+    {
       "from": "src/research/provider.ts",
       "to": "src/research/types.ts"
     },
@@ -6818,6 +7502,10 @@
       "to": "src/research/types.ts"
     },
     {
+      "from": "src/research/supervisor.ts",
+      "to": "src/research/types.ts"
+    },
+    {
       "from": "src/research/tools.ts",
       "to": "src/tools/types.ts"
     },
@@ -6836,6 +7524,14 @@
     {
       "from": "src/research/tools.ts",
       "to": "src/research/service.ts"
+    },
+    {
+      "from": "src/research/tools.ts",
+      "to": "src/research/cycles.ts"
+    },
+    {
+      "from": "src/research/tools.ts",
+      "to": "src/research/policy.ts"
     },
     {
       "from": "src/research/tools.ts",
@@ -7018,6 +7714,14 @@
       "to": "src/model/profiles.ts"
     },
     {
+      "from": "src/runtime/browser-agent.ts",
+      "to": "src/runtime/browser.ts"
+    },
+    {
+      "from": "src/runtime/browser-agent.ts",
+      "to": "src/runtime/types.ts"
+    },
+    {
       "from": "src/runtime/browser.ts",
       "to": "src/runtime/types.ts"
     },
@@ -7040,6 +7744,10 @@
     {
       "from": "src/runtime/index.ts",
       "to": "src/runtime/browser.ts"
+    },
+    {
+      "from": "src/runtime/index.ts",
+      "to": "src/runtime/browser-agent.ts"
     },
     {
       "from": "src/runtime/index.ts",
@@ -7068,6 +7776,10 @@
     {
       "from": "src/runtime/service.ts",
       "to": "src/runtime/browser.ts"
+    },
+    {
+      "from": "src/runtime/service.ts",
+      "to": "src/runtime/browser-agent.ts"
     },
     {
       "from": "src/runtime/tools.ts",
@@ -7124,6 +7836,10 @@
     {
       "from": "src/settings/configuration.ts",
       "to": "src/watchdog/config.ts"
+    },
+    {
+      "from": "src/settings/configuration.ts",
+      "to": "src/context/lifecycle.ts"
     },
     {
       "from": "src/settings/configuration.ts",
@@ -7192,6 +7908,18 @@
     {
       "from": "src/shared/messages.ts",
       "to": "src/completion/types.ts"
+    },
+    {
+      "from": "src/shared/messages.ts",
+      "to": "src/context/types.ts"
+    },
+    {
+      "from": "src/shared/messages.ts",
+      "to": "src/planning/types.ts"
+    },
+    {
+      "from": "src/shared/messages.ts",
+      "to": "src/research/types.ts"
     },
     {
       "from": "src/tools/framework.ts",
@@ -7312,6 +8040,10 @@
     {
       "from": "src/tools/index.ts",
       "to": "src/editing/index.ts"
+    },
+    {
+      "from": "src/tools/index.ts",
+      "to": "src/artifacts/index.ts"
     },
     {
       "from": "src/tools/loop.ts",
@@ -7606,6 +8338,14 @@
       "to": "src/computer/types.ts"
     },
     {
+      "from": "src/verification/config.ts",
+      "to": "src/context/lifecycle.ts"
+    },
+    {
+      "from": "src/verification/config.ts",
+      "to": "src/context/types.ts"
+    },
+    {
       "from": "src/verification/index.ts",
       "to": "src/verification/config.ts"
     },
@@ -7770,6 +8510,10 @@
       "to": "src/watchdog/types.ts"
     },
     {
+      "from": "src/watchdog/service.ts",
+      "to": "src/research/index.ts"
+    },
+    {
       "from": "src/watchdog/state.ts",
       "to": "src/watchdog/types.ts"
     },
@@ -7910,6 +8654,14 @@
       "to": "src/orchestration/index.ts"
     },
     {
+      "from": "test/phase28.test.ts",
+      "to": "src/tools/index.ts"
+    },
+    {
+      "from": "test/phase28.test.ts",
+      "to": "src/model/types.ts"
+    },
+    {
       "from": "test/planning.test.ts",
       "to": "src/tools/index.ts"
     },
@@ -8019,6 +8771,23 @@
     }
   ],
   "reverseDependencies": {
+    "src/artifacts/types.ts": [
+      "src/artifacts/index.ts",
+      "src/artifacts/pipeline.ts",
+      "src/artifacts/vision.ts"
+    ],
+    "src/artifacts/pipeline.ts": [
+      "src/artifacts/index.ts",
+      "src/artifacts/vision.ts"
+    ],
+    "src/artifacts/vision.ts": [
+      "src/artifacts/index.ts"
+    ],
+    "src/computer/agent.ts": [
+      "src/artifacts/pipeline.ts",
+      "src/computer/index.ts",
+      "src/computer/tools.ts"
+    ],
     "src/commit/service.ts": [
       "src/commit/index.ts",
       "src/commit/tools.ts"
@@ -8046,6 +8815,7 @@
       "src/documentation/agent.ts",
       "src/documentation/store.ts",
       "src/editing/service.ts",
+      "src/planning/artifact.ts",
       "src/planning/tools.ts",
       "src/review/context.ts",
       "src/review/reviewer.ts",
@@ -8097,6 +8867,7 @@
       "src/localruntime/tools.ts",
       "src/orchestration/tools.ts",
       "src/planning/tools.ts",
+      "src/research/policy.ts",
       "src/research/tools.ts",
       "src/review/tools.ts",
       "src/runtime/tools.ts",
@@ -8200,6 +8971,7 @@
     ],
     "src/runtime/types.ts": [
       "src/completion/types.ts",
+      "src/runtime/browser-agent.ts",
       "src/runtime/browser.ts",
       "src/runtime/config.ts",
       "src/runtime/index.ts",
@@ -8226,10 +8998,6 @@
       "src/computer/tools.ts",
       "src/verification/config.ts"
     ],
-    "src/computer/agent.ts": [
-      "src/computer/index.ts",
-      "src/computer/tools.ts"
-    ],
     "src/computer/tools.ts": [
       "src/computer/index.ts"
     ],
@@ -8255,7 +9023,10 @@
     ],
     "src/context/types.ts": [
       "src/context/broker.ts",
-      "src/context/index.ts"
+      "src/context/index.ts",
+      "src/context/lifecycle.ts",
+      "src/shared/messages.ts",
+      "src/verification/config.ts"
     ],
     "src/context/broker.ts": [
       "src/context/index.ts",
@@ -8263,6 +9034,39 @@
     ],
     "src/context/tools.ts": [
       "src/context/index.ts"
+    ],
+    "src/context/lifecycle.ts": [
+      "src/context/index.ts",
+      "src/context/tools.ts",
+      "src/settings/configuration.ts",
+      "src/verification/config.ts"
+    ],
+    "src/model/types.ts": [
+      "src/context/lifecycle.ts",
+      "src/documentation/analyzer.ts",
+      "src/extension.ts",
+      "src/model/anthropic.ts",
+      "src/model/backend.ts",
+      "src/model/diagnostics.ts",
+      "src/model/ollama.ts",
+      "src/model/openai.ts",
+      "src/model/profiles.ts",
+      "src/model/registry.ts",
+      "src/orchestration/inference.ts",
+      "src/orchestration/orchestrator.ts",
+      "src/orchestration/tools.ts",
+      "src/orchestration/types.ts",
+      "src/review/analyzer.ts",
+      "src/settings/messages.ts",
+      "src/tools/loop.ts",
+      "src/usage/service.ts",
+      "src/watchdog/analyzer.ts",
+      "src/watchdog/escalation.ts",
+      "test/completion.test.ts",
+      "test/orchestration.test.ts",
+      "test/phase28.test.ts",
+      "test/tools.test.ts",
+      "test/watchdog.test.ts"
     ],
     "src/usage/types.ts": [
       "src/context/types.ts",
@@ -8308,31 +9112,6 @@
       "test/orchestration.test.ts",
       "test/provider-management.test.ts",
       "test/stream.test.ts"
-    ],
-    "src/model/types.ts": [
-      "src/documentation/analyzer.ts",
-      "src/extension.ts",
-      "src/model/anthropic.ts",
-      "src/model/backend.ts",
-      "src/model/diagnostics.ts",
-      "src/model/ollama.ts",
-      "src/model/openai.ts",
-      "src/model/profiles.ts",
-      "src/model/registry.ts",
-      "src/orchestration/inference.ts",
-      "src/orchestration/orchestrator.ts",
-      "src/orchestration/tools.ts",
-      "src/orchestration/types.ts",
-      "src/review/analyzer.ts",
-      "src/settings/messages.ts",
-      "src/tools/loop.ts",
-      "src/usage/service.ts",
-      "src/watchdog/analyzer.ts",
-      "src/watchdog/escalation.ts",
-      "test/completion.test.ts",
-      "test/orchestration.test.ts",
-      "test/tools.test.ts",
-      "test/watchdog.test.ts"
     ],
     "src/documentation/analyzer.ts": [
       "src/documentation/index.ts"
@@ -8439,6 +9218,7 @@
       "test/integrations.test.ts",
       "test/knowledge.test.ts",
       "test/localruntime.test.ts",
+      "test/phase28.test.ts",
       "test/planning.test.ts",
       "test/research.test.ts",
       "test/review.test.ts",
@@ -8555,18 +9335,32 @@
     "src/orchestration/tools.ts": [
       "src/orchestration/index.ts"
     ],
+    "src/planning/types.ts": [
+      "src/planning/artifact.ts",
+      "src/planning/index.ts",
+      "src/planning/tools.ts",
+      "src/shared/messages.ts"
+    ],
     "src/planning/tools.ts": [
       "src/planning/index.ts"
     ],
+    "src/planning/artifact.ts": [
+      "src/planning/index.ts",
+      "src/planning/tools.ts"
+    ],
     "src/research/types.ts": [
       "src/research/config.ts",
+      "src/research/cycles.ts",
       "src/research/dependencies.ts",
       "src/research/index.ts",
+      "src/research/policy.ts",
       "src/research/provider.ts",
       "src/research/service.ts",
       "src/research/store.ts",
+      "src/research/supervisor.ts",
       "src/research/tools.ts",
       "src/review/types.ts",
+      "src/shared/messages.ts",
       "src/verification/config.ts"
     ],
     "src/research/config.ts": [
@@ -8596,6 +9390,17 @@
       "src/research/tools.ts"
     ],
     "src/research/tools.ts": [
+      "src/research/index.ts"
+    ],
+    "src/research/cycles.ts": [
+      "src/research/index.ts",
+      "src/research/tools.ts"
+    ],
+    "src/research/policy.ts": [
+      "src/research/index.ts",
+      "src/research/tools.ts"
+    ],
+    "src/research/supervisor.ts": [
       "src/research/index.ts"
     ],
     "src/review/analyzer.ts": [
@@ -8633,6 +9438,11 @@
       "src/routing/index.ts",
       "src/watchdog/escalation.ts"
     ],
+    "src/runtime/browser.ts": [
+      "src/runtime/browser-agent.ts",
+      "src/runtime/index.ts",
+      "src/runtime/service.ts"
+    ],
     "src/runtime/config.ts": [
       "src/runtime/index.ts",
       "src/settings/configuration.ts",
@@ -8643,7 +9453,7 @@
       "src/runtime/service.ts",
       "src/runtime/tools.ts"
     ],
-    "src/runtime/browser.ts": [
+    "src/runtime/browser-agent.ts": [
       "src/runtime/index.ts",
       "src/runtime/service.ts"
     ],
@@ -8723,7 +9533,8 @@
     ],
     "src/research/index.ts": [
       "src/tools/index.ts",
-      "src/tools/workspace.ts"
+      "src/tools/workspace.ts",
+      "src/watchdog/service.ts"
     ],
     "src/documentation/index.ts": [
       "src/tools/index.ts",
@@ -8774,6 +9585,9 @@
     "src/editing/index.ts": [
       "src/tools/index.ts",
       "src/tools/workspace.ts"
+    ],
+    "src/artifacts/index.ts": [
+      "src/tools/index.ts"
     ],
     "src/watchdog/triggers.ts": [
       "src/tools/loop.ts",
@@ -8857,25 +9671,36 @@
   "freshness": {
     "index": "current",
     "codebaseMap": "current",
-    "checkedAt": "2026-08-27T12:50:27.217Z",
+    "checkedAt": "2026-08-27T20:15:48.075Z",
     "staleEntries": []
   },
   "incremental": {
-    "reused": [
+    "reused": [],
+    "added": [
+      ".agents/skills/lgs-frontend/SKILL.md",
+      ".agents/skills/lgs-frontend/references/anti-patterns.md",
+      ".agents/skills/lgs-frontend/references/interaction-patterns.md",
+      ".agents/skills/lgs-frontend/references/visual-language.md",
       ".gitignore",
       ".vscode/launch.json",
       ".vscode/tasks.json",
+      "AGENTS.md",
       "README.md",
       "docs/architecture.md",
       "docs/audit-readiness-2026-08-27.md",
       "docs/development.md",
       "docs/providers.md",
+      "docs/research-workflows.md",
       "docs/settings.md",
       "esbuild.mjs",
       "eslint.config.mjs",
       "media/lgs.svg",
       "package-lock.json",
       "package.json",
+      "src/artifacts/index.ts",
+      "src/artifacts/pipeline.ts",
+      "src/artifacts/types.ts",
+      "src/artifacts/vision.ts",
       "src/commit/index.ts",
       "src/commit/service.ts",
       "src/commit/tools.ts",
@@ -8894,6 +9719,7 @@
       "src/computer/types.ts",
       "src/context/broker.ts",
       "src/context/index.ts",
+      "src/context/lifecycle.ts",
       "src/context/tools.ts",
       "src/context/types.ts",
       "src/documentation/agent.ts",
@@ -8946,14 +9772,19 @@
       "src/orchestration/scheduler.ts",
       "src/orchestration/tools.ts",
       "src/orchestration/types.ts",
+      "src/planning/artifact.ts",
       "src/planning/index.ts",
       "src/planning/tools.ts",
+      "src/planning/types.ts",
       "src/research/config.ts",
+      "src/research/cycles.ts",
       "src/research/dependencies.ts",
       "src/research/index.ts",
+      "src/research/policy.ts",
       "src/research/provider.ts",
       "src/research/service.ts",
       "src/research/store.ts",
+      "src/research/supervisor.ts",
       "src/research/tools.ts",
       "src/research/types.ts",
       "src/review/analyzer.ts",
@@ -8967,6 +9798,7 @@
       "src/routing/index.ts",
       "src/routing/router.ts",
       "src/routing/types.ts",
+      "src/runtime/browser-agent.ts",
       "src/runtime/browser.ts",
       "src/runtime/config.ts",
       "src/runtime/index.ts",
@@ -9030,6 +9862,7 @@
       "test/localruntime.test.ts",
       "test/messages.test.ts",
       "test/orchestration.test.ts",
+      "test/phase28.test.ts",
       "test/planning.test.ts",
       "test/provider-management.test.ts",
       "test/research.test.ts",
@@ -9046,7 +9879,6 @@
       "tsconfig.json",
       "vitest.config.ts"
     ],
-    "added": [],
     "changed": [],
     "removed": [],
     "renamed": []

@@ -46,7 +46,7 @@ button:focus-visible, select:focus-visible, textarea:focus-visible, summary:focu
 .identity { display: flex; align-items: center; gap: 9px; min-width: 0; }
 .identity .seal { width: 30px; height: 30px; flex: 0 0 auto; display: grid; place-items: center; border: 1px solid var(--lgs-accent); border-radius: 50%; color: var(--lgs-accent); font: 700 16px Georgia,serif; box-shadow: inset 0 0 0 3px var(--lgs-bg); }
 .identity b, .identity small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.identity b { font: 500 13px Georgia,serif; letter-spacing: .01em; }
+.identity b { font-size: 12px; font-weight: 600; letter-spacing: .04em; }
 .identity small { margin-top: 1px; color: var(--lgs-muted); font-size: 9px; font-weight: 700; letter-spacing: .13em; text-transform: uppercase; }
 .header-actions { display: flex; gap: 3px; }
 .icon-button { width: 29px; height: 29px; border: 1px solid transparent; border-radius: 5px; background: transparent; color: var(--lgs-muted); cursor: pointer; font-size: 16px; }
@@ -78,7 +78,7 @@ button:focus-visible, select:focus-visible, textarea:focus-visible, summary:focu
 .error-banner span { color: var(--lgs-muted); font-size: 10px; line-height: 1.4; overflow-wrap: anywhere; }
 .error-banner button { border: 0; background: transparent; color: var(--lgs-danger); cursor: pointer; font-size: 9px; }
 #history { flex: 1 1 auto; min-height: 230px; max-height: calc(100vh - 285px); display: flex; flex-direction: column; gap: 14px; padding: 8px 2px 16px; overflow: auto; }
-.empty { margin: auto; width: min(270px,92%); padding: 24px 8px; text-align: center; }
+.empty { margin: auto; width: min(270px,92%); padding: 12px 8px; text-align: center; }
 .folio { width: 58px; height: 70px; display: grid; place-items: center; margin: 0 auto 18px; border: 1px solid var(--lgs-border); border-radius: 2px 8px 8px 2px; background: var(--lgs-surface); box-shadow: -4px 0 0 color-mix(in srgb,var(--lgs-accent) 35%,var(--lgs-border)),0 8px 22px var(--lgs-shadow); }
 .folio span { color: var(--lgs-accent); font: 700 13px Georgia,serif; letter-spacing: .12em; transform: rotate(-90deg); }
 .empty h1 { margin: 0 0 8px; font: 500 18px Georgia,serif; }
@@ -112,14 +112,23 @@ button:focus-visible, select:focus-visible, textarea:focus-visible, summary:focu
 .options-panel { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; padding: 8px 9px 9px; border-bottom: 1px solid var(--lgs-border); background: var(--lgs-raised); }
 .options-panel label { min-width: 0; }
 .options-panel label > span { display: block; margin: 0 0 3px; color: var(--lgs-muted); font-size: 9px; }
+.options-panel label > small { display: block; margin-top: 3px; color: var(--lgs-muted); font-size: 8px; line-height: 1.3; }
 .options-panel select { width: 100%; min-width: 0; padding: 5px 6px; border: 1px solid var(--lgs-border); border-radius: 3px; background: var(--lgs-input); color: var(--lgs-input-text); font-size: 10px; text-overflow: ellipsis; }
+.capabilities { grid-column: 1/-1; display: flex; flex-wrap: wrap; gap: 5px 10px; margin: 0; padding: 6px; border: 1px solid var(--lgs-border); }
+.capabilities legend { color: var(--lgs-muted); font-size: 9px; }
+.capabilities label { color: var(--lgs-muted); font-size: 9px; text-transform: capitalize; }
 #composer-form { display: flex; flex-direction: column; padding: 2px 8px 7px; }
+.attachment-chips { display: flex; flex-wrap: wrap; gap: 5px; padding-top: 5px; }
+.attachment-chips:empty { display: none; }
+.attachment-chip { display: flex; align-items: center; gap: 5px; max-width: 100%; padding: 3px 6px; border: 1px solid var(--lgs-border); border-radius: 11px; background: var(--lgs-raised); color: var(--lgs-muted); font-size: 8px; overflow-wrap: anywhere; }
+.attachment-chip button { border: 0; background: transparent; color: var(--lgs-muted); cursor: pointer; }
 textarea { width: 100%; min-height: 54px; max-height: 160px; padding: 8px 2px 4px; border: 0; outline: 0; resize: none; background: transparent; color: var(--lgs-text); font-size: 12px; line-height: 1.45; }
 textarea::placeholder { color: var(--lgs-muted); }
 textarea:disabled { opacity: .7; }
 .composer-bottom { display: flex; align-items: center; justify-content: space-between; gap: 8px; color: var(--lgs-muted); font-size: 9px; }
 .composer-bottom > div { display: flex; align-items: center; gap: 5px; }
 .send-button, .stop-button { min-height: 27px; padding: 5px 8px; border-radius: 5px; cursor: pointer; }
+.attach-button { padding: 4px 5px; border: 0; background: transparent; color: var(--lgs-accent); cursor: pointer; font-size: 9px; }
 .send-button { display: flex; align-items: center; gap: 7px; border: 1px solid var(--lgs-primary); background: var(--lgs-primary); color: var(--lgs-primary-text); }
 .send-button:hover { background: var(--lgs-primary-hover); }
 .send-button:disabled { opacity: .55; cursor: default; }
@@ -163,6 +172,14 @@ textarea:disabled { opacity: .7; }
 .metric-grid span { color: var(--lgs-muted); font-size: 8px; text-transform: uppercase; }
 .metric-grid b { margin-top: 4px; font-size: 10px; }
 .text-action { margin-top: 8px; color: var(--lgs-accent); }
+.plan-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-bottom: 12px; }
+.plan-actions button { padding: 6px; border: 1px solid var(--lgs-border); border-radius: 4px; background: var(--lgs-raised); color: var(--lgs-text); cursor: pointer; font-size: 9px; }
+.plan-actions button:disabled { opacity: .45; cursor: default; }
+.notebook-view h2 { margin: 5px 0 10px; font: 500 14px/1.35 Georgia,serif; }
+.hypothesis { margin-bottom: 12px; padding: 9px; border-left: 2px solid var(--lgs-accent); background: var(--lgs-raised); }
+.hypothesis b, .hypothesis small { font-size: 9px; }
+.hypothesis p { margin: 5px 0; font-size: 10px; line-height: 1.4; }
+.hypothesis small { color: var(--lgs-muted); }
 .activity { padding: 10px 12px; border-top: 1px solid var(--lgs-border); }
 .section-heading { display: flex; justify-content: space-between; color: var(--lgs-muted); font-size: 8px; }
 .activity-item { display: grid; grid-template-columns: 7px minmax(0,1fr) auto; gap: 6px; align-items: start; padding: 6px 0; }

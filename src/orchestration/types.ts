@@ -2,7 +2,8 @@ import type { LgsMessage } from '../model/types.js';
 
 export const AGENT_ROLES = [
   'manager', 'explorer', 'researcher', 'implementer', 'test-engineer',
-  'documentation-agent', 'reviewer', 'debugger', 'verifier'
+  'documentation-agent', 'reviewer', 'debugger', 'verifier', 'official-docs-researcher',
+  'source-researcher', 'experiment-implementer', 'result-analyzer', 'research-supervisor'
 ] as const;
 
 export type AgentRole = typeof AGENT_ROLES[number];

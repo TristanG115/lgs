@@ -13,7 +13,7 @@ const LABELS: Record<CompletionRequirement, string> = {
   full_tests_pass: 'Full tests pass', typecheck_passes: 'Typecheck passes', lint_passes: 'Lint passes',
   build_succeeds: 'Build succeeds', documentation_current: 'Documentation current', codebase_map_current: 'CODEBASE_MAP current',
   runtime_verification_passes: 'Runtime verification passes', independent_review_passes: 'Independent review passes',
-  no_unresolved_task_failures: 'No unresolved task failures'
+  no_unresolved_task_failures: 'No unresolved task failures', research_conclusion_supported: 'Research conclusion supported'
 };
 const STEP_REQUIREMENT: Partial<Record<CompletionRequirement, VerificationStep>> = {
   targeted_tests_pass: 'targetedTest', full_tests_pass: 'test', typecheck_passes: 'typecheck', lint_passes: 'lint', build_succeeds: 'build'
@@ -56,11 +56,22 @@ export class CompletionGuard {
     if (requirement === 'runtime_verification_passes' && this.runtimeVerifications) return this.runtimeItem(taskId);
     if (requirement === 'codebase_map_current') return this.mapItem();
     if (requirement === 'no_unresolved_task_failures') return unresolvedItem(executions);
+    if (requirement === 'research_conclusion_supported') return this.researchItem(taskId);
     const candidates = recorded.filter(entry => entry.requirement === requirement);
     const current = [...candidates].reverse().find(entry => this.completionEvidence.isCurrent(entry));
     return current
       ? { requirement, label: LABELS[requirement], required, passed: true, detail: current.summary, evidence: [current] }
       : { requirement, label: LABELS[requirement], required, passed: false, detail: candidates.length ? `${LABELS[requirement]} evidence is stale.` : `${LABELS[requirement]} lacks evidence.`, evidence: [] };
+  }
+  private researchItem(taskId: string): CompletionChecklistItem {
+    const requirement: CompletionRequirement = 'research_conclusion_supported';
+    try {
+      const notebook = JSON.parse(fs.readFileSync(path.join(this.workspaceRoot, '.lgs', 'tasks', taskId, 'research-cycles.json'), 'utf8')) as { status?: string; establishedFacts?: { state?: string }[]; cycles?: { status?: string; conclusion?: string; experiment?: { actualObservation?: string; evidence?: string[] } }[] };
+      const cycle = notebook.cycles?.at(-1); const strong = notebook.establishedFacts?.some(item => item.state === 'CONFIRMED' || item.state === 'STRONG');
+      const passed = notebook.status === 'completed' && Boolean(strong && cycle?.status === 'completed' && ['SUPPORTED', 'PARTIAL'].includes(cycle.conclusion ?? '') && cycle.experiment?.actualObservation);
+      const detail = passed ? 'Research has a completed experiment-backed conclusion with confirmed or strong evidence.' : 'Research conclusion requires a completed experiment, supporting provenance, and confirmed or strong evidence.';
+      return { requirement, label: LABELS[requirement], required: true, passed, detail, evidence: passed ? [{ id: `research-${taskId}`, requirement, summary: detail, recordedAt: new Date().toISOString(), source: 'research' }] : [] };
+    } catch { return { requirement, label: LABELS[requirement], required: true, passed: false, detail: 'Research Notebook evidence was not found.', evidence: [] }; }
   }
 
   private mapItem(): CompletionChecklistItem {
@@ -107,6 +118,7 @@ export class CompletionGuard {
 
 function taskProfile(root: string, taskId: string): string | undefined { try { const state = JSON.parse(fs.readFileSync(path.join(root, '.lgs', 'tasks', taskId, 'state.json'), 'utf8')) as { profile?: unknown }; return typeof state.profile === 'string' ? state.profile : undefined; } catch { return; } }
 function requiredForProfile(requirement: CompletionRequirement, profile: string | undefined): boolean {
+  if (requirement === 'research_conclusion_supported') return profile === 'Research' || profile === 'Mixed';
   if (!profile || profile === 'Software Engineering' || profile === 'Mixed') return true;
   return ['acceptance_criteria_addressed', 'implementation_complete', 'no_unresolved_task_failures'].includes(requirement);
 }

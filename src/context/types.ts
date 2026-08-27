@@ -37,3 +37,16 @@ export type ContextSelection = {
   omitted: { id: string; reason: 'duplicate' | 'budget' | 'lower-relevance' }[];
   metrics: { candidateTokens: number; selectedTokens: number; tokensSaved: number; savingsPercentage: number; categoryBreakdown: ContextBreakdown; savings: ContextSavings };
 };
+
+export type ContextLifecycleConfiguration = { softPressurePercent: number; compactionPercent: number; rotationPercent: number };
+export type ContextLifecycleAction = 'normal' | 'retrieval-discipline' | 'compact' | 'rotate';
+export type AgentCheckpoint = {
+  taskId: string; sessionId: string; createdAt: string; establishedFacts: string[]; decisions: string[]; currentHypothesis: string;
+  experimentState: string; modifiedFiles: string[]; failedApproaches: string[]; unresolvedQuestions: string[];
+  acceptanceStatus: string[]; nextRecommendedAction: string;
+};
+export type ContextLifecycleState = {
+  taskId: string; sessionId: string; contextTokens: number; contextMaximum: number; utilizationPercent: number;
+  action: ContextLifecycleAction; compactionStatus: 'none' | 'requested' | 'completed'; rotations: number;
+  persistentKnowledgeBytes: number; compactedTokensSaved: number; updatedAt: string; checkpoint?: AgentCheckpoint;
+};

@@ -4,6 +4,8 @@ import * as path from 'node:path';
 import type { RuntimeVerificationRecord, RuntimeVerificationReader, RuntimeConfiguration, BrowserAcceptanceCheck } from './types.js';
 import { ManagedProcessManager } from './processes.js';
 import { BrowserSession } from './browser.js';
+import { BrowserAgent } from './browser-agent.js';
+import type { BrowserConfirmationPrompt } from './types.js';
 
 export class FileRuntimeStore implements RuntimeVerificationReader {
   constructor(private readonly root: string) {}
@@ -15,7 +17,8 @@ export class FileRuntimeStore implements RuntimeVerificationReader {
 
 export class RuntimeVerifier {
   readonly browser: BrowserSession;
-  constructor(private readonly configuration: RuntimeConfiguration, private readonly processes: ManagedProcessManager, private readonly store: FileRuntimeStore, root: string) { this.browser = new BrowserSession(root, configuration); }
+  readonly browserAgent: BrowserAgent;
+  constructor(private readonly configuration: RuntimeConfiguration, private readonly processes: ManagedProcessManager, private readonly store: FileRuntimeStore, root: string, confirmation?: BrowserConfirmationPrompt) { this.browser = new BrowserSession(root, configuration); this.browserAgent = new BrowserAgent(root, this.browser, configuration, confirmation); }
   async start(taskId?: string) { if (!this.configuration.start) throw new Error('No runtime.start command is configured.'); return this.processes.start(this.configuration.start, taskId); }
   async verify(taskId: string): Promise<RuntimeVerificationRecord> {
     const checks: RuntimeVerificationRecord['checks'] = []; const artifacts: string[] = []; let processId: string | undefined;

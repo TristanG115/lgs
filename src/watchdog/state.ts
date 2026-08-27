@@ -3,7 +3,7 @@ import * as path from 'node:path';
 import { TASK_PROFILES, type TaskProfile, type TaskState } from './types.js';
 
 export class FileTaskStateStore {
-  constructor(private readonly workspaceRoot: string) {}
+  constructor(readonly workspaceRoot: string) {}
 
   ensure(taskId: string, objective: string): TaskState {
     const existing = this.read(taskId);

@@ -56,9 +56,13 @@ export type ToolIdentity = {
   sessionId?: string;
   agentId?: string;
   model?: string;
-  taskMode?: 'planning' | 'implementation';
+  taskMode?: import('../planning/types.js').TaskMode | 'planning' | 'implementation';
   agentRole?: import('../orchestration/types.js').AgentRole;
 };
+
+export interface ToolExecutionGuard {
+  check(definition: ToolDefinition, identity: ToolIdentity): string | undefined;
+}
 
 export type ToolAuditRecord = ToolIdentity & {
   timestamp: string;

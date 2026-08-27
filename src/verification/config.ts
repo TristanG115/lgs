@@ -19,6 +19,8 @@ import { parseUsageConfiguration } from '../usage/config.js';
 import type { UsageConfiguration } from '../usage/types.js';
 import { parseComputerConfiguration } from '../computer/config.js';
 import type { ComputerConfiguration } from '../computer/types.js';
+import { parseContextLifecycleConfiguration } from '../context/lifecycle.js';
+import type { ContextLifecycleConfiguration } from '../context/types.js';
 
 export const VERIFICATION_STEPS = ['install', 'typecheck', 'lint', 'targetedTest', 'test', 'build', 'start'] as const;
 export type VerificationStep = typeof VERIFICATION_STEPS[number];
@@ -36,6 +38,7 @@ export type WorkspaceConfiguration = {
   routing?: Record<string, unknown>;
   usage?: Record<string, unknown>;
   computer?: Record<string, unknown>;
+  context?: Record<string, unknown>;
 };
 export type LoadedWorkspaceConfiguration = {
   settings: Record<string, unknown>;
@@ -50,11 +53,12 @@ export type LoadedWorkspaceConfiguration = {
   routing: RoutingConfiguration;
   usage: UsageConfiguration;
   computer: ComputerConfiguration;
+  context: ContextLifecycleConfiguration;
   errors: string[];
 };
 
 export function loadWorkspaceConfiguration(root: string): LoadedWorkspaceConfiguration {
-  const empty: LoadedWorkspaceConfiguration = { settings: {}, verification: {}, permissions: {}, completion: parseCompletionConfiguration(), agents: parseOrchestrationConfiguration(), watchdog: parseWatchdogConfiguration(), research: parseResearchConfiguration(), runtime: parseRuntimeConfiguration(), integrations: { required: [], recommended: [], optional: [], mcp: {} }, routing: parseRoutingConfiguration(), usage: parseUsageConfiguration(), computer: parseComputerConfiguration(), errors: [] };
+  const empty: LoadedWorkspaceConfiguration = { settings: {}, verification: {}, permissions: {}, completion: parseCompletionConfiguration(), agents: parseOrchestrationConfiguration(), watchdog: parseWatchdogConfiguration(), research: parseResearchConfiguration(), runtime: parseRuntimeConfiguration(), integrations: { required: [], recommended: [], optional: [], mcp: {} }, routing: parseRoutingConfiguration(), usage: parseUsageConfiguration(), computer: parseComputerConfiguration(), context: parseContextLifecycleConfiguration(), errors: [] };
   const file = path.join(root, '.lgs', 'config.yaml');
   if (!fs.existsSync(file)) return empty;
   try {
@@ -69,6 +73,7 @@ export function loadWorkspaceConfiguration(root: string): LoadedWorkspaceConfigu
     const rawRouting = parsed.routing === undefined ? {} : requireRecord(parsed.routing, 'routing');
     const rawUsage = parsed.usage === undefined ? {} : requireRecord(parsed.usage, 'usage');
     const rawComputer = parsed.computer === undefined ? {} : requireRecord(parsed.computer, 'computer');
+    const rawContext = parsed.context === undefined ? undefined : requireRecord(parsed.context, 'context');
     const verification = parseVerification(parsed.verification, empty.errors);
     const permissions = parsePermissions(parsed.permissions, empty.errors);
     const completion = parseCompletionConfiguration(rawCompletion, empty.errors);
@@ -80,7 +85,8 @@ export function loadWorkspaceConfiguration(root: string): LoadedWorkspaceConfigu
     const routing = parseRoutingConfiguration(rawRouting, empty.errors);
     const usage = parseUsageConfiguration(rawUsage, empty.errors);
     const computer = parseComputerConfiguration(rawComputer, empty.errors);
-    return { settings, verification, permissions, completion, agents, watchdog, research, runtime, integrations, routing, usage, computer, errors: empty.errors };
+    const context = parseContextLifecycleConfiguration(rawContext && record(rawContext.lifecycle) ? rawContext.lifecycle : rawContext, empty.errors);
+    return { settings, verification, permissions, completion, agents, watchdog, research, runtime, integrations, routing, usage, computer, context, errors: empty.errors };
   } catch (error) {
     empty.errors.push(error instanceof Error ? error.message : 'Malformed workspace configuration.');
     return empty;

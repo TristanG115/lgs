@@ -1,7 +1,7 @@
 import { isPlainObject, validateSchema } from './schema.js';
 import {
   READ_ONLY_WORKSPACE_PERMISSION, ToolFailure, type ToolAuditRecord, type ToolAuditSink, type ToolCall, type ToolDefinition,
-  type ToolError, type ToolExecutionContext, type ToolIdentity, type ToolResult
+  type ToolError, type ToolExecutionContext, type ToolExecutionGuard, type ToolIdentity, type ToolResult
 } from './types.js';
 
 const DEFAULT_MAX_RESULT_BYTES = 64 * 1024;
@@ -37,7 +37,8 @@ export class ToolExecutor {
     readonly registry: ToolRegistry,
     private readonly workspaceRoot: string,
     private readonly audit?: ToolAuditSink,
-    private readonly maxResultBytes = DEFAULT_MAX_RESULT_BYTES
+    private readonly maxResultBytes = DEFAULT_MAX_RESULT_BYTES,
+    private readonly guards: ToolExecutionGuard[] = []
   ) {}
 
   async execute(rawCall: unknown, identity: ToolIdentity = {}, signal: AbortSignal = new AbortController().signal): Promise<ToolResult> {
@@ -56,7 +57,10 @@ export class ToolExecutor {
       if (!issues.length && definition.validate) issues.push(...definition.validate(call.arguments).map(message => ({ path: '$', message })));
       if (issues.length) {
         result = errorResult(definition.id, call.callId, toolError('invalid_request', 'Tool arguments failed validation.', false, { issues }), started);
-      } else if (identity.taskMode === 'planning' && !planningTool(definition.id)) result = errorResult(definition.id, call.callId, toolError('unsupported', 'This action is disabled in Planning Mode.'), started);
+      } else if ((identity.taskMode === 'plan' || identity.taskMode === 'planning') && !planningTool(definition.id)) result = errorResult(definition.id, call.callId, toolError('unsupported', 'This action is disabled in Planning Mode.'), started);
+      else if (identity.taskMode === 'chat' && definition.permission.access === 'execute' && !researchTool(definition.id)) result = errorResult(definition.id, call.callId, toolError('unsupported', 'Mutating actions are disabled in Chat Mode. Select Implement to change the workspace.'), started);
+      else if (identity.taskMode === 'review' && !reviewTool(definition.id)) result = errorResult(definition.id, call.callId, toolError('unsupported', 'This action is disabled in Review Mode.'), started);
+      else if (guardMessage(this.guards, definition, identity)) result = errorResult(definition.id, call.callId, toolError('unsupported', guardMessage(this.guards, definition, identity)!), started);
       else if (signal.aborted) result = errorResult(definition.id, call.callId, toolError('cancelled', 'Tool execution was cancelled.'), started, 'cancelled');
       else {
         try {
@@ -151,7 +155,10 @@ function errorResult(toolId: string, callId: string | undefined, error: ToolErro
 }
 
 function elapsed(started: number): number { return Math.max(0, Math.round((performance.now() - started) * 100) / 100); }
-function planningTool(id: string): boolean { return id.startsWith('list_') || id.startsWith('get_') || id.startsWith('read_') || id.startsWith('search_') || id.startsWith('find_') || id === 'web_search' || id === 'web_fetch' || id === 'documentation_search' || id === 'repository_search' || id.startsWith('git_') || id === 'create_plan_task'; }
+function planningTool(id: string): boolean { return id.startsWith('list_') || id.startsWith('get_') || id.startsWith('read_') || id.startsWith('search_') || id.startsWith('find_') || id === 'web_search' || id === 'web_fetch' || id === 'documentation_search' || id === 'repository_search' || id.startsWith('git_') || ['create_plan_task', 'revise_plan', 'checkpoint_context', 'rotate_context'].includes(id); }
+function reviewTool(id: string): boolean { return planningTool(id) || ['run_independent_review', 'evaluate_review_findings'].includes(id); }
+function researchTool(id: string): boolean { return ['web_search', 'web_fetch', 'documentation_search', 'repository_search'].includes(id) || id.startsWith('research_'); }
+function guardMessage(guards: ToolExecutionGuard[], definition: ToolDefinition, identity: ToolIdentity): string | undefined { for (const guard of guards) { const message = guard.check(definition, identity); if (message) return message; } }
 export function toolError(code: ToolError['code'], message: string, retryable = false, details?: Record<string, unknown>): ToolError {
   return { code, message, retryable, details };
 }

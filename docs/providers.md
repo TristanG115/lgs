@@ -29,7 +29,7 @@ Statistics are derived only from available usage fields: request outcomes, input
 
 ## Capabilities and reasoning
 
-Streaming, cancellation, multimodal, system-instruction, usage, and reasoning support are normalized as capability metadata. Reasoning effort is sent only when the selected profile reports support (or an explicit compatible capability override enables it). LGS never exposes hidden chain-of-thought.
+Streaming, cancellation, multimodal, system-instruction, usage, and reasoning support are normalized as capability metadata. Auto reasoning omits provider-specific parameters; Low, Medium, or High is sent only when the selected profile reports support (or an explicit compatible capability override enables it). The composer marks unsupported or unadvertised reasoning instead of fabricating support. LGS never exposes hidden chain-of-thought.
 
 ## Audit status
 

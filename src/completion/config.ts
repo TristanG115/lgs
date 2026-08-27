@@ -13,7 +13,8 @@ const DEFAULT_GATES: CompletionGateConfiguration = {
   codebase_map_current: true,
   runtime_verification_passes: false,
   independent_review_passes: false,
-  no_unresolved_task_failures: true
+  no_unresolved_task_failures: true,
+  research_conclusion_supported: true
 };
 const DEFAULT_BUDGETS: FailureBudgetConfiguration = {
   same_error_retry_limit: 3,

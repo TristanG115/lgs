@@ -6,7 +6,11 @@ export type BrowserAcceptanceCheck = {
   type: 'browser_open' | 'browser_click' | 'browser_type' | 'browser_get_text' | 'browser_wait_for' | 'browser_console' | 'browser_network_errors';
   url?: string; selector?: string; text?: string; expectedText?: string; timeoutMs?: number; expectedErrors?: number;
 };
-export type RuntimeConfiguration = { start?: RuntimeStartConfiguration; healthcheck?: RuntimeHealthcheck; acceptance?: BrowserAcceptanceCheck[]; browser?: { headless?: boolean; timeoutMs?: number } };
+export type BrowserPermissionPolicy = 'always_allow' | 'ask' | 'deny';
+export type RuntimeConfiguration = { start?: RuntimeStartConfiguration; healthcheck?: RuntimeHealthcheck; acceptance?: BrowserAcceptanceCheck[]; browser?: { headless?: boolean; timeoutMs?: number; externalSites?: boolean; consequentialActions?: BrowserPermissionPolicy } };
+export type BrowserAction = { kind: 'navigate' | 'observe' | 'input' | 'consequential'; description: string; url?: string; selector?: string };
+export type BrowserConfirmationPrompt = (action: BrowserAction) => Promise<boolean>;
+export type BrowserAgentRecord = BrowserAction & { id: string; taskId?: string; status: 'passed' | 'denied' | 'failed'; createdAt: string; detail: string };
 export type ManagedProcessState = 'starting' | 'running' | 'ready' | 'exited' | 'crashed' | 'stopped' | 'denied';
 export type ManagedProcessRecord = {
   id: string; pid?: number; command: string; args: string[]; taskId?: string; state: ManagedProcessState; readiness: 'unknown' | 'ready' | 'not_ready';

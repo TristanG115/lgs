@@ -52,3 +52,29 @@ Every operation returns visible status. Provider activity records lifecycle oper
 Explicit structured keys under `computer:` in `.lgs/config.yaml` take precedence over scalar Settings values. Otherwise a non-default user/workspace scalar value applies. This keeps security-sensitive workspace policy reviewable while allowing convenient defaults.
 
 See `.lgs/config.yaml` for the executable/argument-array verification schema and current Completion Guard gates.
+
+## Research, context, and BrowserAgent policy
+
+Auto Research and capabilities are separate composer controls. Workspace defaults and budgets use the structured `research` section; context pressure thresholds use `context.lifecycle`; and external browser policy stays under `runtime.browser`:
+
+```yaml
+research:
+  autoResearch: when-uncertain
+  webEnabled: true
+  budgets:
+    maximumCycles: 24
+    maximumConsecutiveFailedCycles: 5
+    wallClockMinutes: 240
+    minimumProgressCycles: 3
+context:
+  lifecycle:
+    softPressurePercent: 70
+    compactionPercent: 82
+    rotationPercent: 92
+runtime:
+  browser:
+    externalSites: true
+    consequentialActions: ask
+```
+
+`research.webEnabled` permits external research but does not initiate it. `research.autoResearch` controls initiation and can force an evidence requirement after uncertainty or a version-sensitive external assumption. BrowserAgent asks before consequential external-site actions by default. Full behavior is documented in [research-workflows.md](research-workflows.md).

@@ -60,7 +60,7 @@ await page.locator('.page-header [data-lifecycle="restartServices"]').click();
 assert.equal((await page.evaluate(() => globalThis.__messages)).at(-1).action, 'restartServices');
 
 await page.setViewportSize({ width: 520, height: 800 });
-const responsive = await page.evaluate(() => { const nav = document.querySelector('.rail nav'); return { scrollWidth: document.documentElement.scrollWidth, clientWidth: document.documentElement.clientWidth, navigationScrolls: nav.scrollWidth > nav.clientWidth, overflowX: getComputedStyle(nav).overflowX }; });
+const responsive = await page.evaluate(() => { const nav = document.querySelector('.rail nav'); return { scrollWidth: document.documentElement.scrollWidth, clientWidth: document.documentElement.clientWidth, navigationScrolls: nav.scrollWidth > nav.clientWidth, overflowX: window.getComputedStyle(nav).overflowX }; });
 assert.deepEqual(responsive, { scrollWidth: responsive.clientWidth, clientWidth: responsive.clientWidth, navigationScrolls: true, overflowX: 'auto' });
 console.log('Settings browser flows passed.');
 } finally {

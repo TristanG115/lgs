@@ -48,6 +48,7 @@ export async function runToolLoop(options: {
   for (let turn = 1; turn <= maxTurns; turn++) {
     if (signal.aborted) return { status: 'cancelled', text: '', turns: turn - 1, toolResults: results };
     const response = await options.model.next(messages, specifications, signal);
+    if (response.text && options.watchdog && options.identity?.taskId) options.watchdog.observeStatement(options.identity.taskId, response.text);
     const calls = response.toolCalls;
     if (!calls?.length) {
       let completion: CompletionEvaluation | undefined;
@@ -57,10 +58,11 @@ export async function runToolLoop(options: {
         await options.onCompletionState?.(completion);
       }
       if (options.watchdog && options.identity?.taskId) lastWatchdog = await options.watchdog.evaluate(options.identity.taskId, completion, signal);
+      const pendingResearch = options.watchdog && options.identity?.taskId ? options.watchdog.pendingResearch(options.identity.taskId) : [];
       const triggers = detectEscalationTriggers({ responseText: response.text, completion, watchdog: lastWatchdog });
       const escalated = await applyEscalation(options.model, options.escalation, options.identity?.taskId, triggers[0]);
-      if (completion?.status === 'blocked' || lastWatchdog?.classification !== undefined && lastWatchdog.classification !== 'ON_TRACK' || triggers.some(item => item.trigger === 'explicit_uncertainty') || escalated) {
-        lastBlockedText = renderContinuationInstruction({ completion, watchdog: lastWatchdog });
+      if (completion?.status === 'blocked' || lastWatchdog?.classification !== undefined && lastWatchdog.classification !== 'ON_TRACK' || triggers.some(item => item.trigger === 'explicit_uncertainty') || pendingResearch.length || escalated) {
+        lastBlockedText = [renderContinuationInstruction({ completion, watchdog: lastWatchdog }), ...(pendingResearch.length ? ['RESEARCH_REQUIRED', ...pendingResearch.map(item => `- ${item}`), 'Gather authoritative evidence before unsupported execution or completion.'] : [])].filter(Boolean).join('\n\n');
         if (response.text) messages.push(textMessage('assistant', response.text));
         messages.push(textMessage('user', lastBlockedText));
         continue;
@@ -76,6 +78,7 @@ export async function runToolLoop(options: {
     for (const call of calls) {
       const result = await options.executor.execute(call, options.identity, signal);
       results.push(result); turnResults.push(result);
+      if (result.status === 'success' && result.toolId === 'create_plan_task' && automaticHandoff(result.data) && options.identity) options.identity.taskMode = 'implement';
       if (result.status === 'cancelled') return { status: 'cancelled', text: '', turns: turn, toolResults: results };
     }
     messages.push(textMessage('user', JSON.stringify({ type: 'tool_results', results: turnResults })));
@@ -91,6 +94,8 @@ export async function runToolLoop(options: {
   }
   return { status: 'limit', text: lastBlockedText || 'Tool-turn limit reached.', turns: maxTurns, toolResults: results, completion: lastCompletion };
 }
+
+function automaticHandoff(value: unknown): boolean { return typeof value === 'object' && value !== null && !Array.isArray(value) && (value as Record<string, unknown>).handoff === 'implement-automatically'; }
 
 async function applyEscalation(model: ToolLoopModel, controller: EscalationController | undefined, taskId: string | undefined, candidate: { trigger: import('../watchdog/types.js').EscalationTrigger; reason: string } | undefined): Promise<boolean> {
   if (!controller || !taskId || !candidate) return false;
@@ -143,6 +148,8 @@ function toolInstructions(tools: ReturnType<ToolRegistry['specifications']>): st
     'Use delegate_subtasks for bounded independent exploration, research, implementation planning, testing analysis, documentation, review, debugging, or verification. Consume only the compact worker reports returned by LGS.',
     'Keep LGS task state current with update_task_state at the start of substantive work and after meaningful progress. Record acceptance criteria, plan, completed and remaining work, recent modifications, and explicit uncertainty; the read-only Watchdog and escalation controller use this persistent state automatically.',
     'Research before guessing whenever an external or dependency API is uncertain, versions matter, an error is unfamiliar, behavior may have changed since training, you have meaningful uncertainty, or the Manager or Watchdog requests verification. Err toward verification. Use documentation_search, repository_search, web_search, and web_fetch; LGS reads manifests, includes resolved dependency versions, prioritizes official sources, and reuses fresh task findings automatically.',
+    'In Research Mode, use research_start_cycle and research_complete_cycle to persist hypothesis, experiment, observation, analysis, conclusion, learning, and next action. Record claim provenance and evidence strength with research_add_evidence. REPEATED_APPROACH requires a materially different hypothesis or explicit new evidence; a paused budget is not success.',
+    'When context lifecycle requests rotation, call checkpoint_context with facts, decisions, hypothesis, experiment, files, failures, questions, acceptance status, and next action before rotate_context. Rotation creates a fresh logical context and does not end the task.',
     'Documentation is part of implementation. After meaningful modifications, update task state and run audit_documentation. Address every stale user, developer, architecture, configuration, API, CODEBASE_MAP, or task-record category; use update_codebase_map for relevant repository changes, avoid comments that merely restate obvious code, then rerun the audit before attempting completion.',
     'After implementation, tests, and documentation are current, run run_independent_review. The Reviewer receives fresh evidence rather than your conversation. As Manager, evaluate every finding with evaluate_review_findings; route confirmed issues to an Implementer or Debugger, then fix, test, check docs, and rerun review. Never dismiss a finding without evidence.',
     'When you have enough evidence, reply normally to the user. Do not wrap the final answer in the tool-call envelope.',

@@ -1,4 +1,4 @@
-import type { RuntimeConfiguration, RuntimeHealthcheck, RuntimeStartConfiguration, BrowserAcceptanceCheck } from './types.js';
+import type { RuntimeConfiguration, RuntimeHealthcheck, RuntimeStartConfiguration, BrowserAcceptanceCheck, BrowserPermissionPolicy } from './types.js';
 
 export function parseRuntimeConfiguration(value: unknown = undefined, errors: string[] = []): RuntimeConfiguration {
   if (value === undefined) return {};
@@ -39,7 +39,7 @@ function parseAcceptance(value: unknown, errors: string[]): BrowserAcceptanceChe
   return checks;
 }
 function parseBrowser(value: unknown, errors: string[]): RuntimeConfiguration['browser'] | undefined {
-  if (!record(value) || value.headless !== undefined && typeof value.headless !== 'boolean' || value.timeoutMs !== undefined && (!Number.isInteger(value.timeoutMs) || Number(value.timeoutMs) < 1 || Number(value.timeoutMs) > 300_000)) { errors.push('runtime.browser accepts headless and timeoutMs.'); return; }
-  return { headless: value.headless as boolean | undefined, timeoutMs: value.timeoutMs as number | undefined };
+  if (!record(value) || Object.keys(value).some(key => !['headless', 'timeoutMs', 'externalSites', 'consequentialActions'].includes(key)) || value.headless !== undefined && typeof value.headless !== 'boolean' || value.externalSites !== undefined && typeof value.externalSites !== 'boolean' || value.timeoutMs !== undefined && (!Number.isInteger(value.timeoutMs) || Number(value.timeoutMs) < 1 || Number(value.timeoutMs) > 300_000) || value.consequentialActions !== undefined && !['always_allow', 'ask', 'deny'].includes(String(value.consequentialActions))) { errors.push('runtime.browser accepts headless, timeoutMs, externalSites, and consequentialActions.'); return; }
+  return { headless: value.headless as boolean | undefined, timeoutMs: value.timeoutMs as number | undefined, externalSites: value.externalSites as boolean | undefined, consequentialActions: value.consequentialActions as BrowserPermissionPolicy | undefined };
 }
 function record(value: unknown): value is Record<string, unknown> { return typeof value === 'object' && value !== null && !Array.isArray(value); }

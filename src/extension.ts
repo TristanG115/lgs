@@ -18,11 +18,11 @@ import {
   CommandExecutionService, CommandPermissionResolver, CompletionGuard, ComputerAgent, createWorkspaceToolRegistry,
   displayCommand, DocumentationAgent, EscalationController, FileCompletionEvidenceStore, FileDocumentationAuditStore,
   FileEditService,
-  FileResearchStore, FileReviewStore, FileRoutingDecisionStore, FileRuntimeStore, FileTaskEvidenceStore,
+  ContextLifecycleManager, FileResearchCycleStore, FileResearchRequirementStore, FileResearchStore, FileReviewStore, FileRoutingDecisionStore, FileRuntimeStore, FileTaskEvidenceStore,
   FileTaskStateStore, GitBaselineStore, HttpResearchProvider, IndependentReviewer, IntegrationHub,
-  ManagedProcessManager, ModelRouter, Orchestrator, RawExecutionLogStore, ResearchService, RoutedToolLoopModel,
+  ManagedProcessManager, ModelRouter, Orchestrator, PlanningArtifactStore, RawExecutionLogStore, ResearchCycleEngine, ResearchExecutionGuard, ResearchService, RoutedToolLoopModel,
   RuleBasedWatchdogAnalyzer, runToolLoop, RuntimeVerifier, ToolExecutor, VerificationRunner, WatchdogService,
-  type GitBaseline, type PermissionConfiguration, type ToolAuditRecord,
+  TaskArtifactPipeline, type GitBaseline, type PermissionConfiguration, type ToolAuditRecord, type ToolExecutionGuard,
 } from './tools/index.js';
 import { FilePricingStore, FileUsageStore, setActiveUsageTracker, UsageTracker } from './usage/index.js';
 import { UsageDashboardPanel } from './usage/panel.js';
@@ -66,7 +66,7 @@ class LgsViewProvider implements vscode.WebviewViewProvider {
   private model = '';
   private history: LgsMessage[] = [];
   private abort?: AbortController;
-  private options: ChatOptions = { mode: 'implementation', thinking: 'off', approval: 'on-request' };
+  private options: ChatOptions = { mode: 'implement', thinking: 'auto', autoResearch: 'when-uncertain', capabilities: { web: true, code: true, terminal: true, browser: true, computer: false, integrations: true }, approval: 'on-request' };
   private chats: SavedChat[];
   private chatId = '';
   private gitBaselines: GitBaselineStore;
@@ -86,6 +86,7 @@ class LgsViewProvider implements vscode.WebviewViewProvider {
     this.profiles = loadProfiles(context);
     this.chats = context.globalState.get<SavedChat[]>('lgs.chats') || [];
     this.gitBaselines = new GitBaselineStore(context.globalState.get<Record<string, GitBaseline>>('lgs.gitBaselines') || {});
+    const research = settings.workspaceConfiguration().research; this.options.autoResearch = research.autoResearch; this.options.capabilities.web = research.webEnabled;
     this.selectConfiguredDefaults();
   }
 
@@ -171,6 +172,15 @@ class LgsViewProvider implements vscode.WebviewViewProvider {
     if (message.type === 'listModels') { await this.listModels(); return; }
     if (message.type === 'userMessage') {
       if (!this.model) { await this.listModels(); if (!this.model) { this.send({ type: 'error', message: 'No model is available for this connection. Open Settings to test the endpoint and discover models.' }); return; } }
+      if (!this.chatId) this.chatId = Date.now().toString(36);
+      const root = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath;
+      if (root && message.attachments?.length) {
+        const pipeline = new TaskArtifactPipeline(root); const hasVision = this.backend()?.capabilities.multimodal ?? false;
+        for (const attachment of message.attachments) {
+          const data = Buffer.from(attachment.dataBase64, 'base64'); if (data.length !== attachment.bytes) { this.send({ type: 'error', message: `Attachment ${attachment.name} failed integrity validation.` }); return; }
+          pipeline.ingest(this.chatId, { name: attachment.name, mediaType: attachment.mediaType, data, source: attachment.source, primaryModelHasVision: hasVision });
+        }
+      }
       this.history.push(textMessage('user', message.text)); await this.generate();
     }
   }
@@ -186,7 +196,7 @@ class LgsViewProvider implements vscode.WebviewViewProvider {
       if (!result.ok) throw new Error(`${result.title}\n${result.endpoint}\n\n${result.summary}${result.guidance ? `\n\n${result.guidance}` : ''}`);
       const preferred = String(this.settings.effective().find(setting => setting.id === 'models.defaultModel')?.value || '');
       this.model = models.some(model => model.id === this.model) ? this.model : models.some(model => model.id === preferred) ? preferred : models[0]?.id || '';
-      this.send({ type: 'models', models, selected: this.model });
+      this.send({ type: 'models', models: models.map(item => ({ ...item, reasoning: item.capabilities?.reasoning ?? backend.capabilities.reasoning, vision: item.capabilities?.multimodal ?? backend.capabilities.multimodal })), selected: this.model });
       this.send({ type: 'state', state: models.length ? 'Ready' : 'Connected · no models' });
     } catch (error) {
       this.send({ type: 'models', models: [], selected: '' });
@@ -211,10 +221,11 @@ class LgsViewProvider implements vscode.WebviewViewProvider {
     this.abort = new AbortController(); this.send({ type: 'streamStart', backend: backend.displayName, model: managerModel });
     this.activities.unshift({ label: 'Advisor started', detail: route.reason, status: 'active', at: new Date().toISOString() });
     let answer = ''; let runtimeVerifier: RuntimeVerifier | undefined;
+    const reasoning = this.options.thinking !== 'auto' && backend.capabilities.reasoning ? { enabled: true, effort: this.options.thinking } : undefined;
     const generation = {
-      temperature: this.options.thinking === 'high' ? 0.8 : this.options.thinking === 'low' ? 0.2 : 0.5,
+      temperature: 0.5,
       maxTokens: 1024,
-      reasoning: { enabled: this.options.thinking !== 'off', ...(this.options.thinking === 'off' ? {} : { effort: this.options.thinking }) },
+      ...(reasoning ? { reasoning } : {}),
     };
     try {
       const folder = vscode.workspace.workspaceFolders?.[0];
@@ -232,6 +243,9 @@ class LgsViewProvider implements vscode.WebviewViewProvider {
         const logs = new RawExecutionLogStore(root); const taskEvidence = new FileTaskEvidenceStore(root); const taskState = new FileTaskStateStore(root);
         taskState.ensure(this.chatId, textFromMessage(this.history.find(message => message.role === 'user')!));
         const documentationStore = new FileDocumentationAuditStore(root, taskState); const researchStore = new FileResearchStore(root);
+        const researchRequirements = new FileResearchRequirementStore(root); const researchCycleStore = new FileResearchCycleStore(root);
+        const contextLifecycle = new ContextLifecycleManager(root, project.context);
+        const researchCycles = new ResearchCycleEngine(researchCycleStore, project.research.budgets, taskId => { const usage = this.usage?.dashboard(taskId); return { tokens: (usage?.totals.inputTokens ?? 0) + (usage?.totals.outputTokens ?? 0), costUsd: usage?.records.reduce((sum, item) => sum + (item.providerReportedCostUsd ?? item.estimatedCostUsd ?? 0), 0) ?? 0 }; });
         const reviewStore = new FileReviewStore(root, documentationStore, taskEvidence, researchStore); const completionEvidence = new FileCompletionEvidenceStore(root);
         const execution = new CommandExecutionService(root, permissionResolver, logs, taskEvidence, async request => {
           const choice = await vscode.window.showWarningMessage(`LGS wants to run ${displayCommand(request)} (${request.category}).`, { modal: true, detail: 'The executable is launched directly without a shell.' }, 'Allow once');
@@ -250,14 +264,16 @@ class LgsViewProvider implements vscode.WebviewViewProvider {
           return choice === 'Allow once';
         }, taskState);
         const runtimeStore = new FileRuntimeStore(root); const processes = new ManagedProcessManager(root, execution);
-        runtimeVerifier = new RuntimeVerifier(project.runtime, processes, runtimeStore, root);
+        runtimeVerifier = new RuntimeVerifier(project.runtime, processes, runtimeStore, root, async action => {
+          const choice = await vscode.window.showWarningMessage(`LGS BrowserAgent requests a consequential action: ${action.description}`, { modal: true, detail: action.url ? `Website: ${action.url}` : undefined }, 'Allow once'); return choice === 'Allow once';
+        });
         const completionGuard = new CompletionGuard(root, project.completion, completionEvidence, taskEvidence, documentationStore, reviewStore, runtimeStore);
         const verification = new VerificationRunner(project.verification, execution, completionGuard.failures);
         const orchestrator = new Orchestrator(new BackendAgentInference(profileId => this.backends.get(profileId)), project.agents, { profileId: managerProfileId, model: managerModel });
         const managerAgent = orchestrator.createAgent({ role: 'manager', initialContext: this.history });
         const watchdogModel = project.watchdog.model; const watchdogProfileId = watchdogModel?.profileId ?? managerProfileId;
         const watchdogAnalyzer = watchdogModel ? new BackendWatchdogAnalyzer(watchdogProfileId, watchdogModel.model, profileId => this.backends.get(profileId)) : new RuleBasedWatchdogAnalyzer();
-        const watchdog = new WatchdogService(root, taskState, taskEvidence, watchdogAnalyzer, project.watchdog.intervalTurns);
+        const watchdog = new WatchdogService(root, taskState, taskEvidence, watchdogAnalyzer, project.watchdog.intervalTurns, researchRequirements, this.options.autoResearch);
         const escalation = new EscalationController(root, project.watchdog, taskState, { profileId: managerProfileId, model: managerModel });
         escalation.resume(this.chatId); completionGuard.failures.useEscalations(escalation);
         const routedModel = new RoutedToolLoopModel(escalation.currentModel(), generation, profileId => this.backends.get(profileId));
@@ -279,13 +295,16 @@ class LgsViewProvider implements vscode.WebviewViewProvider {
           this.activities.unshift({ label: toolLabel(entry.toolId), detail: entry.status === 'success' ? `${entry.result.resultCount ?? 0} result${entry.result.resultCount === 1 ? '' : 's'} · ${entry.durationMs}ms` : `Failed: ${entry.errorCode ?? entry.status}`, status: entry.status === 'success' ? 'completed' : 'warning', at: entry.timestamp });
           publish();
         } };
-        const executor = new ToolExecutor(createWorkspaceToolRegistry({
+        const registry = createWorkspaceToolRegistry({
           gitBaseline: baseline, verificationRunner: verification, executionLogs: logs, completionGuard, completionEvidence,
           orchestrator, managerAgentId: managerAgent.id, taskState, watchdog, research, researchStore,
+          researchCycles, researchRequirements,
           documentationAgent, documentationStore, independentReviewer, reviewStore, processes, runtimeVerifier,
           runtimeStore, integrations, usage: this.usage, pricing: this.pricing, computer,
-          editing,
-        }), root, audit);
+          editing, contextLifecycle,
+        });
+        const capabilityGuard: ToolExecutionGuard = { check: definition => capabilityBlock(definition.id, definition.permission, this.options) };
+        const executor = new ToolExecutor(registry, root, audit, undefined, [new ResearchExecutionGuard(researchRequirements, project.research.webEnabled && this.options.capabilities.web), capabilityGuard]);
         publish();
         const outcome = await runToolLoop({
           model: routedModel, executor, messages: this.history,
@@ -311,6 +330,7 @@ class LgsViewProvider implements vscode.WebviewViewProvider {
     if (!this.chatId) return; const task = taskState.read(this.chatId); if (!task) return;
     const usage = this.usage?.dashboard(this.chatId); const latest = usage?.records.at(-1); const review = reviews.latest(this.chatId);
     const cost = usage?.records.reduce((sum, record) => sum + (record.providerReportedCostUsd ?? record.estimatedCostUsd ?? 0), 0);
+    const lifecycle = contextState(taskState.workspaceRoot, this.chatId, latest?.contextUtilized, latest?.contextMaximum, this.settings.workspaceConfiguration().context);
     this.send({ type: 'taskDashboard', dashboard: {
       taskId: this.chatId, objective: task.objective, acceptanceCriteria: task.acceptanceCriteria,
       plan: task.currentPlan, completed: task.completedWork, remaining: task.remainingWork,
@@ -320,6 +340,10 @@ class LgsViewProvider implements vscode.WebviewViewProvider {
       usage: { context: latest?.contextUtilized ?? 0, contextMaximum: latest?.contextMaximum, tokens: (usage?.totals.inputTokens ?? 0) + (usage?.totals.outputTokens ?? 0), tokensPerSecond: latest?.tokensPerSecond, cost },
       git: { modified: task.recentModifications.length, commit: task.commitSha },
       review: { findings: review?.findings.length ?? 0, status: review?.status }, researchCount: research.read(this.chatId).length,
+      planArtifact: new PlanningArtifactStore(taskState.workspaceRoot, taskState).read(this.chatId),
+      research: new FileResearchCycleStore(taskState.workspaceRoot).read(this.chatId),
+      contextLifecycle: lifecycle,
+      usageDetails: { searches: new Set(research.read(this.chatId).map(item => item.queryKey)).size, rotations: lifecycle?.rotations ?? 0, compactionSaved: lifecycle?.compactedTokensSaved ?? 0, byAgent: (usage?.aggregates.agent ?? []).map(item => ({ agent: item.key, tokens: item.inputTokens + item.outputTokens, cost: item.providerReportedCostUsd + item.estimatedCostUsd })) },
     } });
   }
 
@@ -336,8 +360,21 @@ class LgsViewProvider implements vscode.WebviewViewProvider {
     const root = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath;
     if (!root || !this.chatId) { this.send({ type: 'error', message: 'No active persisted task is available.' }); return; }
     if (action === 'viewDiff') { await vscode.commands.executeCommand('workbench.view.scm'); return; }
+    const plans = new PlanningArtifactStore(root, new FileTaskStateStore(root));
+    if (action === 'approvePlan') { plans.approve(this.chatId); this.restoreDashboard(); return; }
+    if (action === 'editPlan') {
+      const current = plans.read(this.chatId); if (!current) { this.send({ type: 'error', message: 'PLAN.md is unavailable.' }); return; }
+      const editable = { objective: current.objective, acceptanceCriteria: current.acceptanceCriteria, currentUnderstanding: current.currentUnderstanding, approach: current.approach, expectedAreas: current.expectedAreas, implementationStages: current.implementationStages, verificationPlan: current.verificationPlan, risks: current.risks, openQuestions: current.openQuestions };
+      const raw = await vscode.window.showInputBox({ title: 'Edit LGS plan', prompt: 'Edit the structured plan JSON. Saving creates an append-only revision.', value: JSON.stringify(editable), ignoreFocusOut: true }); if (raw === undefined) return;
+      try { plans.regenerate(this.chatId, JSON.parse(raw) as typeof editable, 'User edited the structured plan through the Plan view.', ['Direct user edit']); this.restoreDashboard(); }
+      catch (error) { this.send({ type: 'error', message: error instanceof Error ? error.message : 'The edited plan is invalid.' }); }
+      return;
+    }
+    if (action === 'beginImplementation') { const plan = plans.read(this.chatId); if (plan?.handoff === 'wait-for-approval' && plan.status !== 'approved') { this.send({ type: 'error', message: 'Approve the plan before beginning implementation.' }); return; } this.options = { ...this.options, mode: 'implement' }; this.send({ type: 'options', options: this.options }); return; }
+    if (action === 'regeneratePlan') { this.options = { ...this.options, mode: 'plan' }; this.send({ type: 'options', options: this.options }); this.send({ type: 'state', state: 'Plan mode ready · submit revision evidence' }); return; }
     const file = action === 'viewTaskState' ? path.join(root, '.lgs', 'tasks', this.chatId, 'state.json')
-      : action === 'viewResearch' ? path.join(root, '.lgs', 'tasks', this.chatId, 'research.json')
+      : action === 'viewPlan' ? path.join(root, '.lgs', 'tasks', this.chatId, 'PLAN.md')
+      : action === 'viewResearch' ? (fs.existsSync(path.join(root, '.lgs', 'tasks', this.chatId, 'RESEARCH.md')) ? path.join(root, '.lgs', 'tasks', this.chatId, 'RESEARCH.md') : path.join(root, '.lgs', 'tasks', this.chatId, 'research.json'))
       : newestFile(path.join(root, '.lgs', 'logs'));
     if (!file || !fs.existsSync(file)) { this.send({ type: 'error', message: action === 'viewLogs' ? 'No execution log has been recorded for this task.' : action === 'viewResearch' ? 'No research evidence has been recorded for this task.' : 'The task state file is unavailable.' }); return; }
     const document = await vscode.workspace.openTextDocument(vscode.Uri.file(file)); await vscode.window.showTextDocument(document, { preview: true });
@@ -378,6 +415,17 @@ function configuredIntegrations(configuration: import('./integrations/types.js')
 }
 
 function providerPolicy(value: ProviderDataPolicy | undefined): ProviderDataPolicy | undefined { return value === 'cloud' ? 'repository_allowed' : value; }
+function capabilityBlock(id: string, permission: import('./tools/types.js').ToolPermission, options: ChatOptions): string | undefined {
+  if (permission.scope === 'computer' && !options.capabilities.computer) return 'The Computer capability is disabled for this task.';
+  if (id.startsWith('browser_') && !options.capabilities.browser) return 'The Browser capability is disabled for this task.';
+  if ((id.includes('integration') || id.includes('mcp')) && !options.capabilities.integrations) return 'The Integrations capability is disabled for this task.';
+  if (permission.network && !options.capabilities.web && ['web_search', 'web_fetch', 'documentation_search', 'repository_search'].includes(id)) return 'The Web capability is disabled for this task. Auto Research does not enable Web implicitly.';
+  if (['run_verification', 'start_runtime', 'stop_runtime', 'run_runtime_verification'].includes(id) && !options.capabilities.terminal) return 'The Terminal capability is disabled for this task.';
+  if ((id.includes('file') || id.includes('patch') || id.includes('edit')) && permission.access === 'execute' && !options.capabilities.code) return 'The Code capability is disabled for this task.';
+}
+function contextState(root: string, taskId: string, used: number | undefined, maximum: number | undefined, configuration: import('./context/types.js').ContextLifecycleConfiguration) {
+  const lifecycle = new ContextLifecycleManager(root, configuration); return maximum ? lifecycle.observe(taskId, taskId, used ?? 0, maximum) : lifecycle.read(taskId);
+}
 function toolLabel(id: string): string { return id.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '); }
 function newestFile(directory: string): string | undefined {
   try { return fs.readdirSync(directory).map(name => path.join(directory, name)).filter(file => fs.statSync(file).isFile()).sort((a, b) => fs.statSync(b).mtimeMs - fs.statSync(a).mtimeMs)[0]; } catch { return; }
