@@ -71,7 +71,7 @@ function readIndex(root: string): RepositoryIndex | undefined { try { return JSO
 function stripGeneratedArtifacts(diff: string): string { return diff.split(/(?=^diff --git )/m).filter(block => !/^diff --git a\/\.lgs\/(?:CODEBASE_MAP\.md|index\.json)\b/.test(block)).join(''); }
 function readBounded(file: string, maximum: number): string { try { return bounded(fs.readFileSync(file, 'utf8'), maximum); } catch { return ''; } }
 function bounded(value: string, maximum: number): string { return value.length <= maximum ? value : value.slice(0, maximum) + '\n[truncated]'; }
-function cloneTaskState(state: TaskState): TaskState { return { ...state, acceptanceCriteria: [...state.acceptanceCriteria], currentPlan: [...state.currentPlan], completedWork: [...state.completedWork], remainingWork: [...state.remainingWork], recentModifications: [...state.recentModifications] }; }
+function cloneTaskState(state: TaskState): TaskState { return { ...state, acceptanceCriteria: [...state.acceptanceCriteria], currentPlan: [...state.currentPlan], completedWork: [...state.completedWork], remainingWork: [...state.remainingWork], recentModifications: [...state.recentModifications], verifiedFacts: [...state.verifiedFacts], designDecisions: [...state.designDecisions], failedApproaches: [...state.failedApproaches], blockers: [...state.blockers] }; }
 
 export function codebaseMapIsCurrent(root: string): boolean {
   try { const index = readIndex(root); if (!index) return false; const freshness = getFreshness(root, index); return freshness.index === 'current' && freshness.codebaseMap === 'current'; }

@@ -2,12 +2,13 @@ import { randomUUID } from 'node:crypto';
 import type { StreamEvent, Usage } from '../model/types.js';
 import type { UsageAggregate, UsageBillingKind, UsageConfiguration, UsageDashboard, UsageGroup, UsageRecord, PricingEntry } from './types.js';
 import { FilePricingStore, FileUsageStore } from './store.js';
+import { consumeActiveContextMetrics } from './runtime.js';
 
 export type UsageRequest = Omit<UsageRecord, 'id' | 'timestamp' | 'billing' | 'providerReportedCostUsd' | 'estimatedCostUsd' | 'promptProcessingMs' | 'generationMs' | 'tokensPerSecond' | 'latencyMs' | 'inputTokens' | 'outputTokens' | 'cachedTokens' | 'reasoningTokens'> & { billing?: UsageBillingKind };
 
 export class UsageTracker {
   constructor(private readonly store: FileUsageStore, private readonly pricing: FilePricingStore, private readonly configuration: UsageConfiguration) {}
-  begin(request: UsageRequest): UsageMeasurement { return new UsageMeasurement(this.store, this.pricing.read(), request); }
+  begin(request: UsageRequest): UsageMeasurement { return new UsageMeasurement(this.store, this.pricing.read(), { ...consumeActiveContextMetrics(), ...request }); }
   records(): UsageRecord[] { return this.store.read(); }
   cleanup(): number { return this.store.cleanup(this.configuration); }
   dashboard(task?: string, now = Date.now()): UsageDashboard { const records = this.records().filter(record => !task || record.task === task); const groups: UsageGroup[] = ['request', 'agent', 'task', 'session', 'model', 'provider', 'workspace', 'period']; const aggregates = Object.fromEntries(groups.map(group => [group, aggregate(records, group)])) as UsageDashboard['aggregates']; const cloud = records.filter(record => record.billing === 'commercial'); const period = cloud.filter(record => Date.parse(record.timestamp) >= now - this.configuration.budgets.periodDays * 86_400_000); const spend = (values: UsageRecord[]) => values.reduce((sum, record) => sum + (record.providerReportedCostUsd ?? record.estimatedCostUsd ?? 0), 0); const taskSpend = task ? spend(cloud) : undefined; const periodSpend = spend(period); const warnings = budgetWarnings(taskSpend, periodSpend, this.configuration);

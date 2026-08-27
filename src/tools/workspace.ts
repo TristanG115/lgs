@@ -16,6 +16,7 @@ import { registerPlanningTools } from '../planning/index.js';
 import { registerIntegrationTools, type IntegrationHub } from '../integrations/index.js';
 import { BenchmarkStore, LocalRuntimeDiscovery, registerLocalRuntimeTools } from '../localruntime/index.js';
 import { FilePricingStore, registerUsageTools, type UsageTracker } from '../usage/index.js';
+import { ContextBroker, registerContextTools } from '../context/index.js';
 
 export function createWorkspaceToolRegistry(options: { gitBaseline?: GitBaseline; gitRunner?: GitCommandRunner; verificationRunner?: VerificationRunner; executionLogs?: RawExecutionLogStore; completionGuard?: CompletionGuard; completionEvidence?: FileCompletionEvidenceStore; orchestrator?: Orchestrator; managerAgentId?: string; taskState?: FileTaskStateStore; watchdog?: WatchdogService; research?: ResearchService; researchStore?: FileResearchStore; documentationAgent?: DocumentationAgent; documentationStore?: FileDocumentationAuditStore; independentReviewer?: IndependentReviewer; reviewStore?: FileReviewStore; processes?: ManagedProcessManager; runtimeVerifier?: RuntimeVerifier; runtimeStore?: FileRuntimeStore; commitService?: VerifiedCommitService; skills?: WorkspaceSkillStore; memories?: ProjectMemoryStore; integrations?: IntegrationHub; usage?: UsageTracker; pricing?: FilePricingStore } = {}): ToolRegistry {
   const registry = registerGitTools(createRepositoryToolRegistry(), { baseline: options.gitBaseline, runner: options.gitRunner });
@@ -37,6 +38,7 @@ export function createWorkspaceToolRegistry(options: { gitBaseline?: GitBaseline
   if (options.taskState) registerPlanningTools(registry, options.taskState);
   if (options.integrations) registerIntegrationTools(registry, options.integrations);
   if (options.gitBaseline) registerLocalRuntimeTools(registry, new LocalRuntimeDiscovery(), new BenchmarkStore(options.gitBaseline.workspaceRoot));
+  if (options.gitBaseline) registerContextTools(registry, new ContextBroker());
   if (options.usage && options.pricing) registerUsageTools(registry, options.usage, options.pricing);
   return registry;
 }

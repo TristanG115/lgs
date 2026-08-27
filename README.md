@@ -223,6 +223,16 @@ usage:
 
 The router can receive the usage budget gate, so exhausted task/period budgets and required cloud-escalation confirmation block automatic cloud candidates while retaining the current route. `get_usage_dashboard`, `get_usage_records`, `cleanup_usage_records`, and `configure_usage_pricing` expose the same local-only controls to agents. Retention cleanup applies the configured age and record-count limits.
 
+## Advanced context optimization
+
+Phase 23 adds a retrieval-first `ContextBroker`. `select_context` begins with deterministic repository and module metadata, then descends through directory, file, symbol, and exact source range only when the objective or agent explicitly needs that detail. It ranks candidates using task terms, explicit agent path/symbol requests, imports, reverse dependencies, related tests, and optional Git, research, and semantic relevance signals. Identical content is deduplicated before selection; required task evidence is protected even when a budget is tight.
+
+The broker does not blindly summarize source. It returns selected metadata and original source ranges, with an uncompressed fallback always available through the existing repository tools. Optional generic prompt compression is intentionally not enabled: it would require measurable savings, reliable dependencies, protected critical requirements/code, and an uncompressed fallback before it can be accepted.
+
+Every selection computes candidate tokens, selected tokens, saved tokens, savings percentage, and an objective/Codebase Map/source/Git/research/memory/tools/conversation/reserve category breakdown. The next observed model request receives those selection metrics through the Usage Observatory. Existing worker reports, Git history, command logs, and research findings remain compact by design; raw logs, commits/diffs, and provenance remain explicitly retrievable.
+
+Task state now carries bounded, deduplicated verified facts, design decisions, failed approaches, and blockers alongside the objective, plan, modifications, and remaining work. This makes task continuity compact without discarding required engineering evidence.
+
 ## Watchdog and automatic escalation
 
 Phase 11 stores compact task state in `.lgs/tasks/<task-id>/state.json`, independently of whichever model is active. The objective is initialized from the original user request. Agents update acceptance criteria, the current plan, completed and remaining work, recent modifications, and explicit uncertainty through `update_task_state`. Verification failures are read directly from command evidence rather than self-reported. This state survives model escalation and is available through `get_task_state`; runtime task files remain ignored by Git and Repository Intelligence.

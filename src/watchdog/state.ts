@@ -10,7 +10,7 @@ export class FileTaskStateStore {
     if (existing) return existing;
     validateTaskId(taskId);
     const now = new Date().toISOString();
-    const state: TaskState = { taskId, objective: bounded(objective, 4_000), acceptanceCriteria: [], currentPlan: [], completedWork: [], remainingWork: [], recentModifications: [], revision: 0, createdAt: now, updatedAt: now };
+    const state: TaskState = { taskId, objective: bounded(objective, 4_000), acceptanceCriteria: [], currentPlan: [], completedWork: [], remainingWork: [], recentModifications: [], verifiedFacts: [], designDecisions: [], failedApproaches: [], blockers: [], revision: 0, createdAt: now, updatedAt: now };
     this.write(state); return clone(state);
   }
 
@@ -20,10 +20,21 @@ export class FileTaskStateStore {
     catch { return; }
   }
 
-  update(taskId: string, patch: Partial<Pick<TaskState, 'acceptanceCriteria' | 'currentPlan' | 'completedWork' | 'remainingWork' | 'recentModifications' | 'commitSha' | 'explicitUncertainty'>>): TaskState {
+  compactSummary(taskId: string): string | undefined {
+    const state = this.read(taskId); if (!state) return;
+    const section = (label: string, values: string[]) => values.length ? `${label}: ${values.slice(0, 12).join(' | ')}` : undefined;
+    return [
+      `Objective: ${state.objective}`,
+      section('Verified facts', state.verifiedFacts), section('Design decisions', state.designDecisions),
+      section('Modifications', state.recentModifications), section('Failed approaches', state.failedApproaches),
+      section('Blockers', state.blockers), section('Remaining work', state.remainingWork)
+    ].filter((value): value is string => Boolean(value)).join('\n').slice(0, 8_000);
+  }
+
+  update(taskId: string, patch: Partial<Pick<TaskState, 'acceptanceCriteria' | 'currentPlan' | 'completedWork' | 'remainingWork' | 'recentModifications' | 'verifiedFacts' | 'designDecisions' | 'failedApproaches' | 'blockers' | 'commitSha' | 'explicitUncertainty'>>): TaskState {
     const current = this.read(taskId);
     if (!current) throw new Error('Task state was not initialized.');
-    for (const key of ['acceptanceCriteria', 'currentPlan', 'completedWork', 'remainingWork', 'recentModifications'] as const) {
+    for (const key of ['acceptanceCriteria', 'currentPlan', 'completedWork', 'remainingWork', 'recentModifications', 'verifiedFacts', 'designDecisions', 'failedApproaches', 'blockers'] as const) {
       const candidate = patch[key];
       if (candidate !== undefined) current[key] = boundedList(candidate);
     }
@@ -48,11 +59,12 @@ function validateCommitSha(value: string): string {
 }
 function validTaskId(value: string): boolean { return /^[a-zA-Z0-9._-]{1,128}$/.test(value); }
 function validateTaskId(value: string): void { if (!validTaskId(value)) throw new Error('Task ID contains unsupported characters.'); }
-function clone(state: TaskState): TaskState { return { ...state, acceptanceCriteria: [...state.acceptanceCriteria], currentPlan: [...state.currentPlan], completedWork: [...state.completedWork], remainingWork: [...state.remainingWork], recentModifications: [...state.recentModifications] }; }
+function clone(state: TaskState): TaskState { return { ...state, acceptanceCriteria: [...state.acceptanceCriteria], currentPlan: [...state.currentPlan], completedWork: [...state.completedWork], remainingWork: [...state.remainingWork], recentModifications: [...state.recentModifications], verifiedFacts: [...(state.verifiedFacts ?? [])], designDecisions: [...(state.designDecisions ?? [])], failedApproaches: [...(state.failedApproaches ?? [])], blockers: [...(state.blockers ?? [])] }; }
 function validState(value: unknown): value is TaskState {
   if (typeof value !== 'object' || value === null || Array.isArray(value)) return false;
   const state = value as Record<string, unknown>;
   return typeof state.taskId === 'string' && typeof state.objective === 'string' && Number.isInteger(state.revision)
     && (state.commitSha === undefined || (typeof state.commitSha === 'string' && /^[0-9a-f]{40}$/i.test(state.commitSha)))
-    && ['acceptanceCriteria', 'currentPlan', 'completedWork', 'remainingWork', 'recentModifications'].every(key => Array.isArray(state[key]) && (state[key] as unknown[]).every(item => typeof item === 'string'));
+    && ['acceptanceCriteria', 'currentPlan', 'completedWork', 'remainingWork', 'recentModifications'].every(key => Array.isArray(state[key]) && (state[key] as unknown[]).every(item => typeof item === 'string'))
+    && ['verifiedFacts', 'designDecisions', 'failedApproaches', 'blockers'].every(key => state[key] === undefined || Array.isArray(state[key]) && (state[key] as unknown[]).every(item => typeof item === 'string'));
 }

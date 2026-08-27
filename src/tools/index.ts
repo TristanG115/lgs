@@ -21,3 +21,4 @@ export * from '../integrations/index.js';
 export * from '../localruntime/index.js';
 export * from '../routing/index.js';
 export * from '../usage/index.js';
+export * from '../context/index.js';

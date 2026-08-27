@@ -11,7 +11,7 @@ export function registerWatchdogTools(registry: ToolRegistry, state: FileTaskSta
   registry.register({
     id: 'update_task_state', description: 'Update compact LGS-owned task state for Watchdog review and escalation continuity. Omitted fields remain unchanged.', permission: STATE_PERMISSION,
     argumentSchema: { type: 'object', properties: {
-      acceptanceCriteria: LIST, currentPlan: LIST, completedWork: LIST, remainingWork: LIST, recentModifications: LIST,
+      acceptanceCriteria: LIST, currentPlan: LIST, completedWork: LIST, remainingWork: LIST, recentModifications: LIST, verifiedFacts: LIST, designDecisions: LIST, failedApproaches: LIST, blockers: LIST,
       explicitUncertainty: { type: 'string', maxLength: 2000 }
     }, additionalProperties: false },
     execute: (arguments_, context) => {
@@ -28,7 +28,7 @@ export function registerWatchdogTools(registry: ToolRegistry, state: FileTaskSta
       const task = state.read(context.taskId);
       if (!task) throw new ToolFailure(toolError('not_found', 'Task state was not found.'));
       const latestWatchdog = watchdog.read(context.taskId).at(-1);
-      return { data: { task, latestWatchdog }, resultCount: 1, source: 'execution' };
+      return { data: { task, summary: state.compactSummary(context.taskId), latestWatchdog }, resultCount: 1, source: 'execution' };
     }
   });
   return registry;
