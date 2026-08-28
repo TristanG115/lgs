@@ -12,9 +12,11 @@ The Settings page labels the effective source. Malformed YAML is reported withou
 
 ## Live Settings sections
 
-- **Appearance**: visual cards for Follow VS Code, Research Paper, or Research Lab. Clicking a card applies and saves it immediately; no Apply button is used.
-- **Models & Providers**: default connection/model, independent connection cards, adapter-aware add/manage forms, model discovery, provider activity, and usage statistics.
-- **Agents**: role-assignment guidance backed by structured workspace role mappings.
+- **Appearance**: visual cards for Follow VS Code, Research Paper, or Warm Dark. Clicking a card applies and saves it immediately; no Apply button is used.
+- **Providers**: default connection/model, independent connection cards, adapter-aware forms, model discovery, managed Ollama ownership, provider logs, and usage statistics.
+- **Skills**: installed global/project skills, scope, source, enabled state, files, and creation.
+- **Plugins**: executable capability/integration boundary kept distinct from providers and skills.
+- **Agent Profiles**: scoped skills, capabilities, provider preferences, permissions, and verification requirements.
 - **Permissions**: a live matrix for scalar computer-access controls plus the complete workspace policy entry point.
 - **Usage**: opens the provider-neutral usage dashboard and explains reported versus estimated billing.
 - **Integrations**: opens the structured catalog configuration without presenting disconnected declarations as live.
@@ -33,7 +35,7 @@ Profile metadata is stored in global state. API keys and secret custom-header va
 
 ## Appearance switching
 
-Theme cards are the control. A click updates the Settings document immediately, persists `appearance.theme` to the selected User or Workspace scope, and asks the extension host to refresh the sidebar. Follow VS Code uses semantic `--vscode-*` roles. Research Paper uses warm ivory, graphite, academic green, and brass; Research Lab uses deep navy, slate, sage, warm off-white, and amber. Responsive breakpoints reflow theme/provider cards and forms without horizontal clipping.
+Theme cards are the control. A click updates the Settings document immediately, persists `appearance.theme` to the selected User or Workspace scope, and asks the extension host to refresh the sidebar. Follow VS Code uses semantic `--vscode-*` roles. Research Paper uses warm ivory, graphite, academic green, and brass; Warm Dark uses deep navy, slate, sage, warm off-white, and amber. Responsive breakpoints reflow theme/provider cards and forms without horizontal clipping.
 
 ## Recovery controls
 

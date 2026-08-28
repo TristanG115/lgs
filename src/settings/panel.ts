@@ -3,6 +3,10 @@ import { ProviderConnectionService, type ConnectionDraft } from '../model/connec
 import type { ProviderKind } from '../model/profiles.js';
 import type { SettingsManager } from './configuration.js';
 import { parseSettingsClientMessage, type LifecycleAction, type SafeConnection, type SettingsHostMessage } from './messages.js';
+import { AgentWorkspaceService, DEFAULT_AGENT_PROFILES } from '../agents/index.js';
+import { WorkspaceSkillStore } from '../knowledge/skills.js';
+import * as path from 'node:path';
+import * as fs from 'node:fs';
 
 export type SettingsLifecycleHandler = (action: LifecycleAction) => Promise<string>;
 
@@ -34,6 +38,7 @@ export class SettingsPanel {
 
   private async state(): Promise<SettingsHostMessage> {
     const profiles = this.connections.profiles();
+    const root = this.workspaceRoot(); const workspace = root ? new AgentWorkspaceService(root) : undefined; const skills = root ? new WorkspaceSkillStore(root, path.join(this.context.globalStorageUri.fsPath, 'skills')).list() : [];
     const connections: SafeConnection[] = await Promise.all(profiles.map(async profile => ({
       ...profile,
       secretName: undefined,
@@ -43,10 +48,11 @@ export class SettingsPanel {
       models: this.connections.diagnostics.models(profile.id),
       statistics: this.connections.diagnostics.statistics(profile.id),
       activities: this.connections.diagnostics.activities(profile.id),
+      ...(profile.kind === 'ollama' ? { ollamaRuntime: this.connections.ollamaInfo(profile.id), ollamaLogs: this.connections.ollamaLogs(profile.id) } : {}),
     })));
     return {
       type: 'state', settings: this.manager.effective(), errors: this.manager.errorsList(), connections,
-      workspaceOpen: Boolean(this.manager.workspaceConfigPath()),
+      workspaceOpen: Boolean(root), agentWorkspace: workspace?.state(), skills: skills.map(skill => ({ name: skill.name, description: skill.description, applicableTasks: skill.applicableTasks, activationRules: skill.activationRules, estimatedTokenCost: skill.estimatedTokenCost, scope: skill.scope, enabled: skill.enabled, source: skill.source, compatibility: skill.compatibility, path: skill.path, supportingFiles: skill.supportingFiles })), plugins: workspace?.plugins() || [], agentProfiles: [...DEFAULT_AGENT_PROFILES, ...(workspace?.profiles() || []).filter(profile => !DEFAULT_AGENT_PROFILES.some(item => item.id === profile.id))],
     };
   }
 
@@ -59,6 +65,14 @@ export class SettingsPanel {
       if (message.type === 'refreshState') { await this.sendState(); return; }
       if (message.type === 'openWorkspaceConfig') { await this.openWorkspaceConfig(); return; }
       if (message.type === 'openUsage') { await vscode.commands.executeCommand('lgs.openUsage'); return; }
+      if (message.type === 'initializeAgentWorkspace') { const root = this.workspaceRoot(); if (!root) throw new Error('Open a workspace first.'); new AgentWorkspaceService(root).initialize(); this.notice('Agent workspace initialized.', 'success'); await this.sendState(); return; }
+      if (message.type === 'createSkill') { const root = this.workspaceRoot(); if (!root) throw new Error('Open a workspace first.'); const skill = new WorkspaceSkillStore(root, path.join(this.context.globalStorageUri.fsPath, 'skills')).create(message); this.notice(`${skill.name} created.`, 'success'); await this.sendState(); return; }
+      if (message.type === 'setSkillEnabled') { const root = this.workspaceRoot(); if (!root) throw new Error('Open a workspace first.'); new WorkspaceSkillStore(root, path.join(this.context.globalStorageUri.fsPath, 'skills')).setEnabled(message.name, message.enabled, message.scope); await this.sendState(); return; }
+      if (message.type === 'openSkill') { await this.openSkill(message.path); return; }
+      if (message.type === 'ollamaAction') {
+        if (message.action === 'start') await this.connections.startOllama(message.id); else if (message.action === 'restart') await this.connections.restartOllama(message.id); else await this.connections.test(message.id);
+        await this.onConnectionsChanged(); await this.sendState(); return;
+      }
       if (message.type === 'setAppearance') {
         const workspaceOverride = Object.prototype.hasOwnProperty.call(this.manager.workspaceValues(), 'appearance.theme');
         const error = await this.manager.set('appearance.theme', message.theme, message.scope);
@@ -125,6 +139,13 @@ export class SettingsPanel {
     const document = await vscode.workspace.openTextDocument(vscode.Uri.file(file)); await vscode.window.showTextDocument(document);
   }
 
+  private workspaceRoot(): string | undefined { const file = this.manager.workspaceConfigPath(); return file ? path.dirname(path.dirname(file)) : vscode.workspace.workspaceFolders?.[0]?.uri.fsPath; }
+  private async openSkill(value: string): Promise<void> {
+    const root = this.workspaceRoot(); const candidate = path.isAbsolute(value) ? value : root ? path.resolve(root, value) : '';
+    const globalRoot = path.resolve(this.context.globalStorageUri.fsPath, 'skills'); const allowed = root && isWithin(root, candidate) || isWithin(globalRoot, candidate); if (!candidate || !allowed || !fs.existsSync(candidate)) throw new Error('Skill file is unavailable.');
+    const document = await vscode.workspace.openTextDocument(vscode.Uri.file(candidate)); await vscode.window.showTextDocument(document, { preview: true });
+  }
+
   private html(webview: vscode.Webview): string {
     const script = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'dist', 'settings.js'));
     const style = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'dist', 'settings.css'));
@@ -147,6 +168,7 @@ function connectionDraft(value: Record<string, unknown>): ConnectionDraft {
       inputPerMillionUsd: numberValue(value.pricing.inputPerMillionUsd), cachedInputPerMillionUsd: numberValue(value.pricing.cachedInputPerMillionUsd), outputPerMillionUsd: numberValue(value.pricing.outputPerMillionUsd),
     } : undefined,
     dataPolicy: ['local', 'cloud', 'repository_allowed', 'metadata_only'].includes(String(value.dataPolicy)) ? value.dataPolicy as ConnectionDraft['dataPolicy'] : undefined,
+    ollamaManagement: record(value.ollamaManagement) ? { mode: value.ollamaManagement.mode === 'lgs-managed' ? 'lgs-managed' : 'external', autoStart: value.ollamaManagement.autoStart === true, executable: text(value.ollamaManagement.executable) } : undefined,
   };
 }
 
@@ -158,3 +180,4 @@ function stringArray(value: unknown): string[] { return Array.isArray(value) ? v
 function stringRecord(value: unknown): Record<string, string> { return record(value) ? Object.fromEntries(Object.entries(value).filter((entry): entry is [string, string] => typeof entry[1] === 'string')) : {}; }
 function booleanRecord(value: unknown): Record<string, boolean> { return record(value) ? Object.fromEntries(Object.entries(value).filter((entry): entry is [string, boolean] => typeof entry[1] === 'boolean')) : {}; }
 function numberRecord(value: unknown): Record<string, number> { return record(value) ? Object.fromEntries(Object.entries(value).filter((entry): entry is [string, number] => typeof entry[1] === 'number' && Number.isInteger(entry[1]))) : {}; }
+function isWithin(root: string, target: string): boolean { const relative = path.relative(path.resolve(root), path.resolve(target)); return relative === '' || !relative.startsWith('..') && !path.isAbsolute(relative); }

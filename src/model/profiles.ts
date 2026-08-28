@@ -34,6 +34,7 @@ export type BackendProfile = {
   contextOverrides: Record<string, number>;
   pricing?: ProviderPricing;
   dataPolicy?: ProviderDataPolicy;
+  ollamaManagement?: { mode: 'lgs-managed' | 'external'; autoStart: boolean; executable?: string };
 };
 
 export const defaultProfiles = (): BackendProfile[] => [
@@ -41,6 +42,7 @@ export const defaultProfiles = (): BackendProfile[] => [
     id: 'ollama-local', name: 'Local Ollama', kind: 'ollama', baseUrl: 'http://localhost:11434', enabled: true,
     headers: {}, secretHeaderNames: [], discoveryMode: 'automatic', manualModels: [], modelAliases: {},
     capabilityOverrides: {}, contextOverrides: {}, pricing: { billing: 'local' }, dataPolicy: 'local',
+    ollamaManagement: { mode: 'lgs-managed', autoStart: true },
   },
   {
     id: 'openai', name: 'Personal OpenAI', kind: 'openai', baseUrl: 'https://api.openai.com/v1', enabled: true,
@@ -81,6 +83,7 @@ export function normalizeProfile(value: Partial<BackendProfile>): BackendProfile
     contextOverrides: merged.contextOverrides || {},
     pricing: merged.pricing,
     dataPolicy: merged.dataPolicy,
+    ollamaManagement: merged.kind === 'ollama' ? merged.ollamaManagement || { mode: 'external', autoStart: false } : undefined,
   };
 }
 

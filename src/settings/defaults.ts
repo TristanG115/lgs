@@ -14,7 +14,7 @@ export function createDefaultRegistry(): SettingsRegistry {
     type: 'select', default: 'vscode', scope: 'both', choices: [
       { value: 'vscode', label: 'Follow VS Code' },
       { value: 'lgs-light', label: 'Research Paper / Light' },
-      { value: 'lgs-dark', label: 'Research Lab / Dark' },
+      { value: 'lgs-dark', label: 'Warm Dark' },
     ],
   });
   registry.register({

@@ -14,7 +14,7 @@ let logFilter = 'all';
 let draftTestPassed = false;
 
 const categories = [
-  ['appearance', 'Appearance'], ['providers', 'Models & Providers'], ['agents', 'Agents'], ['permissions', 'Permissions'],
+  ['appearance', 'Appearance'], ['providers', 'Providers'], ['skills', 'Skills'], ['plugins', 'Plugins'], ['agents', 'Agent Profiles'], ['permissions', 'Permissions'],
   ['usage', 'Usage'], ['integrations', 'Integrations'], ['verification', 'Verification'], ['diagnostics', 'Diagnostics'],
 ] as const;
 
@@ -24,7 +24,7 @@ api.postMessage({ type: 'refreshState' });
 function receive(message: SettingsHostMessage): void {
   if (!message || typeof message !== 'object' || typeof message.type !== 'string') return;
   if (message.type === 'state') {
-    state = message; applyTheme(effectiveTheme()); render(); return;
+    state = { ...message, skills: message.skills || [], plugins: message.plugins || [], agentProfiles: message.agentProfiles || [] }; applyTheme(effectiveTheme()); render(); return;
   }
   if (message.type === 'notice') { notice(message.message, message.tone || 'info'); return; }
   if (message.type === 'connectionResult') {
@@ -47,14 +47,14 @@ function receive(message: SettingsHostMessage): void {
 function render(): void {
   if (!state) return;
   app.innerHTML = `<div class="layout">
-    <aside class="rail"><div class="identity"><div class="monogram">L</div><div><strong>Little Grad Student</strong><span>Laboratory settings</span></div></div>
+    <aside class="rail"><div class="identity"><div class="monogram">L</div><div><strong>LGS</strong><span>Settings</span></div></div>
       <nav>${categories.map(([id, label]) => `<button class="nav-item ${active === id ? 'active' : ''}" data-nav="${id}">${label}</button>`).join('')}</nav>
     </aside>
-    <main class="content"><header class="page-header"><div><div class="eyebrow">Workspace instruments</div><h1>Settings</h1><p>Configure appearance, model connections, policy, and operational health.</p></div>${restartMenu()}</header>
+    <main class="content"><header class="page-header"><span></span>${restartMenu()}</header>
       <div id="notice" aria-live="polite">${state.errors.map(error => `<div class="notice error">${esc(error)}</div>`).join('')}</div>
       ${categories.map(([id, label]) => `<section id="${id}" class="section ${active === id ? 'active' : ''}" aria-label="${label}"></section>`).join('')}
     </main></div>`;
-  bindNavigation(); renderAppearance(); renderProviders(); renderStructuredSections(); bindLifecycle();
+  bindNavigation(); renderAppearance(); renderProviders(); renderStructuredSections(); renderExtensibility(); bindLifecycle();
 }
 
 function restartMenu(): string {
@@ -76,7 +76,7 @@ function renderAppearance(): void {
     <div class="theme-grid">
       ${themeCard('vscode', 'Follow VS Code', 'Native workbench color roles and active theme contrast.', `<i class="mini-rail"></i><i class="mini-editor"><em></em><em></em><em></em></i>`)}
       ${themeCard('lgs-light', 'Research Paper', 'Warm ivory, graphite, academic green, and restrained brass.', `<i class="paper-margin"></i><i class="paper-lines"></i><i class="paper-note">Aa</i>`)}
-      ${themeCard('lgs-dark', 'Research Lab', 'Deep navy, slate instruments, sage, and warm amber.', `<i class="lab-panel"><em></em><em></em></i><i class="lab-trace"></i>`)}
+      ${themeCard('lgs-dark', 'Warm Dark', 'Deep navy, slate, sage, and restrained amber.', `<i class="lab-panel"><em></em><em></em></i><i class="lab-trace"></i>`)}
     </div><p class="source-line">Effective source: ${esc(item.source)} · ${workspaceOverride ? 'workspace choice takes precedence' : 'click a card to switch'}</p>`;
   root.querySelector<HTMLSelectElement>('#theme-scope')!.onchange = event => { scope = (event.currentTarget as HTMLSelectElement).value as typeof scope; renderAppearance(); };
   root.querySelectorAll<HTMLButtonElement>('[data-theme]').forEach(card => card.onclick = () => {
@@ -108,8 +108,9 @@ function connectionCard(connection: SafeConnection): string {
   return `<article class="connection-card"><div class="connection-accent ${connection.status.state}"></div><div class="connection-main">
     <div class="connection-heading"><div><h3>${esc(connection.name)}</h3><div class="endpoint"><span>${apiTypeLabel(connection.kind)}</span><code>${esc(endpointSummary(connection.baseUrl))}</code></div></div><span class="status ${connection.status.state}"><i></i>${status}</span></div>
     <p class="connection-message">${esc(connection.status.message || 'Not tested.')}${connection.status.checkedAt ? ` · checked ${relative(connection.status.checkedAt)}` : ''}</p>
-    <div class="connection-facts"><span><b>${connection.status.modelCount ?? connection.models.length}</b> models</span><span><b>${statistics.totalRequests}</b> recorded requests</span><span>${billingLabel(connection.pricing?.billing)}</span><span>${policyLabel(connection.dataPolicy)}</span></div>
+    <div class="connection-facts"><span><b>${connection.status.modelCount ?? connection.models.length}</b> models</span><span><b>${statistics.totalRequests}</b> recorded requests</span><span>${billingLabel(connection.pricing?.billing)}</span><span>${policyLabel(connection.dataPolicy)}</span>${connection.kind === 'ollama' ? `<span>${connection.ollamaRuntime?.ownership === 'lgs-managed' ? 'LGS managed' : 'External'}</span>${connection.ollamaRuntime?.pid ? `<span>PID ${connection.ollamaRuntime.pid}</span>` : ''}` : ''}</div>
     <div class="connection-actions"><button class="secondary" data-manage="${esc(connection.id)}">Manage</button><button class="secondary" data-test="${esc(connection.id)}">Test connection</button><button class="quiet" data-logs="${esc(connection.id)}">Logs</button><button class="quiet" data-toggle="${esc(connection.id)}">${connection.enabled ? 'Disable' : 'Enable'}</button>
+      ${connection.kind === 'ollama' && connection.ollamaRuntime?.state !== 'running' && connection.ollamaManagement?.mode === 'lgs-managed' ? `<button class="quiet" data-ollama="start" data-id="${esc(connection.id)}">Start</button>` : ''}${connection.kind === 'ollama' && connection.ollamaRuntime?.ownership === 'lgs-managed' ? `<button class="quiet" data-ollama="restart" data-id="${esc(connection.id)}">Restart</button>` : ''}${connection.kind === 'ollama' && connection.ollamaRuntime?.ownership !== 'lgs-managed' ? `<button class="quiet" data-ollama="refresh" data-id="${esc(connection.id)}">Reconnect</button>` : ''}
       <details class="overflow"><summary aria-label="More actions">•••</summary><button class="destructive" data-delete="${esc(connection.id)}">Delete connection</button></details></div>
     <div class="inline-result" data-result="${esc(connection.id)}"></div></div></article>`;
 }
@@ -127,6 +128,7 @@ function bindProviderActions(root: HTMLElement): void {
   root.querySelectorAll<HTMLButtonElement>('[data-logs]').forEach(button => button.onclick = () => { logConnectionId = button.dataset.logs; editingId = undefined; logFilter = 'all'; renderProviders(); });
   root.querySelectorAll<HTMLButtonElement>('[data-toggle]').forEach(button => button.onclick = () => { const connection = state!.connections.find(c => c.id === button.dataset.toggle)!; api.postMessage({ type: 'setConnectionEnabled', id: connection.id, enabled: !connection.enabled }); });
   root.querySelectorAll<HTMLButtonElement>('[data-delete]').forEach(button => button.onclick = () => { const connection = state!.connections.find(c => c.id === button.dataset.delete); if (connection && confirm(`Delete ${connection.name} and its LGS-managed credentials? This cannot be undone.`)) api.postMessage({ type: 'deleteConnection', id: connection.id }); });
+  root.querySelectorAll<HTMLButtonElement>('[data-ollama]').forEach(button => button.onclick = () => api.postMessage({ type: 'ollamaAction', id: button.dataset.id, action: button.dataset.ollama }));
   bindEditor(root); bindLogs(root);
 }
 
@@ -140,6 +142,8 @@ function connectionEditor(connection?: SafeConnection): string {
       <label class="wide"><span>Base URL</span><input name="baseUrl" type="url" value="${esc(c.baseUrl)}" required></label>
       <label class="credential ${c.kind === 'ollama' ? 'hidden' : ''}"><span>API key</span><input name="apiKey" type="password" autocomplete="new-password" placeholder="${c.hasApiKey ? 'Stored — leave blank to keep' : 'Stored securely after save'}"><small>The value is sent only to the extension host and never returned.</small></label>
       <label><span>Model discovery</span><select name="discoveryMode"><option value="automatic" ${automatic ? 'selected' : ''}>Automatic</option><option value="manual" ${manual ? 'selected' : ''}>Manual list</option><option value="disabled" ${c.discoveryMode === 'disabled' ? 'selected' : ''}>Disabled</option></select></label>
+      <label class="ollama-management ${c.kind === 'ollama' ? '' : 'hidden'}"><span>Server management</span><select name="ollamaMode"><option value="lgs-managed" ${c.ollamaManagement?.mode === 'lgs-managed' ? 'selected' : ''}>LGS managed</option><option value="external" ${c.ollamaManagement?.mode !== 'lgs-managed' ? 'selected' : ''}>External</option></select></label>
+      <label class="ollama-management check ${c.kind === 'ollama' ? '' : 'hidden'}"><input type="checkbox" name="ollamaAutoStart" ${c.ollamaManagement?.autoStart ? 'checked' : ''}> Start local Ollama when unavailable</label>
       <label class="discovery-path ${automatic ? '' : 'hidden'}"><span>Discovery path override</span><input name="discoveryPath" value="${esc(c.discoveryPath || '')}" placeholder="Use adapter default"></label>
       <label class="manual-models wide ${manual ? '' : 'hidden'}"><span>Manual model IDs</span><textarea name="manualModels" placeholder="model-one&#10;model-two">${esc(c.manualModels.join('\n'))}</textarea></label>
     </div>
@@ -167,6 +171,7 @@ function bindEditor(root: HTMLElement): void {
   const adapt = () => {
     const kind = field<HTMLSelectElement>(form, 'kind').value; const mode = field<HTMLSelectElement>(form, 'discoveryMode').value;
     form.querySelector('.credential')!.classList.toggle('hidden', kind === 'ollama');
+    form.querySelectorAll('.ollama-management').forEach(item => item.classList.toggle('hidden', kind !== 'ollama'));
     form.querySelector('.discovery-path')!.classList.toggle('hidden', mode !== 'automatic'); form.querySelector('.manual-models')!.classList.toggle('hidden', mode !== 'manual');
     if (!field<HTMLInputElement>(form, 'baseUrl').dataset.edited) field<HTMLInputElement>(form, 'baseUrl').value = defaultUrl(kind);
   };
@@ -190,6 +195,7 @@ function serializeConnection(form: HTMLFormElement): Record<string, unknown> {
     manualModels: field<HTMLTextAreaElement>(form, 'manualModels').value.split('\n').map(value => value.trim()).filter(Boolean), headers: json('headers'), secretHeaders, secretHeaderNames,
     modelAliases: json('modelAliases'), contextOverrides: json('contextOverrides'), capabilityOverrides: Object.fromEntries(['reasoning', 'multimodal', 'toolCalling', 'usage'].flatMap(name => { const value = field<HTMLSelectElement>(form, `capability-${name}`).value; return value === 'auto' ? [] : [[name, value === 'true']]; })),
     dataPolicy: field<HTMLSelectElement>(form, 'dataPolicy').value, pricing: { billing: field<HTMLSelectElement>(form, 'billing').value, inputPerMillionUsd: number('inputPrice'), cachedInputPerMillionUsd: number('cachedPrice'), outputPerMillionUsd: number('outputPrice') },
+    ollamaManagement: { mode: field<HTMLSelectElement>(form, 'ollamaMode').value, autoStart: field<HTMLInputElement>(form, 'ollamaAutoStart').checked },
     allowOffline: rootChecked('#allow-offline'),
   };
 }
@@ -200,10 +206,10 @@ function modelTable(connection: SafeConnection): string {
 
 function logsView(connection?: SafeConnection): string {
   if (!connection) return '';
-  const activities = connection.activities.filter(item => logFilter === 'all' || logFilter === 'errors' && item.result === 'failed' || logFilter === 'requests' && item.type === 'request' || logFilter === 'models' && item.type === 'models' || logFilter === 'connection' && item.type === 'connection' || logFilter === 'usage' && item.type === 'usage');
+  const activities = connection.activities.filter(item => logFilter === 'all' || logFilter === 'errors' && item.result === 'failed' || logFilter === 'requests' && item.type === 'request' || logFilter === 'models' && item.type === 'models' || logFilter === 'connection' && item.type === 'connection' || logFilter === 'usage' && item.type === 'usage'); const runtimeLogs = connection.ollamaLogs || [];
   return `<div class="overlay" role="dialog" aria-modal="true" aria-label="Provider activity"><div class="dialog logs-dialog"><div class="dialog-head"><div><div class="eyebrow">Redacted local diagnostics</div><h2>${esc(connection.name)} activity</h2><p>Prompts and responses are not stored. Credentials and sensitive headers are redacted.</p></div><button class="icon-button" id="close-logs">×</button></div>
     ${statisticsView(connection)}<div class="filter-row">${['all', 'errors', 'requests', 'models', 'connection', 'usage'].map(filter => `<button class="filter ${filter === logFilter ? 'active' : ''}" data-filter="${filter}">${title(filter)}</button>`).join('')}</div>
-    <div class="activity-list">${activities.length ? activities.map(activity => `<article><time>${formatDate(activity.timestamp)}</time><span class="event-type">${esc(activity.type)}</span><div><b>${esc(activity.operation)}</b><p>${esc(activity.message)}</p>${activity.model ? `<code>${esc(activity.model)}</code>` : ''}${activity.durationMs !== undefined ? `<small>${formatNumber(activity.durationMs)} ms</small>` : ''}<details><summary>Raw diagnostics</summary><pre>${esc(activity.raw || 'No additional raw diagnostics were recorded.')}</pre></details></div><span class="result ${activity.result}">${activity.result}</span></article>`).join('') : '<div class="empty"><b>No matching activity</b><p>Test the connection or use it for a model request to create safe diagnostic records.</p></div>'}</div></div></div>`;
+    <div class="activity-list">${runtimeLogs.map(entry => `<article><time>${formatDate(entry.at)}</time><span class="event-type">${esc(entry.stream)}</span><div><b>Ollama runtime</b><p>${esc(entry.text)}</p></div><span class="result info">info</span></article>`).join('')}${activities.length ? activities.map(activity => `<article><time>${formatDate(activity.timestamp)}</time><span class="event-type">${esc(activity.type)}</span><div><b>${esc(activity.operation)}</b><p>${esc(activity.message)}</p>${activity.model ? `<code>${esc(activity.model)}</code>` : ''}${activity.durationMs !== undefined ? `<small>${formatNumber(activity.durationMs)} ms</small>` : ''}<details><summary>Raw diagnostics</summary><pre>${esc(activity.raw || 'No additional raw diagnostics were recorded.')}</pre></details></div><span class="result ${activity.result}">${activity.result}</span></article>`).join('') : runtimeLogs.length ? '' : '<div class="empty"><b>No activity</b></div>'}</div></div></div>`;
 }
 
 function bindLogs(root: HTMLElement): void {
@@ -232,6 +238,21 @@ function renderStructuredSections(): void {
   bindLifecycle();
 }
 
+function renderExtensibility(): void {
+  if (!state) return;
+  const workspace = state.agentWorkspace;
+  document.querySelector('#skills')!.innerHTML = `<div class="section-title"><div><h2>Skills</h2><p>${state.skills.length} installed · loaded progressively when relevant</p></div><div class="row-actions">${workspace?.initialized ? '' : '<button class="secondary" id="initialize-agents">Initialize agent workspace</button>'}<button class="primary" id="create-skill">Create skill</button></div></div>
+    <div class="connection-list">${state.skills.length ? state.skills.map(skill => `<article class="connection-card"><div class="connection-main"><div class="connection-heading"><div><h3>${esc(skill.name)}</h3><div class="endpoint"><span>${esc(skill.scope)}</span><code>${esc(skill.source)}</code></div></div><span class="status ${skill.enabled ? 'online' : 'disabled'}"><i></i>${skill.enabled ? 'Enabled' : 'Disabled'}</span></div><p class="connection-message">${esc(skill.description)}</p><div class="connection-facts"><span>${formatNumber(skill.estimatedTokenCost)} estimated tokens</span><span>${skill.supportingFiles.length} resources</span>${skill.compatibility?.length ? `<span>${esc(skill.compatibility.join(', '))}</span>` : ''}</div><div class="connection-actions"><button class="secondary" data-open-skill="${esc(skill.path)}">Open files</button><button class="quiet" data-skill-name="${esc(skill.name)}" data-skill-scope="${skill.scope}" data-skill-enabled="${!skill.enabled}">${skill.enabled ? 'Disable' : 'Enable'}</button></div></div></article>`).join('') : '<div class="empty"><b>No installed skills</b></div>'}</div>
+    <div class="overlay" id="skill-editor" hidden><div class="dialog"><div class="dialog-head"><div><h2>Create skill</h2></div><button class="icon-button" id="close-skill">×</button></div><form id="skill-form"><div class="form-grid"><label><span>Name</span><input name="skillName" required></label><label><span>Scope</span><select name="skillScope"><option value="project">Project</option><option value="global">Global</option></select></label><label class="wide"><span>Purpose</span><input name="skillDescription" required></label><label class="wide"><span>Instructions</span><textarea name="skillInstructions" required></textarea></label></div><div class="dialog-actions"><button class="primary" type="submit">Create</button></div></form></div></div>`;
+  document.querySelector('#plugins')!.innerHTML = `<div class="section-title"><div><h2>Plugins</h2><p>Executable capabilities and integrations</p></div></div><div class="connection-list">${state.plugins.length ? state.plugins.map(plugin => `<article class="connection-card"><div class="connection-main"><div class="connection-heading"><div><h3>${esc(plugin.name)}</h3><div class="endpoint"><code>${esc(plugin.source)}</code></div></div><span class="status ${plugin.enabled ? 'online' : 'disabled'}"><i></i>${plugin.enabled ? 'Enabled' : 'Disabled'}</span></div><p class="connection-message">${esc(plugin.description)}</p><div class="connection-facts"><span>${plugin.permissions.length} permissions</span></div></div></article>`).join('') : '<div class="empty"><b>No project plugins</b><p>Plugin sources remain separate from model providers and instruction skills.</p></div>'}</div>`;
+  document.querySelector('#agents')!.innerHTML = `<div class="section-title"><div><h2>Agent Profiles</h2><p>Scoped skills, tools, provider policy, permissions, and verification</p></div></div><div class="profile-list">${state.agentProfiles.map(profile => `<article><div><b>${esc(profile.name)}</b><span>${esc(profile.description)}</span></div><code>${esc(profile.capabilities.join(' · '))}</code><small>${profile.verificationRequired ? 'Verification required' : 'Verification optional'}</small></article>`).join('')}</div>`;
+  document.querySelector<HTMLButtonElement>('#initialize-agents')?.addEventListener('click', () => api.postMessage({ type: 'initializeAgentWorkspace' }));
+  const editor = document.querySelector<HTMLElement>('#skill-editor')!; document.querySelector<HTMLButtonElement>('#create-skill')!.onclick = () => { editor.hidden = false; }; document.querySelector<HTMLButtonElement>('#close-skill')!.onclick = () => { editor.hidden = true; };
+  document.querySelector<HTMLFormElement>('#skill-form')!.onsubmit = event => { event.preventDefault(); const form = event.currentTarget as HTMLFormElement; api.postMessage({ type: 'createSkill', name: field<HTMLInputElement>(form, 'skillName').value, description: field<HTMLInputElement>(form, 'skillDescription').value, instructions: field<HTMLTextAreaElement>(form, 'skillInstructions').value, scope: field<HTMLSelectElement>(form, 'skillScope').value }); };
+  document.querySelectorAll<HTMLButtonElement>('[data-open-skill]').forEach(button => button.onclick = () => api.postMessage({ type: 'openSkill', path: button.dataset.openSkill }));
+  document.querySelectorAll<HTMLButtonElement>('[data-skill-name]').forEach(button => button.onclick = () => api.postMessage({ type: 'setSkillEnabled', name: button.dataset.skillName, scope: button.dataset.skillScope, enabled: button.dataset.skillEnabled === 'true' }));
+}
+
 function purposeSection(titleText: string, description: string, action: string, note: string, mode?: 'usage'): string {
   return `<div class="section-title"><div><div class="eyebrow">Structured workspace policy</div><h2>${titleText}</h2><p>${description}</p></div></div><div class="purpose-panel"><div class="purpose-graphic ${mode || ''}"><i></i><i></i><i></i><i></i></div><div><h3>${titleText}</h3><p>${note}</p><button class="secondary ${mode === 'usage' ? '' : 'open-config'}" ${mode === 'usage' ? 'data-open-usage' : ''}>${action}</button></div></div>`;
 }
@@ -250,7 +271,7 @@ function notice(message: string, tone = 'info'): void { const root = document.qu
 function applyTheme(theme: string): void { document.documentElement.dataset.lgsTheme = theme; }
 function effectiveTheme(): string { return String(setting('appearance.theme')?.value || 'vscode'); }
 function setting(id: string): SettingsState['settings'][number] { return state?.settings.find(item => item.id === id) || { id, category: '', label: '', description: '', type: 'string', value: '', source: 'built-in', scope: 'both' }; }
-function newConnection(): SafeConnection { return { id: '', name: '', kind: 'openai-compatible', baseUrl: 'http://localhost:1234/v1', enabled: true, headers: {}, secretHeaderNames: [], discoveryMode: 'automatic', manualModels: [], modelAliases: {}, capabilityOverrides: {}, contextOverrides: {}, pricing: { billing: 'unknown' }, dataPolicy: 'repository_allowed', hasApiKey: false, status: { state: 'unknown' }, models: [], statistics: { totalRequests: 0, successfulRequests: 0, failedRequests: 0, cancelledRequests: 0, inputTokens: 0, outputTokens: 0, cachedTokens: 0, reasoningTokens: 0, totalTokens: 0, activeGenerationMs: 0, tasksServed: 0, agentInvocations: 0 }, activities: [] }; }
+function newConnection(): SafeConnection { return { id: '', name: '', kind: 'openai-compatible', baseUrl: 'http://localhost:1234/v1', enabled: true, headers: {}, secretHeaderNames: [], discoveryMode: 'automatic', manualModels: [], modelAliases: {}, capabilityOverrides: {}, contextOverrides: {}, pricing: { billing: 'unknown' }, dataPolicy: 'repository_allowed', ollamaManagement: { mode: 'external', autoStart: false }, hasApiKey: false, status: { state: 'unknown' }, models: [], statistics: { totalRequests: 0, successfulRequests: 0, failedRequests: 0, cancelledRequests: 0, inputTokens: 0, outputTokens: 0, cachedTokens: 0, reasoningTokens: 0, totalTokens: 0, activeGenerationMs: 0, tasksServed: 0, agentInvocations: 0 }, activities: [] }; }
 function emptyConnections(): string { return '<div class="empty"><b>No model connections</b><p>Add an Ollama, OpenAI, OpenAI-compatible, or Anthropic connection. Connection IDs are generated independently from display names.</p></div>'; }
 function defaultUrl(kind: string): string { return kind === 'ollama' ? 'http://localhost:11434' : kind === 'openai' ? 'https://api.openai.com/v1' : kind === 'anthropic' ? 'https://api.anthropic.com/v1' : 'http://localhost:1234/v1'; }
 function apiTypeLabel(kind: string): string { return kind === 'openai-compatible' ? 'OpenAI Compatible' : kind === 'openai' ? 'OpenAI' : kind === 'ollama' ? 'Ollama' : 'Anthropic'; }

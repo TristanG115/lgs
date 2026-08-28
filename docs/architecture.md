@@ -22,7 +22,7 @@ sidebar request
   -> normalized tool result + audit metadata
   -> model continuation
   -> Completion Guard
-  -> sidebar task evidence
+  -> request/phase/activity state and final response
 ```
 
 `ToolExecutor` treats model calls as untrusted. It validates the envelope and JSON-like schema, blocks mutation in Planning Mode, applies cancellation, bounds serialized output, normalizes errors, and redacts secret-named audit arguments.
@@ -36,6 +36,8 @@ Phase 28 adds persistent `PLAN.md` and `RESEARCH.md` projections, deterministic 
 - `.lgs/config.yaml`: reviewable workspace policy and workspace scalar overrides.
 - `.lgs/index.json` and `.lgs/CODEBASE_MAP.md`: deterministic repository intelligence.
 - `.lgs/tasks/<task-id>/`: task state, `PLAN.md`, `RESEARCH.md`, experiment and context lifecycle state, attachments, edit undo records, evidence, reviews, routing, runtime checks, and completion data.
+- `.lgs/tasks/<request-id>/request.json` and `activity.jsonl`: request timing, structured phases, and ordered observable events.
+- `AGENTS.md` and `.agents/`: human-readable repository instructions, scoped skills, profiles, and agent configuration.
 - `.lgs/logs/`, `.lgs/runtime/`, `.lgs/usage.jsonl`, and related ignored files: bounded local operational evidence.
 
 ## Safety invariants
@@ -50,3 +52,5 @@ Phase 28 adds persistent `PLAN.md` and `RESEARCH.md` projections, deterministic 
 ## Honest capability boundaries
 
 Integration declarations are catalog metadata until a healthy concrete connector is registered. Provider adapters cannot be considered live-tested without an available endpoint and model. Role agents are logical sessions and may share one physical provider/model; their isolation is message-context isolation, not a separate operating-system process.
+
+See [interaction-architecture.md](interaction-architecture.md) for composer, mode, request trace, managed agent workspace, and extensibility contracts.

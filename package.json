@@ -67,7 +67,8 @@
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "test": "vitest run",
-    "test:settings-ui": "node test/settings-ui.mjs"
+    "test:settings-ui": "node test/settings-ui.mjs",
+    "test:webview-ui": "node test/webview-ui.mjs"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",

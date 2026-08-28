@@ -3,6 +3,7 @@ import type * as vscode from 'vscode';
 import type { FilePricingStore } from '../usage/store.js';
 import { createBackend, loadProfiles, normalizeProfile, saveProfiles, type BackendProfile, type ProviderKind } from './profiles.js';
 import { ProviderDiagnosticsStore, testProviderConnection, type ConnectionTestResult } from './diagnostics.js';
+import { ManagedOllamaService, type OllamaLogEntry, type OllamaRuntimeInfo } from './ollama-runtime.js';
 
 export type ConnectionDraft = Partial<BackendProfile> & {
   apiKey?: string;
@@ -15,6 +16,7 @@ export class ProviderConnectionService {
     private readonly context: vscode.ExtensionContext,
     readonly diagnostics: ProviderDiagnosticsStore,
     private readonly pricing?: FilePricingStore,
+    readonly ollama = new ManagedOllamaService(),
   ) {}
 
   profiles(): BackendProfile[] { return loadProfiles(this.context); }
@@ -81,6 +83,17 @@ export class ProviderConnectionService {
     return Promise.all(enabled.map(profile => this.test(profile.id)));
   }
 
+  async initializeManagedOllama(): Promise<void> {
+    for (const profile of this.profiles().filter(item => item.enabled && item.kind === 'ollama')) {
+      await this.ollama.initialize(profile, async () => (await this.testDirect(profile.id)).ok);
+    }
+  }
+
+  async startOllama(id: string): Promise<OllamaRuntimeInfo> { const profile = this.requiredOllama(id); return this.ollama.start(profile, async () => (await this.testDirect(id)).ok); }
+  async restartOllama(id: string): Promise<OllamaRuntimeInfo> { const profile = this.requiredOllama(id); return this.ollama.restart(profile, async () => (await this.testDirect(id)).ok); }
+  ollamaInfo(id: string): OllamaRuntimeInfo { return this.ollama.info(id); }
+  ollamaLogs(id: string): OllamaLogEntry[] { return this.ollama.logs(id); }
+
   async hasApiKey(profile: BackendProfile): Promise<boolean> { return Boolean(profile.secretName && await this.context.secrets.get(profile.secretName)); }
 
   private async secrets(profile: BackendProfile): Promise<{ apiKey?: string; headers: Record<string, string> }> {
@@ -88,6 +101,11 @@ export class ProviderConnectionService {
     const headers: Record<string, string> = {};
     for (const name of profile.secretHeaderNames) { const value = await this.context.secrets.get(secretHeaderKey(profile.id, name)); if (value) headers[name] = value; }
     return { apiKey, headers };
+  }
+  private requiredOllama(id: string): BackendProfile { const profile = this.profiles().find(item => item.id === id && item.kind === 'ollama'); if (!profile) throw new Error('Ollama connection not found.'); return profile; }
+  private async testDirect(id: string): Promise<ConnectionTestResult> {
+    const profile = this.profiles().find(candidate => candidate.id === id); if (!profile) throw new Error('Connection not found.');
+    const secrets = await this.secrets(profile); return testProviderConnection(profile, createBackend(profile, secrets.apiKey, secrets.headers));
   }
 
   private updatePricing(profile: BackendProfile): void {
@@ -118,6 +136,7 @@ export function validateProfile(profile: BackendProfile): string | undefined {
   const unsafe = Object.keys(profile.headers).find(name => /^(authorization|proxy-authorization|x-api-key|api-key)$/i.test(name));
   if (unsafe) return `${unsafe} is credential-bearing and must be entered as an API key or secret header.`;
   for (const [model, context] of Object.entries(profile.contextOverrides)) if (!model || !Number.isInteger(context) || context < 1) return 'Context overrides must map model IDs to positive whole numbers.';
+  if (profile.kind === 'ollama' && profile.ollamaManagement && !['lgs-managed', 'external'].includes(profile.ollamaManagement.mode)) return 'Select a supported Ollama server management mode.';
   return;
 }
 

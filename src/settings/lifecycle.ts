@@ -9,7 +9,7 @@ export type LifecycleConnections = {
 
 export type LifecycleViews = {
   restartServices(): Promise<string>;
-  restartOwnedLocalRuntimes(): string;
+  restartOwnedLocalRuntimes(): Promise<string>;
   reloadViews(): void;
   refreshConnections(): Promise<void>;
 };
@@ -34,7 +34,7 @@ export class LgsLifecycleService {
       await this.record(action, message); return message;
     }
     if (action === 'restartLocalRuntimes') {
-      const message = this.views.restartOwnedLocalRuntimes(); await this.record(action, message); return message;
+      const message = await this.views.restartOwnedLocalRuntimes(); await this.record(action, message); return message;
     }
     if (action === 'reloadViews') {
       this.views.reloadViews(); this.refreshSettings(); const message = 'LGS views reloaded without reloading VS Code.';

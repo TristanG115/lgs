@@ -9,6 +9,12 @@
 
 Every selected model is scoped to its provider connection. Same-named models on different profiles do not collide.
 
+## Managed Ollama lifecycle
+
+On activation LGS tests each enabled Ollama endpoint. A healthy endpoint is classified as external unless LGS already owns its child process, and no duplicate server is started. An unavailable local endpoint may auto-start `ollama serve` only when the profile selects LGS-managed mode and automatic startup. Readiness uses bounded backoff, then model discovery and health are refreshed. Remote endpoints are never used to trigger a local process launch.
+
+Process ownership is strict. Restart and termination operate only on the exact child spawned and tracked by the current LGS runtime. An already-running or otherwise external Ollama receives Test/Reconnect/Edit actions and is never killed. Managed stdout/stderr is retained in a bounded provider log, separate from per-request activity events.
+
 ## Connection workflow
 
 Open LGS Settings, choose **Models & Providers**, and add or manage a profile. LGS generates its stable ID; Display Name does not control provider identity. The selected API Type reveals only relevant fields. Automatic discovery may use an optional path override, manual discovery accepts explicit model IDs, and disabled discovery remains visibly unavailable.

@@ -8,6 +8,7 @@ import { normalizeProviderError, ProviderDiagnosticsStore } from './model/diagno
 import { createBackends, type BackendObservation } from './model/registry.js';
 import { loadProfiles, profileBilling, type BackendProfile, type ProviderDataPolicy } from './model/profiles.js';
 import { textFromMessage, textMessage, type LgsMessage } from './model/types.js';
+import type { ModelInfo } from './model/types.js';
 import { SettingsManager } from './settings/configuration.js';
 import { SettingsPanel } from './settings/panel.js';
 import { LgsLifecycleService } from './settings/lifecycle.js';
@@ -26,8 +27,11 @@ import {
 } from './tools/index.js';
 import { FilePricingStore, FileUsageStore, setActiveUsageTracker, UsageTracker } from './usage/index.js';
 import { UsageDashboardPanel } from './usage/panel.js';
+import { ActivityLogPanel } from './interaction/panel.js';
+import { contextUsage, FileActivityStore, MemoryActivityStore, modeAllows, RequestExecutionService, type ActivityEventType, type ExecutionMode, type RequestExecution } from './interaction/index.js';
 
-type SavedChat = { id: string; title: string; updatedAt: number; messages: LgsMessage[] };
+type AttachmentSummary = { name: string; mediaType: string; bytes: number };
+type SavedChat = { id: string; title: string; updatedAt: number; messages: LgsMessage[]; attachments?: Record<number, AttachmentSummary[]>; requestIds?: string[] };
 
 export function activate(context: vscode.ExtensionContext): void {
   const logger = new Logger('LGS');
@@ -51,8 +55,10 @@ export function activate(context: vscode.ExtensionContext): void {
     vscode.commands.registerCommand('lgs.rebuildIndex', () => rebuildIndex(logger, true)),
     vscode.commands.registerCommand('lgs.openCodebaseMap', () => openCodebaseMap()),
     vscode.commands.registerCommand('lgs.openUsage', () => usage ? new UsageDashboardPanel(usage).show() : vscode.window.showWarningMessage('LGS: Open a workspace to view usage.')),
+    { dispose: () => { void connections.ollama.dispose(); } },
   );
   logger.info('Extension activated');
+  void connections.initializeManagedOllama().finally(() => { settingsPanel.refresh(); void provider.refreshConnections(); });
   void rebuildIndex(logger, false);
 }
 
@@ -64,9 +70,10 @@ class LgsViewProvider implements vscode.WebviewViewProvider {
   private backends = new Map<string, ModelBackend>();
   private profileId = '';
   private model = '';
+  private models: ModelInfo[] = [];
   private history: LgsMessage[] = [];
   private abort?: AbortController;
-  private options: ChatOptions = { mode: 'implement', thinking: 'auto', autoResearch: 'when-uncertain', capabilities: { web: true, code: true, terminal: true, browser: true, computer: false, integrations: true }, approval: 'on-request' };
+  private options: ChatOptions = { mode: 'normal', thinking: 'auto', autoResearch: 'when-uncertain', capabilities: { web: true, code: true, terminal: true, browser: true, computer: false, integrations: true }, approval: 'on-request' };
   private chats: SavedChat[];
   private chatId = '';
   private gitBaselines: GitBaselineStore;
@@ -74,6 +81,11 @@ class LgsViewProvider implements vscode.WebviewViewProvider {
   private completion?: TaskDashboard['completion'];
   private settingsPanel?: SettingsPanel;
   private rebuilding?: Promise<void>;
+  private readonly executions: RequestExecutionService;
+  private readonly activityPanel: ActivityLogPanel;
+  private currentRequestId = '';
+  private attachmentHistory: Record<number, AttachmentSummary[]> = {};
+  private requestIds: string[] = [];
 
   constructor(
     private readonly context: vscode.ExtensionContext,
@@ -86,6 +98,10 @@ class LgsViewProvider implements vscode.WebviewViewProvider {
     this.profiles = loadProfiles(context);
     this.chats = context.globalState.get<SavedChat[]>('lgs.chats') || [];
     this.gitBaselines = new GitBaselineStore(context.globalState.get<Record<string, GitBaseline>>('lgs.gitBaselines') || {});
+    const root = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath;
+    const activityStore = root ? new FileActivityStore(root) : new MemoryActivityStore();
+    this.executions = new RequestExecutionService(activityStore, (request) => this.publishExecution(request));
+    this.activityPanel = new ActivityLogPanel(context, requestId => { const request = this.executions.current(requestId); return request ? { request, events: this.executions.events(requestId) } : undefined; }, root);
     const research = settings.workspaceConfiguration().research; this.options.autoResearch = research.autoResearch; this.options.capabilities.web = research.webEnabled;
     this.selectConfiguredDefaults();
   }
@@ -149,16 +165,20 @@ class LgsViewProvider implements vscode.WebviewViewProvider {
     if (message.type === 'cancel') { this.abort?.abort(); return; }
     if (message.type === 'openSettings') { this.settingsPanel?.show(); return; }
     if (message.type === 'openUsage') { await vscode.commands.executeCommand('lgs.openUsage'); return; }
+    if (message.type === 'openActivity') { if (this.currentRequestId) this.activityPanel.show(this.currentRequestId); return; }
+    if (message.type === 'openResource') { await this.openResource(message.path, message.line); return; }
+    if (message.type === 'providerAction') { await this.providerAction(message.action); return; }
     if (message.type === 'taskAction') { await this.taskAction(message.action); return; }
     if (message.type === 'newChat') {
-      this.history = []; this.chatId = ''; this.activities = []; this.completion = undefined;
+      this.history = []; this.chatId = ''; this.activities = []; this.completion = undefined; this.attachmentHistory = {}; this.requestIds = []; this.currentRequestId = '';
       this.send({ type: 'chatLoaded', messages: [] }); return;
     }
     if (message.type === 'loadChat') {
       const chat = this.chats.find(candidate => candidate.id === message.chatId);
       if (chat) {
-        this.chatId = chat.id; this.history = chat.messages; this.activities = []; this.completion = undefined;
-        this.send({ type: 'chatLoaded', messages: chat.messages.filter(item => item.role !== 'system').map(item => ({ role: item.role as 'user' | 'assistant', text: item.content.map(part => part.type === 'text' ? part.text : '[image]').join('') })) });
+        this.chatId = chat.id; this.history = chat.messages; this.activities = []; this.completion = undefined; this.attachmentHistory = chat.attachments || {}; this.requestIds = chat.requestIds || []; this.currentRequestId = this.requestIds.at(-1) || '';
+        this.send({ type: 'chatLoaded', messages: chat.messages.flatMap((item, index) => item.role === 'system' ? [] : [{ role: item.role as 'user' | 'assistant', text: item.content.map(part => part.type === 'text' ? part.text : '[image]').join(''), ...(this.attachmentHistory[index]?.length ? { attachments: this.attachmentHistory[index] } : {}) }]) });
+        const execution = this.currentRequestId && this.executions.current(this.currentRequestId); if (execution) this.publishExecution(execution);
         this.restoreDashboard();
       }
       return;
@@ -167,7 +187,7 @@ class LgsViewProvider implements vscode.WebviewViewProvider {
       if (this.backends.has(message.profileId)) { this.profileId = message.profileId; this.model = ''; this.sendProfiles(); await this.listModels(); }
       return;
     }
-    if (message.type === 'selectModel') { this.model = message.model; return; }
+    if (message.type === 'selectModel') { this.model = message.model; this.publishContextUsage(); return; }
     if (message.type === 'setOptions') { this.options = message.options; this.send({ type: 'options', options: this.options }); return; }
     if (message.type === 'listModels') { await this.listModels(); return; }
     if (message.type === 'userMessage') {
@@ -181,6 +201,7 @@ class LgsViewProvider implements vscode.WebviewViewProvider {
           pipeline.ingest(this.chatId, { name: attachment.name, mediaType: attachment.mediaType, data, source: attachment.source, primaryModelHasVision: hasVision });
         }
       }
+      if (message.attachments?.length) this.attachmentHistory[this.history.length] = message.attachments.map(({ name, mediaType, bytes }) => ({ name, mediaType, bytes }));
       this.history.push(textMessage('user', message.text)); await this.generate();
     }
   }
@@ -192,15 +213,17 @@ class LgsViewProvider implements vscode.WebviewViewProvider {
     try {
       this.settingsPanel?.refresh();
       const result = await this.connections.test(this.profileId);
-      const models = result.models;
+      const models = result.models; this.models = models;
       if (!result.ok) throw new Error(`${result.title}\n${result.endpoint}\n\n${result.summary}${result.guidance ? `\n\n${result.guidance}` : ''}`);
       const preferred = String(this.settings.effective().find(setting => setting.id === 'models.defaultModel')?.value || '');
       this.model = models.some(model => model.id === this.model) ? this.model : models.some(model => model.id === preferred) ? preferred : models[0]?.id || '';
       this.send({ type: 'models', models: models.map(item => ({ ...item, reasoning: item.capabilities?.reasoning ?? backend.capabilities.reasoning, vision: item.capabilities?.multimodal ?? backend.capabilities.multimodal })), selected: this.model });
+      this.publishContextUsage(); this.publishProviderNotice('running');
       this.send({ type: 'state', state: models.length ? 'Ready' : 'Connected · no models' });
     } catch (error) {
-      this.send({ type: 'models', models: [], selected: '' });
-      this.send({ type: 'error', message: error instanceof Error ? error.message : 'Unable to connect or discover models.' });
+      this.models = []; this.send({ type: 'models', models: [], selected: '' });
+      const profile = this.profiles.find(item => item.id === this.profileId); const message = error instanceof Error ? error.message : 'Unable to connect or discover models.';
+      if (profile?.kind === 'ollama') this.publishProviderNotice(this.connections.ollamaInfo(profile.id).state, message); else this.send({ type: 'error', message });
       this.send({ type: 'state', state: 'Connection error' });
     }
   }
@@ -218,9 +241,14 @@ class LgsViewProvider implements vscode.WebviewViewProvider {
     const managerProfileId = route.identity.profileId; const managerModel = route.identity.model;
     const backend = this.backends.get(managerProfileId);
     if (!backend) { this.send({ type: 'error', message: `Manager connection was not found: ${managerProfileId}.` }); return; }
+    this.currentRequestId = `${this.chatId}-${Date.now().toString(36)}`; this.requestIds.push(this.currentRequestId);
+    const objective = textFromMessage([...this.history].reverse().find(message => message.role === 'user')!);
+    this.executions.start(this.currentRequestId, objective, this.options.mode);
+    this.executions.finishPhase(this.currentRequestId, 'understand', 'completed', 'Request and execution policy established.');
+    const nextPhase = this.executions.current(this.currentRequestId)?.phases.find(phase => phase.status === 'pending'); if (nextPhase) this.executions.startPhase(this.currentRequestId, nextPhase.id);
     this.abort = new AbortController(); this.send({ type: 'streamStart', backend: backend.displayName, model: managerModel });
     this.activities.unshift({ label: 'Advisor started', detail: route.reason, status: 'active', at: new Date().toISOString() });
-    let answer = ''; let runtimeVerifier: RuntimeVerifier | undefined;
+    let answer = ''; let runtimeVerifier: RuntimeVerifier | undefined; let failed: string | undefined; let outcomeStatus: 'complete' | 'cancelled' | 'limit' = 'complete';
     const reasoning = this.options.thinking !== 'auto' && backend.capabilities.reasoning ? { enabled: true, effort: this.options.thinking } : undefined;
     const generation = {
       temperature: 0.5,
@@ -236,6 +264,7 @@ class LgsViewProvider implements vscode.WebviewViewProvider {
         }
       } else {
         const root = folder.uri.fsPath;
+        this.advanceExecution('plan');
         const baseline = await this.gitBaselines.ensure(this.chatId, root, this.abort.signal);
         await this.context.globalState.update('lgs.gitBaselines', this.gitBaselines.serialize());
         const commandFallback = this.options.approval === 'always' ? 'always_allow' : this.options.approval === 'never' ? 'deny' : 'ask';
@@ -293,6 +322,9 @@ class LgsViewProvider implements vscode.WebviewViewProvider {
         const audit = { record: (entry: ToolAuditRecord) => {
           this.logger.info('Tool audit ' + JSON.stringify(entry));
           this.activities.unshift({ label: toolLabel(entry.toolId), detail: entry.status === 'success' ? `${entry.result.resultCount ?? 0} result${entry.result.resultCount === 1 ? '' : 's'} · ${entry.durationMs}ms` : `Failed: ${entry.errorCode ?? entry.status}`, status: entry.status === 'success' ? 'completed' : 'warning', at: entry.timestamp });
+          const traceType = activityType(entry); const resource = activityResource(entry); const status = entry.status === 'success' ? 'success' : entry.status === 'cancelled' ? 'blocked' : 'failed';
+          this.executions.event(this.currentRequestId, traceType, toolLabel(entry.toolId), { phaseId: this.executions.current(this.currentRequestId)?.phases.find(phase => phase.status === 'active')?.id, status, resource, metadata: { durationMs: entry.durationMs, resultCount: entry.result.resultCount ?? 0, truncated: entry.result.truncated } }, entry.timestamp);
+          if (entry.permission.access === 'execute' && this.options.mode !== 'plan' && this.options.mode !== 'web') this.advanceExecution('implement');
           publish();
         } };
         const registry = createWorkspaceToolRegistry({
@@ -308,21 +340,26 @@ class LgsViewProvider implements vscode.WebviewViewProvider {
         publish();
         const outcome = await runToolLoop({
           model: routedModel, executor, messages: this.history,
-          identity: { taskId: this.chatId, sessionId: this.chatId, agentId: managerAgent.id, agentRole: 'manager', model: escalation.currentModel().model, taskMode: this.options.mode },
+          identity: { taskId: this.chatId, sessionId: this.chatId, agentId: managerAgent.id, agentRole: 'manager', model: escalation.currentModel().model, taskMode: taskMode(this.options.mode) },
           signal: this.abort.signal, completionGuard, watchdog, escalation,
           onCompletionState: state => { this.completion = state; this.send({ type: 'completionState', state }); publish(); },
         });
+        outcomeStatus = outcome.status;
         answer = outcome.text;
         if (outcome.status === 'limit') { this.send({ type: 'error', message: answer }); answer = ''; }
         if (answer && outcome.status === 'complete') this.send({ type: 'textDelta', text: answer });
         publish();
       }
     } catch (error) {
+      failed = error instanceof Error ? error.message : 'Generation failed.';
       if (!this.abort.signal.aborted) this.send({ type: 'error', message: error instanceof Error ? error.message : 'Generation failed.' });
     } finally {
       await runtimeVerifier?.dispose();
       if (this.activities[0]?.status === 'active') this.activities[0].status = this.abort.signal.aborted ? 'warning' : 'completed';
-      this.send({ type: 'streamEnd' }); if (answer) this.history.push(textMessage('assistant', answer)); this.saveChat(); this.abort = undefined;
+      const stopped = this.abort.signal.aborted || outcomeStatus === 'cancelled';
+      if (!stopped && !failed && outcomeStatus === 'complete') this.advanceExecution('verify');
+      this.executions.finish(this.currentRequestId, stopped ? 'stopped' : failed || outcomeStatus === 'limit' ? 'failed' : 'completed', failed || (outcomeStatus === 'limit' ? 'Execution limit reached.' : undefined));
+      this.send({ type: 'streamEnd' }); if (answer) this.history.push(textMessage('assistant', answer)); this.saveChat(); this.abort = undefined; this.publishContextUsage();
     }
   }
 
@@ -370,7 +407,7 @@ class LgsViewProvider implements vscode.WebviewViewProvider {
       catch (error) { this.send({ type: 'error', message: error instanceof Error ? error.message : 'The edited plan is invalid.' }); }
       return;
     }
-    if (action === 'beginImplementation') { const plan = plans.read(this.chatId); if (plan?.handoff === 'wait-for-approval' && plan.status !== 'approved') { this.send({ type: 'error', message: 'Approve the plan before beginning implementation.' }); return; } this.options = { ...this.options, mode: 'implement' }; this.send({ type: 'options', options: this.options }); return; }
+    if (action === 'beginImplementation') { const plan = plans.read(this.chatId); if (plan?.handoff === 'wait-for-approval' && plan.status !== 'approved') { this.send({ type: 'error', message: 'Approve the plan before beginning implementation.' }); return; } this.options = { ...this.options, mode: 'normal' }; this.send({ type: 'options', options: this.options }); return; }
     if (action === 'regeneratePlan') { this.options = { ...this.options, mode: 'plan' }; this.send({ type: 'options', options: this.options }); this.send({ type: 'state', state: 'Plan mode ready · submit revision evidence' }); return; }
     const file = action === 'viewTaskState' ? path.join(root, '.lgs', 'tasks', this.chatId, 'state.json')
       : action === 'viewPlan' ? path.join(root, '.lgs', 'tasks', this.chatId, 'PLAN.md')
@@ -380,9 +417,37 @@ class LgsViewProvider implements vscode.WebviewViewProvider {
     const document = await vscode.workspace.openTextDocument(vscode.Uri.file(file)); await vscode.window.showTextDocument(document, { preview: true });
   }
 
+  private publishExecution(request: RequestExecution): void {
+    const events = this.executions.events(request.id); this.send({ type: 'requestExecution', request, events }); this.activityPanel?.update(request, events);
+  }
+  private advanceExecution(phaseId: string): void {
+    if (!this.currentRequestId) return; const request = this.executions.current(this.currentRequestId); const target = request?.phases.find(phase => phase.id === phaseId); if (!target || target.status === 'active' || ['completed', 'failed', 'blocked', 'skipped'].includes(target.status)) return;
+    this.executions.startPhase(this.currentRequestId, phaseId);
+  }
+  private publishContextUsage(): void {
+    const model = this.models.find(item => item.id === this.model); const record = this.chatId ? this.usage?.dashboard(this.chatId)?.records.at(-1) : undefined;
+    this.send({ type: 'contextUsage', usage: contextUsage(record?.contextUtilized, model?.contextWindow || record?.contextMaximum) });
+  }
+  private publishProviderNotice(state?: 'offline' | 'starting' | 'running' | 'error', message?: string): void {
+    const profile = this.profiles.find(item => item.id === this.profileId); if (profile?.kind !== 'ollama') return; const runtime = this.connections.ollamaInfo(profile.id); const current = state || runtime.state;
+    this.send({ type: 'providerNotice', provider: profile.name, state: current, message: message || runtime.message, ownership: runtime.ownership, canStart: current !== 'running' && profile.ollamaManagement?.mode === 'lgs-managed', canRestart: runtime.ownership === 'lgs-managed' && current !== 'starting' });
+  }
+  private async providerAction(action: 'start' | 'restart' | 'refresh' | 'settings' | 'logs'): Promise<void> {
+    const profile = this.profiles.find(item => item.id === this.profileId); if (action === 'settings') { this.settingsPanel?.show(); return; }
+    if (action === 'logs') { this.settingsPanel?.show(); return; }
+    if (!profile || profile.kind !== 'ollama') return;
+    if (action === 'start') { this.publishProviderNotice('starting'); await this.connections.startOllama(profile.id); }
+    else if (action === 'restart') { this.publishProviderNotice('starting'); await this.connections.restartOllama(profile.id); }
+    await this.listModels(); this.settingsPanel?.refresh();
+  }
+  private async openResource(resource: string, line?: number): Promise<void> {
+    const root = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath; if (!root) return; const file = path.resolve(root, resource); const relative = path.relative(root, file); if (relative.startsWith('..') || path.isAbsolute(relative) || !fs.existsSync(file)) return;
+    const document = await vscode.workspace.openTextDocument(vscode.Uri.file(file)); const editor = await vscode.window.showTextDocument(document, { preview: true }); if (line) { const position = new vscode.Position(line - 1, 0); editor.selection = new vscode.Selection(position, position); editor.revealRange(new vscode.Range(position, position)); }
+  }
+
   private saveChat(): void {
     if (!this.history.length) return;
-    const chat: SavedChat = { id: this.chatId || Date.now().toString(36), title: this.history.find(message => message.role === 'user')?.content.map(part => part.type === 'text' ? part.text : '').join('').slice(0, 60) || 'New task', updatedAt: Date.now(), messages: this.history };
+    const chat: SavedChat = { id: this.chatId || Date.now().toString(36), title: this.history.find(message => message.role === 'user')?.content.map(part => part.type === 'text' ? part.text : '').join('').slice(0, 60) || 'New task', updatedAt: Date.now(), messages: this.history, attachments: this.attachmentHistory, requestIds: this.requestIds };
     this.chatId = chat.id; this.chats = [chat, ...this.chats.filter(candidate => candidate.id !== chat.id)].slice(0, 100);
     void this.context.globalState.update('lgs.chats', this.chats); this.sendChats();
   }
@@ -399,8 +464,10 @@ class LgsViewProvider implements vscode.WebviewViewProvider {
     this.selectConfiguredDefaults(); this.sendProfiles(); this.refreshAppearance(); await this.listModels();
     return hadActiveRequest ? 'LGS services restarted. The active request was cancelled safely.' : 'LGS services restarted and provider adapters rebuilt.';
   }
-  restartOwnedLocalRuntimes(): string {
-    return 'No persistent LGS-owned local runtime is active. External provider processes were left untouched.';
+  async restartOwnedLocalRuntimes(): Promise<string> {
+    const owned = this.profiles.filter(profile => profile.kind === 'ollama' && this.connections.ollamaInfo(profile.id).ownership === 'lgs-managed');
+    for (const profile of owned) await this.connections.restartOllama(profile.id);
+    return owned.length ? `Restarted ${owned.length} LGS-managed Ollama runtime${owned.length === 1 ? '' : 's'}. External processes were left untouched.` : 'No LGS-managed Ollama runtime is active. External processes were left untouched.';
   }
   reloadViews(): void { this.sendProfiles(); this.send({ type: 'options', options: this.options }); this.refreshAppearance(); this.sendChats(); void this.listModels(); }
 }
@@ -416,12 +483,25 @@ function configuredIntegrations(configuration: import('./integrations/types.js')
 
 function providerPolicy(value: ProviderDataPolicy | undefined): ProviderDataPolicy | undefined { return value === 'cloud' ? 'repository_allowed' : value; }
 function capabilityBlock(id: string, permission: import('./tools/types.js').ToolPermission, options: ChatOptions): string | undefined {
+  if (permission.access === 'execute' && !modeAllows(options.mode, 'edit') && !['run_verification'].includes(id)) return `${options.mode === 'plan' ? 'Plan' : 'Web'} Mode is read-only.`;
+  if (permission.network && !modeAllows(options.mode, 'web') && options.mode !== 'normal') return `${options.mode === 'plan' ? 'Plan' : 'Normal'} Mode does not enable external web access.`;
   if (permission.scope === 'computer' && !options.capabilities.computer) return 'The Computer capability is disabled for this task.';
   if (id.startsWith('browser_') && !options.capabilities.browser) return 'The Browser capability is disabled for this task.';
   if ((id.includes('integration') || id.includes('mcp')) && !options.capabilities.integrations) return 'The Integrations capability is disabled for this task.';
   if (permission.network && !options.capabilities.web && ['web_search', 'web_fetch', 'documentation_search', 'repository_search'].includes(id)) return 'The Web capability is disabled for this task. Auto Research does not enable Web implicitly.';
   if (['run_verification', 'start_runtime', 'stop_runtime', 'run_runtime_verification'].includes(id) && !options.capabilities.terminal) return 'The Terminal capability is disabled for this task.';
   if ((id.includes('file') || id.includes('patch') || id.includes('edit')) && permission.access === 'execute' && !options.capabilities.code) return 'The Code capability is disabled for this task.';
+}
+function taskMode(mode: ExecutionMode): import('./planning/types.js').TaskMode { return mode === 'plan' ? 'plan' : mode === 'web' || mode === 'research' ? 'research' : 'implement'; }
+function activityType(entry: ToolAuditRecord): ActivityEventType {
+  if (entry.status === 'error') return 'error'; if (entry.toolId.includes('test') || entry.toolId.includes('verification')) return 'test'; if (entry.toolId.startsWith('browser_') || entry.result.source === 'research') return 'browser';
+  if (entry.toolId.includes('search')) return 'search'; if (entry.toolId.includes('file') || entry.toolId.includes('patch') || entry.toolId.includes('edit')) return 'file'; if (entry.result.source === 'execution' || entry.permission.category === 'process') return 'command'; return 'tool';
+}
+function activityResource(entry: ToolAuditRecord): import('./interaction/types.js').ActivityEvent['resource'] | undefined {
+  const file = [entry.arguments.path, entry.arguments.file, entry.arguments.target].find(value => typeof value === 'string') as string | undefined;
+  if (file && (activityType(entry) === 'file' || !/^https?:/i.test(file))) return { kind: 'file', value: file };
+  const url = Object.values(entry.arguments).find(value => typeof value === 'string' && /^https?:\/\//i.test(value)) as string | undefined; if (url) return { kind: 'url', value: url };
+  return;
 }
 function contextState(root: string, taskId: string, used: number | undefined, maximum: number | undefined, configuration: import('./context/types.js').ContextLifecycleConfiguration) {
   const lifecycle = new ContextLifecycleManager(root, configuration); return maximum ? lifecycle.observe(taskId, taskId, used ?? 0, maximum) : lifecycle.read(taskId);

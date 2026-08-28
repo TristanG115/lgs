@@ -9,5 +9,3 @@ dist/
 .lgs/usage.jsonl
 .lgs/activity-ledger.jsonl
 .lgs/pricing.json
-.agents/
-AGENTS.md

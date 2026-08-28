@@ -24,6 +24,9 @@ const setting = (id, value, source = 'built-in') => ({ id, value, source, scope:
 const statistics = { totalRequests: 2, successfulRequests: 1, failedRequests: 1, cancelledRequests: 0, successRate: .5, inputTokens: 100, outputTokens: 50, cachedTokens: 10, reasoningTokens: 0, totalTokens: 150, activeGenerationMs: 900, averageLatencyMs: 1000, peakLatencyMs: 1200, tasksServed: 1, agentInvocations: 1, mostUsedModel: 'model-a' };
 const baseState = {
   type: 'state', errors: [], workspaceOpen: true,
+  agentWorkspace: { initialized: true, agentsFile: true, skillsDirectory: true, profilesDirectory: true, configFile: true },
+  skills: [{ name: 'lgs-frontend', description: 'Visible LGS interface work', applicableTasks: ['frontend'], activationRules: [], estimatedTokenCost: 900, scope: 'project', enabled: true, source: 'local', compatibility: ['codex'], path: '.agents/skills/lgs-frontend/SKILL.md', supportingFiles: ['visual-language.md'] }], plugins: [],
+  agentProfiles: [{ id: 'frontend', name: 'Frontend', description: 'Visible interface implementation', allowedSkills: ['lgs-frontend'], preferredSkills: ['lgs-frontend'], capabilities: ['inspect', 'edit', 'commands', 'verify'], permissions: { read: true, edit: true, commands: true, web: false }, verificationRequired: true }],
   settings: [
     { ...setting('appearance.theme', 'vscode'), type: 'select', choices: [{ value: 'vscode', label: 'Follow VS Code' }, { value: 'lgs-light', label: 'Research Paper / Light' }, { value: 'lgs-dark', label: 'Research Lab / Dark' }] },
     setting('models.defaultConnection', ''), setting('models.defaultModel', ''), setting('computer.readOutsideWorkspace', 'ask'), setting('computer.dryRun', true), setting('computer.activityLogRetentionDays', 90),
@@ -55,11 +58,14 @@ await page.locator('[data-logs="gateway"]').click();
 assert.match(await page.locator('.logs-dialog').innerText(), /Purdue GenAI activity/);
 assert.match(await page.locator('.logs-dialog').innerText(), /Institution-provided/);
 await page.locator('#close-logs').click();
+await page.evaluate(() => { document.documentElement.dataset.lgsTheme = 'lgs-light'; });
+await page.screenshot({ path: '/tmp/lgs-phase29-settings-providers.png', fullPage: true });
 await page.locator('.page-header .restart > summary').click();
 await page.locator('.page-header [data-lifecycle="restartServices"]').click();
 assert.equal((await page.evaluate(() => globalThis.__messages)).at(-1).action, 'restartServices');
 
 await page.setViewportSize({ width: 520, height: 800 });
+await page.locator('[data-nav="skills"]').click(); await page.screenshot({ path: '/tmp/lgs-phase29-settings-skills.png', fullPage: true });
 const responsive = await page.evaluate(() => { const nav = document.querySelector('.rail nav'); return { scrollWidth: document.documentElement.scrollWidth, clientWidth: document.documentElement.clientWidth, navigationScrolls: nav.scrollWidth > nav.clientWidth, overflowX: window.getComputedStyle(nav).overflowX }; });
 assert.deepEqual(responsive, { scrollWidth: responsive.clientWidth, clientWidth: responsive.clientWidth, navigationScrolls: true, overflowX: 'auto' });
 console.log('Settings browser flows passed.');

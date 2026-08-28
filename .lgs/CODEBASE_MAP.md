@@ -1,6 +1,6 @@
 # LGS Codebase Map
 
-Generated: 2026-08-27T20:15:48.075Z
+Generated: 2026-08-28T02:12:01.904Z
 
 This map is generated deterministically from the filesystem, manifests, and source syntax. Source files remain authoritative.
 
@@ -12,8 +12,8 @@ This map is generated deterministically from the filesystem, manifests, and sour
 
 ## Repository shape
 
-- Files: 201
-- Directories: 35
+- Files: 214
+- Directories: 37
 - Modules: 5
 - Entry points: src/extension.ts
 - Manifests: package-lock.json, package.json, tsconfig.json
@@ -43,10 +43,11 @@ This map is generated deterministically from the filesystem, manifests, and sour
 
 ### docs
 - Path: docs
-- Files: 6; directories: 1
+- Files: 7; directories: 1
   - `docs/architecture.md` — Markdown/Text (documentation)
   - `docs/audit-readiness-2026-08-27.md` — Markdown/Text (documentation)
   - `docs/development.md` — Markdown/Text (documentation)
+  - `docs/interaction-architecture.md` — Markdown/Text (documentation)
   - `docs/providers.md` — Markdown/Text (documentation)
   - `docs/research-workflows.md` — Markdown/Text (documentation)
   - `docs/settings.md` — Markdown/Text (documentation)
@@ -58,8 +59,13 @@ This map is generated deterministically from the filesystem, manifests, and sour
 
 ### src
 - Path: src
-- Files: 151; directories: 27
+- Files: 161; directories: 29
 - Entry points: `src/extension.ts`
+  - `src/agents/index.ts` — TypeScript
+  - `src/agents/types.ts` — TypeScript
+    - Symbols: AgentProfileDefinition, PluginDefinition, ExtensionSourceType, ExtensionSource
+  - `src/agents/workspace.ts` — TypeScript
+    - Symbols: AgentWorkspaceState, AgentWorkspaceService, DEFAULT_AGENT_PROFILES, profile, readJsonDirectory
   - `src/artifacts/index.ts` — TypeScript
   - `src/artifacts/pipeline.ts` — TypeScript
     - Symbols: MAX_ATTACHMENT_BYTES, CHUNK_CHARACTERS, TaskArtifactPipeline, chunksOf, formatOf, mediaTypeOf, sanitizeName, tokens, validTaskId, validateTaskId, clone
@@ -109,15 +115,10 @@ This map is generated deterministically from the filesystem, manifests, and sour
     - Symbols: DocumentationAgent
   - `src/documentation/analyzer.ts` — TypeScript
     - Symbols: BackendDocumentationAnalyzer, RuleBasedDocumentationAnalyzer, parseDocumentationAnalysis, parseAssessment, assessment, record
-  - `src/documentation/context.ts` — TypeScript
-    - Symbols: MAX_DIFF, MAX_DOCUMENTATION, MAX_MAP, collectDocumentationContext, collectChanges, documentationSources, classifyChanges, readIndex, stripGeneratedArtifacts, readBounded, bounded, cloneTaskState
-  - `src/documentation/index.ts` — TypeScript
-  - `src/documentation/store.ts` — TypeScript
-    - Symbols: FileDocumentationAuditStore, validTaskId, validAudit, record
 
 ### test
 - Path: test
-- Files: 28; directories: 1
+- Files: 30; directories: 1
   - `test/commit.test.ts` — TypeScript (test)
     - Symbols: root, baseline, disabledGates
   - `test/completion.test.ts` — TypeScript (test)
@@ -145,6 +146,8 @@ This map is generated deterministically from the filesystem, manifests, and sour
     - Symbols: REPORT, RecordingInference, configuration, manager
   - `test/phase28.test.ts` — TypeScript (test)
     - Symbols: fixture, cleanup, evidence
+  - `test/phase29.test.ts` — TypeScript (test)
+    - Symbols: fixture, cleanup, ollama, child
   - `test/planning.test.ts` — TypeScript (test)
   - `test/provider-management.test.ts` — TypeScript (test)
     - Symbols: fakeContext, profile
@@ -167,9 +170,15 @@ This map is generated deterministically from the filesystem, manifests, and sour
   - `test/usage.test.ts` — TypeScript (test)
   - `test/watchdog.test.ts` — TypeScript (test)
     - Symbols: fixture, cleanup, task
+  - `test/webview-ui.mjs` — JavaScript (test)
+    - Symbols: root, browser
 
 ## Relationships
 
+- `src/agents/index.ts` → `src/agents/types.ts`
+- `src/agents/index.ts` → `src/agents/workspace.ts`
+- `src/agents/types.ts` → `src/interaction/types.ts`
+- `src/agents/workspace.ts` → `src/agents/types.ts`
 - `src/artifacts/index.ts` → `src/artifacts/types.ts`
 - `src/artifacts/index.ts` → `src/artifacts/pipeline.ts`
 - `src/artifacts/index.ts` → `src/artifacts/vision.ts`
@@ -286,13 +295,12 @@ This map is generated deterministically from the filesystem, manifests, and sour
 - `src/execution/index.ts` → `src/execution/permissions.ts`
 - `src/execution/index.ts` → `src/execution/logs.ts`
 - `src/execution/index.ts` → `src/execution/evidence.ts`
-- `src/execution/index.ts` → `src/execution/normalize.ts`
-- `src/execution/index.ts` → `src/execution/service.ts`
-- `src/execution/normalize.ts` → `src/execution/types.ts`
-- `src/execution/permissions.ts` → `src/execution/types.ts`
 
 ## Reverse dependencies
 
+- `src/agents/index.ts` ← `src/settings/messages.ts`, `src/settings/panel.ts`
+- `src/agents/types.ts` ← `src/agents/index.ts`, `src/agents/workspace.ts`
+- `src/agents/workspace.ts` ← `src/agents/index.ts`, `test/phase29.test.ts`
 - `src/artifacts/index.ts` ← `src/tools/index.ts`
 - `src/artifacts/pipeline.ts` ← `src/artifacts/index.ts`, `src/artifacts/vision.ts`
 - `src/artifacts/types.ts` ← `src/artifacts/index.ts`, `src/artifacts/pipeline.ts`, `src/artifacts/vision.ts`
@@ -341,11 +349,17 @@ This map is generated deterministically from the filesystem, manifests, and sour
 - `src/integrations/tools.ts` ← `src/integrations/index.ts`
 - `src/integrations/types.ts` ← `src/integrations/hub.ts`, `src/integrations/index.ts`, `src/verification/config.ts`
 - `src/intelligence/indexer.ts` ← `src/completion/guard.ts`, `src/context/broker.ts`, `src/context/tools.ts`, `src/documentation/context.ts`, `src/documentation/store.ts`, `src/documentation/tools.ts`, `src/extension.ts`, `src/research/dependencies.ts`, `src/tools/repository.ts`, `test/completion.test.ts`, `test/context.test.ts`, `test/documentation.test.ts`, `test/indexer.test.ts`, `test/review.test.ts`
+- `src/interaction/context.ts` ← `src/interaction/index.ts`, `src/webview/main.ts`, `test/phase29.test.ts`
+- `src/interaction/execution.ts` ← `src/interaction/index.ts`, `test/phase29.test.ts`
+- `src/interaction/index.ts` ← `src/extension.ts`
+- `src/interaction/modes.ts` ← `src/interaction/index.ts`, `test/phase29.test.ts`
+- `src/interaction/panel.ts` ← `src/extension.ts`
+- `src/interaction/types.ts` ← `src/agents/types.ts`, `src/interaction/context.ts`, `src/interaction/execution.ts`, `src/interaction/index.ts`, `src/interaction/modes.ts`, `src/interaction/panel.ts`, `src/shared/messages.ts`, `src/webview/main.ts`
 - `src/knowledge/index.ts` ← `src/tools/index.ts`, `src/tools/workspace.ts`
 - `src/knowledge/memory.ts` ← `src/knowledge/index.ts`, `src/knowledge/tools.ts`
-- `src/knowledge/skills.ts` ← `src/knowledge/index.ts`, `src/knowledge/tools.ts`
+- `src/knowledge/skills.ts` ← `src/knowledge/index.ts`, `src/knowledge/tools.ts`, `src/settings/panel.ts`, `test/phase29.test.ts`
 - `src/knowledge/tools.ts` ← `src/knowledge/index.ts`
-- `src/knowledge/types.ts` ← `src/knowledge/index.ts`, `src/knowledge/memory.ts`, `src/knowledge/skills.ts`, `src/knowledge/tools.ts`
+- `src/knowledge/types.ts` ← `src/knowledge/index.ts`, `src/knowledge/memory.ts`, `src/knowledge/skills.ts`, `src/knowledge/tools.ts`, `src/settings/messages.ts`
 - `src/localruntime/index.ts` ← `src/tools/index.ts`, `src/tools/workspace.ts`
 - `src/localruntime/service.ts` ← `src/localruntime/index.ts`, `src/localruntime/tools.ts`
 - `src/localruntime/tools.ts` ← `src/localruntime/index.ts`
@@ -354,9 +368,10 @@ This map is generated deterministically from the filesystem, manifests, and sour
 - `src/model/backend.ts` ← `src/documentation/analyzer.ts`, `src/extension.ts`, `src/model/anthropic.ts`, `src/model/diagnostics.ts`, `src/model/ollama.ts`, `src/model/openai.ts`, `src/model/profiles.ts`, `src/model/registry.ts`, `src/orchestration/inference.ts`, `src/review/analyzer.ts`, `src/tools/loop.ts`, `src/watchdog/analyzer.ts`, `src/watchdog/escalation.ts`, `test/orchestration.test.ts`, `test/provider-management.test.ts`, `test/stream.test.ts`
 - `src/model/connections.ts` ← `src/extension.ts`, `src/settings/panel.ts`, `test/provider-management.test.ts`
 - `src/model/diagnostics.ts` ← `src/extension.ts`, `src/model/connections.ts`, `src/settings/lifecycle.ts`, `src/settings/messages.ts`, `test/provider-management.test.ts`
+- `src/model/ollama-runtime.ts` ← `src/model/connections.ts`, `src/settings/messages.ts`, `test/phase29.test.ts`
 - `src/model/ollama.ts` ← `src/model/profiles.ts`
 - `src/model/openai.ts` ← `src/model/profiles.ts`
-- `src/model/profiles.ts` ← `src/extension.ts`, `src/model/connections.ts`, `src/model/diagnostics.ts`, `src/model/registry.ts`, `src/routing/types.ts`, `src/settings/lifecycle.ts`, `src/settings/messages.ts`, `src/settings/panel.ts`, `test/provider-management.test.ts`, `test/settings.test.ts`
+- `src/model/profiles.ts` ← `src/extension.ts`, `src/model/connections.ts`, `src/model/diagnostics.ts`, `src/model/ollama-runtime.ts`, `src/model/registry.ts`, `src/routing/types.ts`, `src/settings/lifecycle.ts`, `src/settings/messages.ts`, `src/settings/panel.ts`, `test/phase29.test.ts`, `test/provider-management.test.ts`, `test/settings.test.ts`
 - `src/model/registry.ts` ← `src/extension.ts`, `test/settings.test.ts`
 - `src/model/types.ts` ← `src/context/lifecycle.ts`, `src/documentation/analyzer.ts`, `src/extension.ts`, `src/model/anthropic.ts`, `src/model/backend.ts`, `src/model/diagnostics.ts`, `src/model/ollama.ts`, `src/model/openai.ts`, `src/model/profiles.ts`, `src/model/registry.ts`, `src/orchestration/inference.ts`, `src/orchestration/orchestrator.ts`, `src/orchestration/tools.ts`, `src/orchestration/types.ts`, `src/review/analyzer.ts`, `src/settings/messages.ts`, `src/tools/loop.ts`, `src/usage/service.ts`, `src/watchdog/analyzer.ts`, `src/watchdog/escalation.ts`, `test/completion.test.ts`, `test/orchestration.test.ts`, `test/phase28.test.ts`, `test/tools.test.ts`, `test/watchdog.test.ts`
 - `src/orchestration/config.ts` ← `src/orchestration/index.ts`, `src/settings/configuration.ts`, `src/verification/config.ts`
@@ -458,9 +473,9 @@ This map is generated deterministically from the filesystem, manifests, and sour
 
 ## Incremental update
 
-- Reused: 0
-- Added: 201
-- Changed: 0
+- Reused: 207
+- Added: 0
+- Changed: 7
 - Removed: 0
 - Renamed: 0
 

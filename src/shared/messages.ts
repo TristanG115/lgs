@@ -1,9 +1,10 @@
 import type { CompletionViewState } from '../completion/types.js';
 import type { ContextLifecycleState } from '../context/types.js';
-import type { PlanningArtifact, TaskMode } from '../planning/types.js';
+import type { PlanningArtifact } from '../planning/types.js';
 import type { AutoResearchMode, ResearchNotebook } from '../research/types.js';
+import type { ActivityEvent, ContextUsage, ExecutionMode, RequestExecution } from '../interaction/types.js';
 
-export type ChatOptions = { mode: TaskMode; thinking: 'auto' | 'low' | 'medium' | 'high'; autoResearch: AutoResearchMode; capabilities: { web: boolean; code: boolean; terminal: boolean; browser: boolean; computer: boolean; integrations: boolean }; approval: 'always' | 'on-request' | 'never' };
+export type ChatOptions = { mode: ExecutionMode; thinking: 'auto' | 'low' | 'medium' | 'high'; autoResearch: AutoResearchMode; capabilities: { web: boolean; code: boolean; terminal: boolean; browser: boolean; computer: boolean; integrations: boolean }; approval: 'always' | 'on-request' | 'never' };
 export type ComposerAttachment = { id: string; name: string; mediaType: string; bytes: number; dataBase64: string; source: 'composer' | 'clipboard' | 'drop' | 'screenshot' };
 export type TaskActivity = { label: string; detail: string; status: 'active' | 'completed' | 'warning'; at: string };
 export type TaskDashboard = {
@@ -40,28 +41,36 @@ export type ClientMessage =
   | { type: 'newChat' }
   | { type: 'openSettings' }
   | { type: 'openUsage' }
+  | { type: 'openActivity' }
+  | { type: 'openResource'; path: string; line?: number }
+  | { type: 'providerAction'; action: 'start' | 'restart' | 'refresh' | 'settings' | 'logs' }
   | { type: 'loadChat'; chatId: string }
   | { type: 'taskAction'; action: TaskAction };
 
 export type HostMessage =
   | { type: 'profiles'; profiles: { id: string; name: string; kind: string }[]; selected: string }
-  | { type: 'models'; models: { id: string; displayName?: string; reasoning?: boolean; vision?: boolean }[]; selected: string }
+  | { type: 'models'; models: { id: string; displayName?: string; reasoning?: boolean; vision?: boolean; contextWindow?: number }[]; selected: string }
   | { type: 'state'; state: string }
   | { type: 'streamStart'; backend: string; model: string }
   | { type: 'textDelta'; text: string }
   | { type: 'streamEnd' }
   | { type: 'chatList'; chats: { id: string; title: string; updatedAt: number }[] }
-  | { type: 'chatLoaded'; messages: { role: 'user' | 'assistant' | 'system'; text: string }[] }
+  | { type: 'chatLoaded'; messages: { role: 'user' | 'assistant' | 'system'; text: string; attachments?: { name: string; mediaType: string; bytes: number }[] }[] }
   | { type: 'options'; options: ChatOptions }
   | { type: 'error'; message: string }
   | { type: 'appearance'; theme: 'vscode' | 'lgs-light' | 'lgs-dark' }
   | { type: 'completionState'; state: CompletionViewState }
-  | { type: 'taskDashboard'; dashboard: TaskDashboard };
+  | { type: 'taskDashboard'; dashboard: TaskDashboard }
+  | { type: 'requestExecution'; request: RequestExecution; events: ActivityEvent[] }
+  | { type: 'contextUsage'; usage: ContextUsage }
+  | { type: 'providerNotice'; provider: string; state: 'offline' | 'starting' | 'running' | 'error'; message?: string; ownership?: 'none' | 'external' | 'lgs-managed'; canStart: boolean; canRestart: boolean };
 
 export function parseClientMessage(value: unknown): ClientMessage | undefined {
   if (typeof value !== 'object' || value === null || Array.isArray(value)) return;
   const message = value as Record<string, unknown>;
-  if (['ready', 'cancel', 'listModels', 'newChat', 'openSettings', 'openUsage'].includes(String(message.type))) return { type: message.type } as ClientMessage;
+  if (['ready', 'cancel', 'listModels', 'newChat', 'openSettings', 'openUsage', 'openActivity'].includes(String(message.type))) return { type: message.type } as ClientMessage;
+  if (message.type === 'openResource' && typeof message.path === 'string' && message.path.length <= 4096 && (message.line === undefined || Number.isInteger(message.line) && Number(message.line) > 0)) return { type: 'openResource', path: message.path, ...(message.line ? { line: Number(message.line) } : {}) };
+  if (message.type === 'providerAction' && ['start', 'restart', 'refresh', 'settings', 'logs'].includes(String(message.action))) return { type: 'providerAction', action: message.action as Extract<ClientMessage, { type: 'providerAction' }>['action'] };
   if (message.type === 'taskAction' && ['viewDiff', 'viewLogs', 'viewResearch', 'viewTaskState', 'viewPlan', 'editPlan', 'approvePlan', 'regeneratePlan', 'beginImplementation'].includes(String(message.action))) return { type: 'taskAction', action: message.action as TaskAction };
   if (message.type === 'userMessage' && typeof message.text === 'string') {
     const text = message.text.trim(); const attachments = parseAttachments(message.attachments); return text && text.length <= 4000 && attachments !== undefined ? { type: 'userMessage', text, ...(attachments.length ? { attachments } : {}) } : undefined;
@@ -76,7 +85,7 @@ export function parseClientMessage(value: unknown): ClientMessage | undefined {
   if (message.type === 'setOptions' && typeof message.options === 'object' && message.options !== null) {
     const options = message.options as Record<string, unknown>;
     const capabilities = options.capabilities;
-    if (['chat', 'plan', 'implement', 'research', 'review'].includes(String(options.mode)) && ['auto', 'low', 'medium', 'high'].includes(String(options.thinking)) && ['off', 'when-uncertain', 'proactive'].includes(String(options.autoResearch)) && validCapabilities(capabilities) && ['always', 'on-request', 'never'].includes(String(options.approval))) {
+    if (['normal', 'plan', 'web', 'research'].includes(String(options.mode)) && ['auto', 'low', 'medium', 'high'].includes(String(options.thinking)) && ['off', 'when-uncertain', 'proactive'].includes(String(options.autoResearch)) && validCapabilities(capabilities) && ['always', 'on-request', 'never'].includes(String(options.approval))) {
       return { type: 'setOptions', options: { mode: options.mode as ChatOptions['mode'], thinking: options.thinking as ChatOptions['thinking'], autoResearch: options.autoResearch as AutoResearchMode, capabilities: capabilities as ChatOptions['capabilities'], approval: options.approval as ChatOptions['approval'] } };
     }
   }
@@ -97,5 +106,5 @@ function parseAttachments(value: unknown): ComposerAttachment[] | undefined {
 
 export function isHostMessage(value: unknown): value is HostMessage {
   if (typeof value !== 'object' || value === null || Array.isArray(value)) return false;
-  return ['profiles', 'models', 'state', 'streamStart', 'textDelta', 'streamEnd', 'chatList', 'chatLoaded', 'options', 'error', 'appearance', 'completionState', 'taskDashboard'].includes(String((value as Record<string, unknown>).type));
+  return ['profiles', 'models', 'state', 'streamStart', 'textDelta', 'streamEnd', 'chatList', 'chatLoaded', 'options', 'error', 'appearance', 'completionState', 'taskDashboard', 'requestExecution', 'contextUsage', 'providerNotice'].includes(String((value as Record<string, unknown>).type));
 }

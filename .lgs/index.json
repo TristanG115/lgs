@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "generatedAt": "2026-08-27T20:15:48.075Z",
+  "generatedAt": "2026-08-28T02:12:01.904Z",
   "root": "/home/tristan/Documents/Github/lgs",
   "directories": [
     ".agents",
@@ -11,6 +11,7 @@
     "docs",
     "media",
     "src",
+    "src/agents",
     "src/artifacts",
     "src/commit",
     "src/completion",
@@ -21,6 +22,7 @@
     "src/execution",
     "src/integrations",
     "src/intelligence",
+    "src/interaction",
     "src/knowledge",
     "src/localruntime",
     "src/model",
@@ -105,7 +107,7 @@
       "fileType": "unknown",
       "language": "",
       "size": 163,
-      "mtimeMs": 1787799298030.5916,
+      "mtimeMs": 1787882465008.6187,
       "hash": "5c1b7a8dc36b2b02920bf7fb737915c58032886b",
       "imports": [],
       "exports": [],
@@ -164,9 +166,9 @@
       "path": "README.md",
       "fileType": "md",
       "language": "Markdown/Text",
-      "size": 47648,
-      "mtimeMs": 1787861725246.3635,
-      "hash": "6431ab653f5c1a97881ddb4519041474552a683d",
+      "size": 47393,
+      "mtimeMs": 1787882104012.2446,
+      "hash": "4c05bb6536e0337f5eba605408c02f557766fb56",
       "imports": [],
       "exports": [],
       "symbols": [],
@@ -179,9 +181,9 @@
       "path": "docs/architecture.md",
       "fileType": "md",
       "language": "Markdown/Text",
-      "size": 3361,
-      "mtimeMs": 1787861252574.91,
-      "hash": "593cabd58d367306241b1c25dace740d2f27f811",
+      "size": 3789,
+      "mtimeMs": 1787882104080.2446,
+      "hash": "ca79ca70f34889a937c5c6b3c709cb5498453dc0",
       "imports": [],
       "exports": [],
       "symbols": [],
@@ -221,12 +223,27 @@
       "module": "docs"
     },
     {
+      "path": "docs/interaction-architecture.md",
+      "fileType": "md",
+      "language": "Markdown/Text",
+      "size": 2898,
+      "mtimeMs": 1787882104046.2446,
+      "hash": "6eb14aad84e4b50d805f042f49d24b0a92c53738",
+      "imports": [],
+      "exports": [],
+      "symbols": [],
+      "likelyTest": false,
+      "likelyDocumentation": true,
+      "directory": "docs",
+      "module": "docs"
+    },
+    {
       "path": "docs/providers.md",
       "fileType": "md",
       "language": "Markdown/Text",
-      "size": 4350,
-      "mtimeMs": 1787861260077.9219,
-      "hash": "b0822573c9efd2c8947f9e0e2b111b12fcf5aac4",
+      "size": 5178,
+      "mtimeMs": 1787882104112.2446,
+      "hash": "83999a8cad6240f7a11cc1f5e3c6dfac14668ea8",
       "imports": [],
       "exports": [],
       "symbols": [],
@@ -254,9 +271,9 @@
       "path": "docs/settings.md",
       "fileType": "md",
       "language": "Markdown/Text",
-      "size": 5398,
-      "mtimeMs": 1787861252609.91,
-      "hash": "cd48f48293e9cc0e22daa2501fac202a96bd495f",
+      "size": 5623,
+      "mtimeMs": 1787882104140.2446,
+      "hash": "adea5cae63b75f9008d3b56effcac19fa51c91fb",
       "imports": [],
       "exports": [],
       "symbols": [],
@@ -342,9 +359,9 @@
       "path": "package.json",
       "fileType": "json",
       "language": "JSON",
-      "size": 1970,
-      "mtimeMs": 1787834880902.8806,
-      "hash": "ea27374b164112e3ffbd8b8f6f6d9124e83144a0",
+      "size": 2021,
+      "mtimeMs": 1787882200920.3462,
+      "hash": "8276c76a6fddbebf595f7acbe06f6f8ccf03b9a8",
       "imports": [],
       "exports": [],
       "symbols": [],
@@ -352,6 +369,80 @@
       "likelyDocumentation": false,
       "directory": "",
       "module": ""
+    },
+    {
+      "path": "src/agents/index.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 60,
+      "mtimeMs": 1787862261260.0017,
+      "hash": "3474c9fb05e2633a7fa22dd360210d3d552ba4eb",
+      "imports": [
+        "./types.js",
+        "./workspace.js"
+      ],
+      "exports": [],
+      "symbols": [],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/agents",
+      "module": "src"
+    },
+    {
+      "path": "src/agents/types.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 968,
+      "mtimeMs": 1787862261187.0017,
+      "hash": "13d9550f5308cddff732bc96f43e8ac890337e32",
+      "imports": [
+        "../interaction/types.js"
+      ],
+      "exports": [
+        "AgentProfileDefinition",
+        "PluginDefinition",
+        "ExtensionSourceType",
+        "ExtensionSource"
+      ],
+      "symbols": [
+        "AgentProfileDefinition",
+        "PluginDefinition",
+        "ExtensionSourceType",
+        "ExtensionSource"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/agents",
+      "module": "src"
+    },
+    {
+      "path": "src/agents/workspace.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 3784,
+      "mtimeMs": 1787882562287.7175,
+      "hash": "7ac3540deb1ff6a5dc8b549743d1340c3496be9f",
+      "imports": [
+        "node:fs",
+        "node:path",
+        "./types.js"
+      ],
+      "exports": [
+        "AgentWorkspaceState",
+        "AgentWorkspaceService",
+        "DEFAULT_AGENT_PROFILES"
+      ],
+      "symbols": [
+        "AgentWorkspaceState",
+        "AgentWorkspaceService",
+        "DEFAULT_AGENT_PROFILES",
+        "profile",
+        "readJsonDirectory"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/agents",
+      "module": "src"
     },
     {
       "path": "src/artifacts/index.ts",
@@ -1647,9 +1738,9 @@
       "path": "src/extension.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 39943,
-      "mtimeMs": 1787861735403.376,
-      "hash": "616f5cd3390100394ea09accce65c0c7e34ca78d",
+      "size": 49921,
+      "mtimeMs": 1787862460471.3613,
+      "hash": "ff065d6324a5ea775828eeaf0bbcd449122e3fe0",
       "imports": [
         "node:fs",
         "node:path",
@@ -1668,13 +1759,16 @@
         "./shared/messages.js",
         "./tools/index.js",
         "./usage/index.js",
-        "./usage/panel.js"
+        "./usage/panel.js",
+        "./interaction/panel.js",
+        "./interaction/index.js"
       ],
       "exports": [
         "activate",
         "deactivate"
       ],
       "symbols": [
+        "AttachmentSummary",
         "SavedChat",
         "activate",
         "deactivate",
@@ -1682,6 +1776,9 @@
         "configuredIntegrations",
         "providerPolicy",
         "capabilityBlock",
+        "taskMode",
+        "activityType",
+        "activityResource",
         "contextState",
         "toolLabel",
         "newestFile",
@@ -1860,6 +1957,180 @@
       "module": "src"
     },
     {
+      "path": "src/interaction/context.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 1117,
+      "mtimeMs": 1787862091121.7742,
+      "hash": "0189fc225d09f5e4ea7d31d31362864813aa7cfd",
+      "imports": [
+        "./types.js"
+      ],
+      "exports": [
+        "contextUsage",
+        "contextPercent"
+      ],
+      "symbols": [
+        "contextUsage",
+        "contextPercent",
+        "positive",
+        "nonNegative"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/interaction",
+      "module": "src"
+    },
+    {
+      "path": "src/interaction/execution.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 7464,
+      "mtimeMs": 1787882679245.8242,
+      "hash": "48c653ffd73ebf0df1e8b7a0c0f24e9371f9c50b",
+      "imports": [
+        "node:crypto",
+        "node:fs",
+        "node:path",
+        "./types.js"
+      ],
+      "exports": [
+        "ActivityStore",
+        "FileActivityStore",
+        "MemoryActivityStore",
+        "RequestExecutionService"
+      ],
+      "symbols": [
+        "PhaseTemplate",
+        "BASE_PHASES",
+        "ActivityStore",
+        "FileActivityStore",
+        "MemoryActivityStore",
+        "RequestExecutionService",
+        "requiredPhase",
+        "safeId",
+        "now"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/interaction",
+      "module": "src"
+    },
+    {
+      "path": "src/interaction/index.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 118,
+      "mtimeMs": 1787862091157.7742,
+      "hash": "80bdeadd2acfa61492054e21f14f0914a2ec67dc",
+      "imports": [
+        "./context.js",
+        "./execution.js",
+        "./modes.js",
+        "./types.js"
+      ],
+      "exports": [],
+      "symbols": [],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/interaction",
+      "module": "src"
+    },
+    {
+      "path": "src/interaction/modes.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 987,
+      "mtimeMs": 1787862091049.7742,
+      "hash": "8c23fd00a34394c1005eb8d87946468483f3d175",
+      "imports": [
+        "./types.js"
+      ],
+      "exports": [
+        "executionModePolicy",
+        "modeAllows"
+      ],
+      "symbols": [
+        "POLICIES",
+        "executionModePolicy",
+        "modeAllows"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/interaction",
+      "module": "src"
+    },
+    {
+      "path": "src/interaction/panel.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 6727,
+      "mtimeMs": 1787881882585.218,
+      "hash": "6d49307e8826b438d724410ec1971e5ed19bdabe",
+      "imports": [
+        "node:path",
+        "vscode",
+        "./types.js"
+      ],
+      "exports": [
+        "ActivitySnapshot",
+        "ActivityLogPanel"
+      ],
+      "symbols": [
+        "ActivitySnapshot",
+        "ActivityLogPanel",
+        "html",
+        "record"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/interaction",
+      "module": "src"
+    },
+    {
+      "path": "src/interaction/types.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 1893,
+      "mtimeMs": 1787862091013.7742,
+      "hash": "e383eda011ec289f9dcd55868a6886c098ff6a22",
+      "imports": [],
+      "exports": [
+        "EXECUTION_MODES",
+        "ExecutionMode",
+        "ExecutionCapability",
+        "ExecutionModePolicy",
+        "RequestStatus",
+        "PhaseStatus",
+        "ActivityEventType",
+        "ActivityStatus",
+        "WorkPhase",
+        "ActivityEvent",
+        "RequestExecution",
+        "ContextCategory",
+        "ContextUsage"
+      ],
+      "symbols": [
+        "EXECUTION_MODES",
+        "ExecutionMode",
+        "ExecutionCapability",
+        "ExecutionModePolicy",
+        "RequestStatus",
+        "PhaseStatus",
+        "ActivityEventType",
+        "ActivityStatus",
+        "WorkPhase",
+        "ActivityEvent",
+        "RequestExecution",
+        "ContextCategory",
+        "ContextUsage"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/interaction",
+      "module": "src"
+    },
+    {
       "path": "src/knowledge/index.ts",
       "fileType": "ts",
       "language": "TypeScript",
@@ -1914,9 +2185,9 @@
       "path": "src/knowledge/skills.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 3724,
-      "mtimeMs": 1787787366619.7375,
-      "hash": "1c1618f6da0fedb8ca4940bffcbfbff8e573b129",
+      "size": 6738,
+      "mtimeMs": 1787862261126.0015,
+      "hash": "a88be2e24f272ed22694febe937fcfd4be0e46e5",
       "imports": [
         "node:fs",
         "node:path",
@@ -1934,7 +2205,9 @@
         "string",
         "strings",
         "tokenize",
-        "score"
+        "score",
+        "skillSlug",
+        "yamlScalar"
       ],
       "likelyTest": false,
       "likelyDocumentation": false,
@@ -1973,9 +2246,9 @@
       "path": "src/knowledge/types.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 719,
-      "mtimeMs": 1787787366582.7373,
-      "hash": "fed0b06f25be82f5211fbccf45de999ff70d53dc",
+      "size": 882,
+      "mtimeMs": 1787862261089.0015,
+      "hash": "c6245ec6d4f91e8575dba339e31fb957c3517dd3",
       "imports": [],
       "exports": [
         "SkillMetadata",
@@ -2157,15 +2430,16 @@
       "path": "src/model/connections.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 8799,
-      "mtimeMs": 1787834777308.819,
-      "hash": "60f8335155f3e1c4fc238f2856855d8ef20d80b1",
+      "size": 10510,
+      "mtimeMs": 1787862202075.8948,
+      "hash": "d27746f2a81160bd6a1b468f9705b2f7adea2ac2",
       "imports": [
         "node:crypto",
         "vscode",
         "../usage/store.js",
         "./profiles.js",
-        "./diagnostics.js"
+        "./diagnostics.js",
+        "./ollama-runtime.js"
       ],
       "exports": [
         "ConnectionDraft",
@@ -2244,6 +2518,44 @@
       "module": "src"
     },
     {
+      "path": "src/model/ollama-runtime.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 7170,
+      "mtimeMs": 1787862188458.8704,
+      "hash": "971bc8c04671b03107a4a502ed228c0a27defc47",
+      "imports": [
+        "node:child_process",
+        "node:fs",
+        "node:path",
+        "./profiles.js"
+      ],
+      "exports": [
+        "OllamaOwnership",
+        "OllamaRuntimeState",
+        "OllamaRuntimeInfo",
+        "OllamaLogEntry",
+        "ManagedOllamaOptions",
+        "ManagedOllamaService",
+        "isLocalOllamaEndpoint",
+        "findOllamaExecutable"
+      ],
+      "symbols": [
+        "OllamaOwnership",
+        "OllamaRuntimeState",
+        "OllamaRuntimeInfo",
+        "OllamaLogEntry",
+        "ManagedOllamaOptions",
+        "ManagedOllamaService",
+        "isLocalOllamaEndpoint",
+        "findOllamaExecutable"
+      ],
+      "likelyTest": false,
+      "likelyDocumentation": false,
+      "directory": "src/model",
+      "module": "src"
+    },
+    {
       "path": "src/model/ollama.ts",
       "fileType": "ts",
       "language": "TypeScript",
@@ -2291,9 +2603,9 @@
       "path": "src/model/profiles.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 6712,
-      "mtimeMs": 1787834767013.8127,
-      "hash": "b5c16955d399e138d3c39b8aa0baf6ffae28a0f2",
+      "size": 7004,
+      "mtimeMs": 1787862188421.8704,
+      "hash": "c3bc9b65451ead8a48e49d618b94970ef2e12411",
       "imports": [
         "vscode",
         "../usage/types.js",
@@ -3760,9 +4072,9 @@
       "path": "src/settings/defaults.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 3320,
-      "mtimeMs": 1787800160055.5266,
-      "hash": "307a28232c79da94bc5f78afe318919685204ed2",
+      "size": 3310,
+      "mtimeMs": 1787882045745.1382,
+      "hash": "776a78bf3013c4e25f616ed059a417111f70ba38",
       "imports": [
         "./registry.js"
       ],
@@ -3786,9 +4098,9 @@
       "path": "src/settings/lifecycle.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 2579,
-      "mtimeMs": 1787834628704.7307,
-      "hash": "11232fe62c7071eb2bbfbc7aa33e59785a398a6b",
+      "size": 2594,
+      "mtimeMs": 1787862460507.3616,
+      "hash": "000dd1bba14a36024cf5b30c67f07ac0545d9975",
       "imports": [
         "../model/diagnostics.js",
         "../model/profiles.js",
@@ -3814,9 +4126,9 @@
       "path": "src/settings/main.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 39324,
-      "mtimeMs": 1787834825817.848,
-      "hash": "fda9eb3b8cef80fdb206ddd7bc512238ea2ada30",
+      "size": 46670,
+      "mtimeMs": 1787882955448.104,
+      "hash": "fbdbac0843e894f544ab9f1929f22024ed953883",
       "imports": [
         "./styles.css",
         "./messages.js"
@@ -3850,6 +4162,7 @@
         "bindLogs",
         "statisticsView",
         "renderStructuredSections",
+        "renderExtensibility",
         "purposeSection",
         "permissionRow",
         "bindNavigation",
@@ -3892,14 +4205,17 @@
       "path": "src/settings/messages.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 3348,
-      "mtimeMs": 1787834568512.6948,
-      "hash": "822236bd5c656ce2acc12cc7bc83947d5864c810",
+      "size": 5055,
+      "mtimeMs": 1787862479665.396,
+      "hash": "797272842fafb76bc1b6dfffe66cdd5687541d46",
       "imports": [
         "../model/diagnostics.js",
         "../model/profiles.js",
         "../model/types.js",
-        "./registry.js"
+        "./registry.js",
+        "../agents/index.js",
+        "../knowledge/types.js",
+        "../model/ollama-runtime.js"
       ],
       "exports": [
         "SettingsScope",
@@ -3929,15 +4245,19 @@
       "path": "src/settings/panel.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 10709,
-      "mtimeMs": 1787834568547.6948,
-      "hash": "b36fc236a09bde7f5df47d1c530eda2be40668f8",
+      "size": 14565,
+      "mtimeMs": 1787881882620.218,
+      "hash": "896f9bb0f958883d031fe62a16cd59294c6cd27c",
       "imports": [
         "vscode",
         "../model/connections.js",
         "../model/profiles.js",
         "./configuration.js",
-        "./messages.js"
+        "./messages.js",
+        "../agents/index.js",
+        "../knowledge/skills.js",
+        "node:path",
+        "node:fs"
       ],
       "exports": [
         "SettingsLifecycleHandler",
@@ -3954,7 +4274,8 @@
         "stringArray",
         "stringRecord",
         "booleanRecord",
-        "numberRecord"
+        "numberRecord",
+        "isWithin"
       ],
       "likelyTest": false,
       "likelyDocumentation": false,
@@ -3996,9 +4317,9 @@
       "path": "src/settings/styles.css",
       "fileType": "css",
       "language": "CSS",
-      "size": 20228,
-      "mtimeMs": 1787835250162.1206,
-      "hash": "a19e0daf9f1a391091e7c8215f8007315467eda9",
+      "size": 21131,
+      "mtimeMs": 1787882955487.104,
+      "hash": "8d3eedd026e97d48a1c3cc6449cf53da0fef867d",
       "imports": [],
       "exports": [],
       "symbols": [],
@@ -4030,14 +4351,15 @@
       "path": "src/shared/messages.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 7294,
-      "mtimeMs": 1787861580862.2498,
-      "hash": "a588f02beb04bfbe9b5b3336488f5259c47e754e",
+      "size": 8633,
+      "mtimeMs": 1787862296814.066,
+      "hash": "20a36d71634007b37b401989b4039b2d79eb0755",
       "imports": [
         "../completion/types.js",
         "../context/types.js",
         "../planning/types.js",
-        "../research/types.js"
+        "../research/types.js",
+        "../interaction/types.js"
       ],
       "exports": [
         "ChatOptions",
@@ -5151,11 +5473,13 @@
       "path": "src/webview/main.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 27977,
-      "mtimeMs": 1787861580897.2498,
-      "hash": "0ead596b6ddc049726ce57a3e9bd48b6faa48677",
+      "size": 20212,
+      "mtimeMs": 1787882707074.8494,
+      "hash": "a1d7ab5a5efda96d82359e82085fe9d7088d3090",
       "imports": [
         "./styles.css",
+        "../interaction/context.js",
+        "../interaction/types.js",
         "../shared/messages.js"
       ],
       "exports": [],
@@ -5165,57 +5489,50 @@
         "app",
         "generating",
         "currentAssistant",
-        "dashboard",
-        "activeTaskTab",
-        "activePane",
         "attachments",
+        "options",
+        "execution",
+        "activity",
+        "context",
+        "timer",
+        "dashboard",
+        "modelReasoning",
         "history",
         "input",
         "send",
         "stop",
-        "state",
-        "statusDot",
         "profile",
         "model",
-        "mode",
         "thinking",
+        "mode",
         "approval",
-        "autoResearch",
-        "attachmentInput",
-        "chats",
-        "completion",
-        "completionProgress",
-        "completionChecklist",
-        "completionToggle",
-        "taskPanel",
-        "errorRegion",
-        "optionsPanel",
-        "optionsToggle",
+        "fileInput",
         "syncOptions",
-        "option",
-        "renderChats",
-        "renderEmpty",
-        "renderPane",
-        "renderDashboard",
-        "researchView",
-        "planView",
-        "contextView",
-        "addFiles",
-        "fileBase64",
-        "renderAttachments",
-        "updateReasoningSupport",
-        "formatBytes",
-        "evidenceView",
-        "usageView",
-        "sectionList",
+        "renderExecution",
+        "renderContext",
+        "renderProvider",
         "renderCompletion",
         "addMessage",
+        "AttachmentSummary",
+        "addFiles",
+        "renderAttachments",
+        "fileBase64",
+        "renderChats",
         "showError",
         "clearError",
-        "resizeInput",
+        "renderEmpty",
+        "resize",
+        "query",
+        "option",
         "escapeHtml",
-        "formatNumber",
-        "relativeTime"
+        "title",
+        "format",
+        "formatBytes",
+        "relative",
+        "elapsed",
+        "phaseDuration",
+        "duration",
+        "phaseMark"
       ],
       "likelyTest": false,
       "likelyDocumentation": false,
@@ -5226,9 +5543,9 @@
       "path": "src/webview/styles.css",
       "fileType": "css",
       "language": "CSS",
-      "size": 19715,
-      "mtimeMs": 1787861401021.1458,
-      "hash": "6a5e25b8623e6f4f942689464800e5f52816c6f5",
+      "size": 11537,
+      "mtimeMs": 1787882282296.4316,
+      "hash": "a281a75f556217a57ddf949af58a81453f293f55",
       "imports": [],
       "exports": [],
       "symbols": [],
@@ -5611,6 +5928,40 @@
       "module": "test"
     },
     {
+      "path": "test/phase29.test.ts",
+      "fileType": "ts",
+      "language": "TypeScript",
+      "size": 7119,
+      "mtimeMs": 1787882027163.0125,
+      "hash": "d6a19344d31a348e25d05ae57f0f49b24ca0e165",
+      "imports": [
+        "node:events",
+        "node:stream",
+        "node:fs",
+        "node:os",
+        "node:path",
+        "vitest",
+        "../src/agents/workspace.js",
+        "../src/interaction/context.js",
+        "../src/interaction/execution.js",
+        "../src/interaction/modes.js",
+        "../src/model/ollama-runtime.js",
+        "../src/model/profiles.js",
+        "../src/knowledge/skills.js"
+      ],
+      "exports": [],
+      "symbols": [
+        "fixture",
+        "cleanup",
+        "ollama",
+        "child"
+      ],
+      "likelyTest": true,
+      "likelyDocumentation": false,
+      "directory": "test",
+      "module": "test"
+    },
+    {
       "path": "test/planning.test.ts",
       "fileType": "ts",
       "language": "TypeScript",
@@ -5767,9 +6118,9 @@
       "path": "test/settings-ui.mjs",
       "fileType": "mjs",
       "language": "JavaScript",
-      "size": 6145,
-      "mtimeMs": 1787861314155.0078,
-      "hash": "1c510de795daa69c8ad64e8563c84c82a6bb5ac4",
+      "size": 7253,
+      "mtimeMs": 1787882786019.9207,
+      "hash": "8b8d728ae971b1018a942f0be797d0ed7b88fb9c",
       "imports": [
         "node:assert/strict",
         "node:path",
@@ -5789,9 +6140,9 @@
       "path": "test/settings.test.ts",
       "fileType": "ts",
       "language": "TypeScript",
-      "size": 4550,
-      "mtimeMs": 1787834724348.7876,
-      "hash": "e7aa8c206e9a3860f744f0fddd0ffa10238ad8ce",
+      "size": 4555,
+      "mtimeMs": 1787882140906.2832,
+      "hash": "508671284b458492214c237844dfb75f2e775263",
       "imports": [
         "vitest",
         "node:fs",
@@ -5927,6 +6278,28 @@
       "module": "test"
     },
     {
+      "path": "test/webview-ui.mjs",
+      "fileType": "mjs",
+      "language": "JavaScript",
+      "size": 5062,
+      "mtimeMs": 1787883022983.1814,
+      "hash": "44295371c9e722262e170607a42e07d1a686c56b",
+      "imports": [
+        "node:assert/strict",
+        "node:path",
+        "playwright"
+      ],
+      "exports": [],
+      "symbols": [
+        "root",
+        "browser"
+      ],
+      "likelyTest": true,
+      "likelyDocumentation": false,
+      "directory": "test",
+      "module": "test"
+    },
+    {
       "path": "tsconfig.json",
       "fileType": "json",
       "language": "JSON",
@@ -5973,6 +6346,7 @@
         "docs",
         "media",
         "src",
+        "src/agents",
         "src/artifacts",
         "src/commit",
         "src/completion",
@@ -5983,6 +6357,7 @@
         "src/execution",
         "src/integrations",
         "src/intelligence",
+        "src/interaction",
         "src/knowledge",
         "src/localruntime",
         "src/model",
@@ -6014,6 +6389,7 @@
         "docs/architecture.md",
         "docs/audit-readiness-2026-08-27.md",
         "docs/development.md",
+        "docs/interaction-architecture.md",
         "docs/providers.md",
         "docs/research-workflows.md",
         "docs/settings.md",
@@ -6022,6 +6398,9 @@
         "media/lgs.svg",
         "package-lock.json",
         "package.json",
+        "src/agents/index.ts",
+        "src/agents/types.ts",
+        "src/agents/workspace.ts",
         "src/artifacts/index.ts",
         "src/artifacts/pipeline.ts",
         "src/artifacts/types.ts",
@@ -6071,6 +6450,12 @@
         "src/integrations/tools.ts",
         "src/integrations/types.ts",
         "src/intelligence/indexer.ts",
+        "src/interaction/context.ts",
+        "src/interaction/execution.ts",
+        "src/interaction/index.ts",
+        "src/interaction/modes.ts",
+        "src/interaction/panel.ts",
+        "src/interaction/types.ts",
         "src/knowledge/index.ts",
         "src/knowledge/memory.ts",
         "src/knowledge/skills.ts",
@@ -6084,6 +6469,7 @@
         "src/model/backend.ts",
         "src/model/connections.ts",
         "src/model/diagnostics.ts",
+        "src/model/ollama-runtime.ts",
         "src/model/ollama.ts",
         "src/model/openai.ts",
         "src/model/profiles.ts",
@@ -6188,6 +6574,7 @@
         "test/messages.test.ts",
         "test/orchestration.test.ts",
         "test/phase28.test.ts",
+        "test/phase29.test.ts",
         "test/planning.test.ts",
         "test/provider-management.test.ts",
         "test/research.test.ts",
@@ -6201,6 +6588,7 @@
         "test/ui.test.ts",
         "test/usage.test.ts",
         "test/watchdog.test.ts",
+        "test/webview-ui.mjs",
         "tsconfig.json",
         "vitest.config.ts"
       ],
@@ -6255,6 +6643,7 @@
           "docs/architecture.md",
           "docs/audit-readiness-2026-08-27.md",
           "docs/development.md",
+          "docs/interaction-architecture.md",
           "docs/providers.md",
           "docs/research-workflows.md",
           "docs/settings.md"
@@ -6279,6 +6668,7 @@
         "path": "src",
         "directories": [
           "src",
+          "src/agents",
           "src/artifacts",
           "src/commit",
           "src/completion",
@@ -6289,6 +6679,7 @@
           "src/execution",
           "src/integrations",
           "src/intelligence",
+          "src/interaction",
           "src/knowledge",
           "src/localruntime",
           "src/model",
@@ -6307,6 +6698,9 @@
           "src/webview"
         ],
         "files": [
+          "src/agents/index.ts",
+          "src/agents/types.ts",
+          "src/agents/workspace.ts",
           "src/artifacts/index.ts",
           "src/artifacts/pipeline.ts",
           "src/artifacts/types.ts",
@@ -6356,6 +6750,12 @@
           "src/integrations/tools.ts",
           "src/integrations/types.ts",
           "src/intelligence/indexer.ts",
+          "src/interaction/context.ts",
+          "src/interaction/execution.ts",
+          "src/interaction/index.ts",
+          "src/interaction/modes.ts",
+          "src/interaction/panel.ts",
+          "src/interaction/types.ts",
           "src/knowledge/index.ts",
           "src/knowledge/memory.ts",
           "src/knowledge/skills.ts",
@@ -6369,6 +6769,7 @@
           "src/model/backend.ts",
           "src/model/connections.ts",
           "src/model/diagnostics.ts",
+          "src/model/ollama-runtime.ts",
           "src/model/ollama.ts",
           "src/model/openai.ts",
           "src/model/profiles.ts",
@@ -6486,6 +6887,7 @@
           "test/messages.test.ts",
           "test/orchestration.test.ts",
           "test/phase28.test.ts",
+          "test/phase29.test.ts",
           "test/planning.test.ts",
           "test/provider-management.test.ts",
           "test/research.test.ts",
@@ -6498,13 +6900,30 @@
           "test/tools.test.ts",
           "test/ui.test.ts",
           "test/usage.test.ts",
-          "test/watchdog.test.ts"
+          "test/watchdog.test.ts",
+          "test/webview-ui.mjs"
         ],
         "entryPoints": []
       }
     ]
   },
   "moduleRelationships": [
+    {
+      "from": "src/agents/index.ts",
+      "to": "src/agents/types.ts"
+    },
+    {
+      "from": "src/agents/index.ts",
+      "to": "src/agents/workspace.ts"
+    },
+    {
+      "from": "src/agents/types.ts",
+      "to": "src/interaction/types.ts"
+    },
+    {
+      "from": "src/agents/workspace.ts",
+      "to": "src/agents/types.ts"
+    },
     {
       "from": "src/artifacts/index.ts",
       "to": "src/artifacts/types.ts"
@@ -7066,6 +7485,14 @@
       "to": "src/usage/panel.ts"
     },
     {
+      "from": "src/extension.ts",
+      "to": "src/interaction/panel.ts"
+    },
+    {
+      "from": "src/extension.ts",
+      "to": "src/interaction/index.ts"
+    },
+    {
       "from": "src/integrations/hub.ts",
       "to": "src/orchestration/types.ts"
     },
@@ -7108,6 +7535,38 @@
     {
       "from": "src/integrations/types.ts",
       "to": "src/tools/types.ts"
+    },
+    {
+      "from": "src/interaction/context.ts",
+      "to": "src/interaction/types.ts"
+    },
+    {
+      "from": "src/interaction/execution.ts",
+      "to": "src/interaction/types.ts"
+    },
+    {
+      "from": "src/interaction/index.ts",
+      "to": "src/interaction/context.ts"
+    },
+    {
+      "from": "src/interaction/index.ts",
+      "to": "src/interaction/execution.ts"
+    },
+    {
+      "from": "src/interaction/index.ts",
+      "to": "src/interaction/modes.ts"
+    },
+    {
+      "from": "src/interaction/index.ts",
+      "to": "src/interaction/types.ts"
+    },
+    {
+      "from": "src/interaction/modes.ts",
+      "to": "src/interaction/types.ts"
+    },
+    {
+      "from": "src/interaction/panel.ts",
+      "to": "src/interaction/types.ts"
     },
     {
       "from": "src/knowledge/index.ts",
@@ -7210,6 +7669,10 @@
       "to": "src/model/diagnostics.ts"
     },
     {
+      "from": "src/model/connections.ts",
+      "to": "src/model/ollama-runtime.ts"
+    },
+    {
       "from": "src/model/diagnostics.ts",
       "to": "src/usage/types.ts"
     },
@@ -7224,6 +7687,10 @@
     {
       "from": "src/model/diagnostics.ts",
       "to": "src/model/types.ts"
+    },
+    {
+      "from": "src/model/ollama-runtime.ts",
+      "to": "src/model/profiles.ts"
     },
     {
       "from": "src/model/ollama.ts",
@@ -7890,6 +8357,18 @@
       "to": "src/settings/registry.ts"
     },
     {
+      "from": "src/settings/messages.ts",
+      "to": "src/agents/index.ts"
+    },
+    {
+      "from": "src/settings/messages.ts",
+      "to": "src/knowledge/types.ts"
+    },
+    {
+      "from": "src/settings/messages.ts",
+      "to": "src/model/ollama-runtime.ts"
+    },
+    {
       "from": "src/settings/panel.ts",
       "to": "src/model/connections.ts"
     },
@@ -7906,6 +8385,14 @@
       "to": "src/settings/messages.ts"
     },
     {
+      "from": "src/settings/panel.ts",
+      "to": "src/agents/index.ts"
+    },
+    {
+      "from": "src/settings/panel.ts",
+      "to": "src/knowledge/skills.ts"
+    },
+    {
       "from": "src/shared/messages.ts",
       "to": "src/completion/types.ts"
     },
@@ -7920,6 +8407,10 @@
     {
       "from": "src/shared/messages.ts",
       "to": "src/research/types.ts"
+    },
+    {
+      "from": "src/shared/messages.ts",
+      "to": "src/interaction/types.ts"
     },
     {
       "from": "src/tools/framework.ts",
@@ -8559,6 +9050,14 @@
     },
     {
       "from": "src/webview/main.ts",
+      "to": "src/interaction/context.ts"
+    },
+    {
+      "from": "src/webview/main.ts",
+      "to": "src/interaction/types.ts"
+    },
+    {
+      "from": "src/webview/main.ts",
       "to": "src/shared/messages.ts"
     },
     {
@@ -8660,6 +9159,34 @@
     {
       "from": "test/phase28.test.ts",
       "to": "src/model/types.ts"
+    },
+    {
+      "from": "test/phase29.test.ts",
+      "to": "src/agents/workspace.ts"
+    },
+    {
+      "from": "test/phase29.test.ts",
+      "to": "src/interaction/context.ts"
+    },
+    {
+      "from": "test/phase29.test.ts",
+      "to": "src/interaction/execution.ts"
+    },
+    {
+      "from": "test/phase29.test.ts",
+      "to": "src/interaction/modes.ts"
+    },
+    {
+      "from": "test/phase29.test.ts",
+      "to": "src/model/ollama-runtime.ts"
+    },
+    {
+      "from": "test/phase29.test.ts",
+      "to": "src/model/profiles.ts"
+    },
+    {
+      "from": "test/phase29.test.ts",
+      "to": "src/knowledge/skills.ts"
     },
     {
       "from": "test/planning.test.ts",
@@ -8771,6 +9298,24 @@
     }
   ],
   "reverseDependencies": {
+    "src/agents/types.ts": [
+      "src/agents/index.ts",
+      "src/agents/workspace.ts"
+    ],
+    "src/agents/workspace.ts": [
+      "src/agents/index.ts",
+      "test/phase29.test.ts"
+    ],
+    "src/interaction/types.ts": [
+      "src/agents/types.ts",
+      "src/interaction/context.ts",
+      "src/interaction/execution.ts",
+      "src/interaction/index.ts",
+      "src/interaction/modes.ts",
+      "src/interaction/panel.ts",
+      "src/shared/messages.ts",
+      "src/webview/main.ts"
+    ],
     "src/artifacts/types.ts": [
       "src/artifacts/index.ts",
       "src/artifacts/pipeline.ts",
@@ -9178,11 +9723,13 @@
       "src/extension.ts",
       "src/model/connections.ts",
       "src/model/diagnostics.ts",
+      "src/model/ollama-runtime.ts",
       "src/model/registry.ts",
       "src/routing/types.ts",
       "src/settings/lifecycle.ts",
       "src/settings/messages.ts",
       "src/settings/panel.ts",
+      "test/phase29.test.ts",
       "test/provider-management.test.ts",
       "test/settings.test.ts"
     ],
@@ -9238,6 +9785,12 @@
     "src/usage/panel.ts": [
       "src/extension.ts"
     ],
+    "src/interaction/panel.ts": [
+      "src/extension.ts"
+    ],
+    "src/interaction/index.ts": [
+      "src/extension.ts"
+    ],
     "src/orchestration/types.ts": [
       "src/integrations/hub.ts",
       "src/integrations/types.ts",
@@ -9268,15 +9821,31 @@
     "src/integrations/tools.ts": [
       "src/integrations/index.ts"
     ],
+    "src/interaction/context.ts": [
+      "src/interaction/index.ts",
+      "src/webview/main.ts",
+      "test/phase29.test.ts"
+    ],
+    "src/interaction/execution.ts": [
+      "src/interaction/index.ts",
+      "test/phase29.test.ts"
+    ],
+    "src/interaction/modes.ts": [
+      "src/interaction/index.ts",
+      "test/phase29.test.ts"
+    ],
     "src/knowledge/types.ts": [
       "src/knowledge/index.ts",
       "src/knowledge/memory.ts",
       "src/knowledge/skills.ts",
-      "src/knowledge/tools.ts"
+      "src/knowledge/tools.ts",
+      "src/settings/messages.ts"
     ],
     "src/knowledge/skills.ts": [
       "src/knowledge/index.ts",
-      "src/knowledge/tools.ts"
+      "src/knowledge/tools.ts",
+      "src/settings/panel.ts",
+      "test/phase29.test.ts"
     ],
     "src/knowledge/memory.ts": [
       "src/knowledge/index.ts",
@@ -9302,6 +9871,11 @@
       "src/usage/index.ts",
       "src/usage/service.ts",
       "src/usage/tools.ts"
+    ],
+    "src/model/ollama-runtime.ts": [
+      "src/model/connections.ts",
+      "src/settings/messages.ts",
+      "test/phase29.test.ts"
     ],
     "src/model/anthropic.ts": [
       "src/model/profiles.ts"
@@ -9493,6 +10067,10 @@
     "src/settings/styles.css": [
       "src/settings/main.ts"
     ],
+    "src/agents/index.ts": [
+      "src/settings/messages.ts",
+      "src/settings/panel.ts"
+    ],
     "src/tools/schema.ts": [
       "src/tools/framework.ts",
       "src/tools/index.ts"
@@ -9671,12 +10249,11 @@
   "freshness": {
     "index": "current",
     "codebaseMap": "current",
-    "checkedAt": "2026-08-27T20:15:48.075Z",
+    "checkedAt": "2026-08-28T02:12:01.904Z",
     "staleEntries": []
   },
   "incremental": {
-    "reused": [],
-    "added": [
+    "reused": [
       ".agents/skills/lgs-frontend/SKILL.md",
       ".agents/skills/lgs-frontend/references/anti-patterns.md",
       ".agents/skills/lgs-frontend/references/interaction-patterns.md",
@@ -9689,6 +10266,7 @@
       "docs/architecture.md",
       "docs/audit-readiness-2026-08-27.md",
       "docs/development.md",
+      "docs/interaction-architecture.md",
       "docs/providers.md",
       "docs/research-workflows.md",
       "docs/settings.md",
@@ -9697,6 +10275,8 @@
       "media/lgs.svg",
       "package-lock.json",
       "package.json",
+      "src/agents/index.ts",
+      "src/agents/types.ts",
       "src/artifacts/index.ts",
       "src/artifacts/pipeline.ts",
       "src/artifacts/types.ts",
@@ -9746,6 +10326,11 @@
       "src/integrations/tools.ts",
       "src/integrations/types.ts",
       "src/intelligence/indexer.ts",
+      "src/interaction/context.ts",
+      "src/interaction/index.ts",
+      "src/interaction/modes.ts",
+      "src/interaction/panel.ts",
+      "src/interaction/types.ts",
       "src/knowledge/index.ts",
       "src/knowledge/memory.ts",
       "src/knowledge/skills.ts",
@@ -9759,6 +10344,7 @@
       "src/model/backend.ts",
       "src/model/connections.ts",
       "src/model/diagnostics.ts",
+      "src/model/ollama-runtime.ts",
       "src/model/ollama.ts",
       "src/model/openai.ts",
       "src/model/profiles.ts",
@@ -9809,11 +10395,9 @@
       "src/settings/configuration.ts",
       "src/settings/defaults.ts",
       "src/settings/lifecycle.ts",
-      "src/settings/main.ts",
       "src/settings/messages.ts",
       "src/settings/panel.ts",
       "src/settings/registry.ts",
-      "src/settings/styles.css",
       "src/shared/logger.ts",
       "src/shared/messages.ts",
       "src/tools/framework.ts",
@@ -9846,7 +10430,6 @@
       "src/watchdog/tools.ts",
       "src/watchdog/triggers.ts",
       "src/watchdog/types.ts",
-      "src/webview/main.ts",
       "src/webview/styles.css",
       "test/commit.test.ts",
       "test/completion.test.ts",
@@ -9863,13 +10446,13 @@
       "test/messages.test.ts",
       "test/orchestration.test.ts",
       "test/phase28.test.ts",
+      "test/phase29.test.ts",
       "test/planning.test.ts",
       "test/provider-management.test.ts",
       "test/research.test.ts",
       "test/review.test.ts",
       "test/routing.test.ts",
       "test/runtime.test.ts",
-      "test/settings-ui.mjs",
       "test/settings.test.ts",
       "test/stream.test.ts",
       "test/tools.test.ts",
@@ -9879,7 +10462,16 @@
       "tsconfig.json",
       "vitest.config.ts"
     ],
-    "changed": [],
+    "added": [],
+    "changed": [
+      "src/agents/workspace.ts",
+      "src/interaction/execution.ts",
+      "src/settings/main.ts",
+      "src/settings/styles.css",
+      "src/webview/main.ts",
+      "test/settings-ui.mjs",
+      "test/webview-ui.mjs"
+    ],
     "removed": [],
     "renamed": []
   }
