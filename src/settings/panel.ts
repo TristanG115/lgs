@@ -3,7 +3,7 @@ import { ProviderConnectionService, type ConnectionDraft } from '../model/connec
 import type { ProviderKind } from '../model/profiles.js';
 import type { SettingsManager } from './configuration.js';
 import { parseSettingsClientMessage, type LifecycleAction, type SafeConnection, type SettingsHostMessage } from './messages.js';
-import { AgentWorkspaceService, DEFAULT_AGENT_PROFILES } from '../agents/index.js';
+import { AgentProfileStore, AgentWorkspaceService, SkillGenerationService } from '../agents/index.js';
 import { WorkspaceSkillStore } from '../knowledge/skills.js';
 import * as path from 'node:path';
 import * as fs from 'node:fs';
@@ -12,6 +12,7 @@ export type SettingsLifecycleHandler = (action: LifecycleAction) => Promise<stri
 
 export class SettingsPanel {
   private panel?: vscode.WebviewPanel;
+  private readonly skillGeneration = new SkillGenerationService();
 
   constructor(
     private readonly context: vscode.ExtensionContext,
@@ -39,6 +40,7 @@ export class SettingsPanel {
   private async state(): Promise<SettingsHostMessage> {
     const profiles = this.connections.profiles();
     const root = this.workspaceRoot(); const workspace = root ? new AgentWorkspaceService(root) : undefined; const skills = root ? new WorkspaceSkillStore(root, path.join(this.context.globalStorageUri.fsPath, 'skills')).list() : [];
+    const globalProfiles = new AgentProfileStore(path.join(this.context.globalStorageUri.fsPath, 'profiles')).list(); const projectProfiles = workspace?.profiles().filter(profile => profile.origin === 'user') || [];
     const connections: SafeConnection[] = await Promise.all(profiles.map(async profile => ({
       ...profile,
       secretName: undefined,
@@ -52,7 +54,7 @@ export class SettingsPanel {
     })));
     return {
       type: 'state', settings: this.manager.effective(), errors: this.manager.errorsList(), connections,
-      workspaceOpen: Boolean(root), agentWorkspace: workspace?.state(), skills: skills.map(skill => ({ name: skill.name, description: skill.description, applicableTasks: skill.applicableTasks, activationRules: skill.activationRules, estimatedTokenCost: skill.estimatedTokenCost, scope: skill.scope, enabled: skill.enabled, source: skill.source, compatibility: skill.compatibility, path: skill.path, supportingFiles: skill.supportingFiles })), plugins: workspace?.plugins() || [], agentProfiles: [...DEFAULT_AGENT_PROFILES, ...(workspace?.profiles() || []).filter(profile => !DEFAULT_AGENT_PROFILES.some(item => item.id === profile.id))],
+      workspaceOpen: Boolean(root), agentWorkspace: workspace?.state(), skills: skills.map(skill => ({ id: skill.id, name: skill.name, description: skill.description, applicableTasks: skill.applicableTasks, activationRules: skill.activationRules, estimatedTokenCost: skill.estimatedTokenCost, scope: skill.scope, enabled: skill.enabled, source: skill.source, compatibility: skill.compatibility, routing: skill.routing, path: skill.path, supportingFiles: skill.supportingFiles, valid: skill.valid, validationErrors: skill.validationErrors })), plugins: workspace?.plugins() || [], agentProfiles: [...globalProfiles, ...projectProfiles.filter(profile => !globalProfiles.some(item => item.id === profile.id))],
     };
   }
 
@@ -69,6 +71,16 @@ export class SettingsPanel {
       if (message.type === 'createSkill') { const root = this.workspaceRoot(); if (!root) throw new Error('Open a workspace first.'); const skill = new WorkspaceSkillStore(root, path.join(this.context.globalStorageUri.fsPath, 'skills')).create(message); this.notice(`${skill.name} created.`, 'success'); await this.sendState(); return; }
       if (message.type === 'setSkillEnabled') { const root = this.workspaceRoot(); if (!root) throw new Error('Open a workspace first.'); new WorkspaceSkillStore(root, path.join(this.context.globalStorageUri.fsPath, 'skills')).setEnabled(message.name, message.enabled, message.scope); await this.sendState(); return; }
       if (message.type === 'openSkill') { await this.openSkill(message.path); return; }
+      if (message.type === 'importSkill') { const root = this.workspaceRoot(); if (!root) throw new Error('Open a workspace first.'); const selected = await vscode.window.showOpenDialog({ canSelectFiles: false, canSelectFolders: true, canSelectMany: false, title: 'Import LGS skill directory' }); if (!selected?.[0]) return; const skill = new WorkspaceSkillStore(root, path.join(this.context.globalStorageUri.fsPath, 'skills')).importDirectory(selected[0].fsPath, message.scope); this.notice(`${skill.name} imported.`, 'success'); await this.sendState(); return; }
+      if (message.type === 'prepareSkill') {
+        const root = this.workspaceRoot(); if (!root) throw new Error('Open a workspace first.'); const store = new WorkspaceSkillStore(root, path.join(this.context.globalStorageUri.fsPath, 'skills'));
+        const existing = message.existingName ? store.list().find(item => item.name === message.existingName && item.scope === message.existingScope) : undefined;
+        this.skillGeneration.start(message.sessionId, existing); const draft = this.skillGeneration.answer(message.sessionId, { skillName: message.name, work: message.work, desiredExamples: message.desiredExamples, avoid: message.avoid, priorities: message.priorities, constraints: message.constraints, scope: message.scope, profiles: message.profiles, activation: message.activation });
+        this.send({ type: 'skillGeneration', draft, question: this.skillGeneration.nextQuestion(message.sessionId), ...(draft.proposal ? { diff: this.skillGeneration.diff(message.sessionId) } : {}) }); return;
+      }
+      if (message.type === 'approveSkill') { const root = this.workspaceRoot(); if (!root) throw new Error('Open a workspace first.'); const skill = this.skillGeneration.approve(message.sessionId, new WorkspaceSkillStore(root, path.join(this.context.globalStorageUri.fsPath, 'skills'))); this.notice(`${skill.name} ${skill.source === 'manual' ? 'saved' : 'updated'}.`, 'success'); await this.sendState(); return; }
+      if (message.type === 'saveAgentProfile') { const profile = new AgentProfileStore(path.join(this.context.globalStorageUri.fsPath, 'profiles')).save(message.profile, message.builtIn, message.replaceUser); this.notice(`${profile.name} saved.`, 'success'); await this.sendState(); return; }
+      if (message.type === 'restoreAgentProfile') { const profile = new AgentProfileStore(path.join(this.context.globalStorageUri.fsPath, 'profiles')).restore(message.id); this.notice(`${profile.name} restored to LGS defaults.`, 'success'); await this.sendState(); return; }
       if (message.type === 'ollamaAction') {
         if (message.action === 'start') await this.connections.startOllama(message.id); else if (message.action === 'restart') await this.connections.restartOllama(message.id); else await this.connections.test(message.id);
         await this.onConnectionsChanged(); await this.sendState(); return;

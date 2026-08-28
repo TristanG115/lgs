@@ -57,7 +57,7 @@ export class ToolExecutor {
       if (!issues.length && definition.validate) issues.push(...definition.validate(call.arguments).map(message => ({ path: '$', message })));
       if (issues.length) {
         result = errorResult(definition.id, call.callId, toolError('invalid_request', 'Tool arguments failed validation.', false, { issues }), started);
-      } else if ((identity.taskMode === 'plan' || identity.taskMode === 'planning') && !planningTool(definition.id)) result = errorResult(definition.id, call.callId, toolError('unsupported', 'This action is disabled in Planning Mode.'), started);
+      } else if ((identity.taskMode === 'plan' || identity.taskMode === 'planning') && !planModeAllows(definition)) result = errorResult(definition.id, call.callId, toolError('unsupported', 'Write blocked by Plan Mode. Only the active plan artifact may be modified while planning.'), started);
       else if (identity.taskMode === 'chat' && definition.permission.access === 'execute' && !researchTool(definition.id)) result = errorResult(definition.id, call.callId, toolError('unsupported', 'Mutating actions are disabled in Chat Mode. Select Implement to change the workspace.'), started);
       else if (identity.taskMode === 'review' && !reviewTool(definition.id)) result = errorResult(definition.id, call.callId, toolError('unsupported', 'This action is disabled in Review Mode.'), started);
       else if (guardMessage(this.guards, definition, identity)) result = errorResult(definition.id, call.callId, toolError('unsupported', guardMessage(this.guards, definition, identity)!), started);
@@ -155,7 +155,11 @@ function errorResult(toolId: string, callId: string | undefined, error: ToolErro
 }
 
 function elapsed(started: number): number { return Math.max(0, Math.round((performance.now() - started) * 100) / 100); }
-function planningTool(id: string): boolean { return id.startsWith('list_') || id.startsWith('get_') || id.startsWith('read_') || id.startsWith('search_') || id.startsWith('find_') || id === 'web_search' || id === 'web_fetch' || id === 'documentation_search' || id === 'repository_search' || id.startsWith('git_') || ['create_plan_task', 'revise_plan', 'checkpoint_context', 'rotate_context'].includes(id); }
+export function planModeAllows(definition: Pick<ToolDefinition, 'id' | 'permission'>): boolean {
+  if (definition.permission.access === 'read-only') return true;
+  return ['web_search', 'web_fetch', 'documentation_search', 'repository_search', 'create_plan_task', 'revise_plan'].includes(definition.id);
+}
+function planningTool(id: string): boolean { return id.startsWith('list_') || id.startsWith('get_') || id.startsWith('read_') || id.startsWith('search_') || id.startsWith('find_') || ['web_search', 'web_fetch', 'documentation_search', 'repository_search', 'create_plan_task', 'revise_plan'].includes(id); }
 function reviewTool(id: string): boolean { return planningTool(id) || ['run_independent_review', 'evaluate_review_findings'].includes(id); }
 function researchTool(id: string): boolean { return ['web_search', 'web_fetch', 'documentation_search', 'repository_search'].includes(id) || id.startsWith('research_'); }
 function guardMessage(guards: ToolExecutionGuard[], definition: ToolDefinition, identity: ToolIdentity): string | undefined { for (const guard of guards) { const message = guard.check(definition, identity); if (message) return message; } }

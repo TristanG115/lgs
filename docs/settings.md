@@ -80,3 +80,10 @@ runtime:
 ```
 
 `research.webEnabled` permits external research but does not initiate it. `research.autoResearch` controls initiation and can force an evidence requirement after uncertainty or a version-sensitive external assumption. BrowserAgent asks before consequential external-site actions by default. Full behavior is documented in [research-workflows.md](research-workflows.md).
+# Agent workspaces, skills, and profiles
+
+Settings detects the compatible repository-local `AGENTS.md` and `.agents/{skills,profiles,config.json}` structure. Initialization is explicit unless `.agents/config.json` has already opted into automatic management, and existing files are never overwritten.
+
+The Skills view lists project and global scope, source, activation routing, validation state, resources, and enabled state. Local directory import and Skill Generation share the same store boundary used by future Git, archive, registry, or marketplace sources. Skill Generation and Refine Skill require proposal review and approval before filesystem writes.
+
+Agent Profiles show `Default profile`, `Default profile · Modified`, or `User-created profile`. Editable fields cover instructions, preferred and automatically loaded skills, model/reasoning preferences, tool preferences, research and execution behavior, verification expectations, and rare hard restrictions. Built-in changes are separate overrides; `Restore defaults` removes only the matching override. Plan Mode's read-only guarantee is not editable as an ordinary profile option.

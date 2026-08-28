@@ -26,6 +26,10 @@ Planning Mode writes only its own task artifacts. A plan is stored as structured
 
 Plans choose either `wait-for-approval` or `implement-automatically`. The Plan view can open, approve, regenerate, or begin implementation. A wait-for-approval plan cannot begin implementation until it is approved. Regeneration and revisions append a dated explanation and supporting evidence; historical rationale is not silently replaced.
 
+The tool executor is the hard Plan Mode boundary. Read-only repository, Git, and inspection tools plus configured web research remain available. Only `create_plan_task` and `revise_plan` may persist project changes. Source edits, command execution, Git mutation, and indirect LGS-managed writes return `Write blocked by Plan Mode. Only the active plan artifact may be modified while planning.` Tool names do not bypass the permission check. The default artifact root is `.lgs/tasks`, and `PlanningArtifactStore` accepts a safe workspace-relative alternative for integrations that establish another convention.
+
+Beginning implementation preserves the plan, changes the active mode, removes the source-write restriction for later tool calls, and records a request activity transition. Standalone Plan Mode waits for approval when its handoff is `wait-for-approval`; Research may use `implement-automatically`.
+
 ## Research Mode and the Research Notebook
 
 `ResearchCycleEngine` persists raw cycle and experiment state in `research-cycles.json` and renders `.lgs/tasks/<task-id>/RESEARCH.md`. Each cycle records the research question, current evidence, hypothesis, confidence, proposed experiment, expected and actual observations, analysis, conclusion, and next action. Conclusions are `SUPPORTED`, `REJECTED`, `PARTIAL`, or `INCONCLUSIVE`.

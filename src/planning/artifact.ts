@@ -5,7 +5,7 @@ import type { PlanHandoff, PlanningArtifact, PlanRevision, PlanSection } from '.
 
 /** Owns the durable plan record and renders PLAN.md from it. Historical revisions are append-only. */
 export class PlanningArtifactStore {
-  constructor(private readonly workspaceRoot: string, private readonly tasks?: FileTaskStateStore) {}
+  constructor(private readonly workspaceRoot: string, private readonly tasks?: FileTaskStateStore, private readonly planDirectory = '.lgs/tasks') { validatePlanDirectory(planDirectory); }
 
   create(taskId: string, plan: PlanSection, handoff: PlanHandoff): PlanningArtifact {
     validateTaskId(taskId);
@@ -40,8 +40,8 @@ export class PlanningArtifactStore {
 
   markdown(taskId: string): string | undefined { const value = this.read(taskId); return value ? renderPlan(value) : undefined; }
   private require(taskId: string): PlanningArtifact { const value = this.read(taskId); if (!value) throw new Error('Planning artifact was not found.'); return value; }
-  private jsonFile(taskId: string): string { return path.join(this.workspaceRoot, '.lgs', 'tasks', taskId, 'plan.json'); }
-  private markdownFile(taskId: string): string { return path.join(this.workspaceRoot, '.lgs', 'tasks', taskId, 'PLAN.md'); }
+  private jsonFile(taskId: string): string { return path.join(this.workspaceRoot, this.planDirectory, taskId, 'plan.json'); }
+  private markdownFile(taskId: string): string { return path.join(this.workspaceRoot, this.planDirectory, taskId, 'PLAN.md'); }
   private write(value: PlanningArtifact): void {
     const json = this.jsonFile(value.taskId); fs.mkdirSync(path.dirname(json), { recursive: true });
     fs.writeFileSync(json, JSON.stringify(value, null, 2) + '\n'); fs.writeFileSync(this.markdownFile(value.taskId), renderPlan(value));
@@ -69,6 +69,7 @@ function list(values: string[]): string[] { if (!Array.isArray(values)) throw ne
 function bounded(value: string, maximum: number): string { return String(value ?? '').trim().slice(0, maximum); }
 function validTaskId(value: string): boolean { return /^[a-zA-Z0-9._-]{1,128}$/.test(value); }
 function validateTaskId(value: string): void { if (!validTaskId(value)) throw new Error('Task ID contains unsupported characters.'); }
+function validatePlanDirectory(value: string): void { const normalized = value.replace(/\\/g, '/'); if (!normalized || path.isAbsolute(value) || normalized.split('/').includes('..')) throw new Error('Plan directory must be a safe workspace-relative path.'); }
 function clone(value: PlanningArtifact): PlanningArtifact { return JSON.parse(JSON.stringify(value)) as PlanningArtifact; }
 function validArtifact(value: unknown): value is PlanningArtifact {
   if (typeof value !== 'object' || value === null || Array.isArray(value)) return false;

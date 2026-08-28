@@ -4,6 +4,8 @@ LGS is a VS Code extension for evidence-driven software-engineering agents. It c
 
 The current implementation is a **functional alpha**, not a finished marketplace product. The latest evidence, repaired defects, blocked live-provider checks, and remaining gaps are recorded in [`docs/audit-readiness-2026-08-27.md`](docs/audit-readiness-2026-08-27.md).
 
+Repositories may explicitly initialize a compatible agent workspace (`AGENTS.md` plus `.agents/skills`, `.agents/profiles`, and `.agents/config.json`). Settings manages project/global skills, editable and restorable agent profiles, and approval-gated skill creation/refinement without requiring users to learn the underlying file conventions. Plan Mode preserves a durable `PLAN.md` while the runtime blocks source and Git mutation until implementation begins.
+
 ## Repository structure
 
 - `src/extension.ts` — extension-host activation, command, and `WebviewViewProvider`.

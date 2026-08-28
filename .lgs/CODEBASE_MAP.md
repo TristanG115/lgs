@@ -1,6 +1,6 @@
 # LGS Codebase Map
 
-Generated: 2026-08-28T02:12:01.904Z
+Generated: 2026-08-28T03:06:57.995Z
 
 This map is generated deterministically from the filesystem, manifests, and source syntax. Source files remain authoritative.
 
@@ -12,7 +12,7 @@ This map is generated deterministically from the filesystem, manifests, and sour
 
 ## Repository shape
 
-- Files: 214
+- Files: 217
 - Directories: 37
 - Modules: 5
 - Entry points: src/extension.ts
@@ -59,13 +59,17 @@ This map is generated deterministically from the filesystem, manifests, and sour
 
 ### src
 - Path: src
-- Files: 161; directories: 29
+- Files: 163; directories: 29
 - Entry points: `src/extension.ts`
   - `src/agents/index.ts` — TypeScript
+  - `src/agents/policy.ts` — TypeScript
+    - Symbols: AgentProfileExecutionGuard, commandTool, codeTool, commandCategories
+  - `src/agents/skill-generation.ts` — TypeScript
+    - Symbols: SkillGenerationAnswers, SkillGenerationDraft, SkillGenerationService, complete, inferPatterns, proposal, sentence, bullet, simpleDiff, clone
   - `src/agents/types.ts` — TypeScript
-    - Symbols: AgentProfileDefinition, PluginDefinition, ExtensionSourceType, ExtensionSource
+    - Symbols: ProfileOrigin, ResearchBehavior, ExecutionBehavior, AgentProfilePolicy, AgentProfileDefinition, AgentProfileDraft, PluginDefinition, ExtensionSourceType, ExtensionSource
   - `src/agents/workspace.ts` — TypeScript
-    - Symbols: AgentWorkspaceState, AgentWorkspaceService, DEFAULT_AGENT_PROFILES, profile, readJsonDirectory
+    - Symbols: AgentWorkspaceState, AgentWorkspaceService, AgentProfileStore, sharedPreferences, basePolicy, DEFAULT_AGENT_PROFILES, profile, normalizeProfile, mergeProfile, difference, validateProfile, safeId
   - `src/artifacts/index.ts` — TypeScript
   - `src/artifacts/pipeline.ts` — TypeScript
     - Symbols: MAX_ATTACHMENT_BYTES, CHUNK_CHARACTERS, TaskArtifactPipeline, chunksOf, formatOf, mediaTypeOf, sanitizeName, tokens, validTaskId, validateTaskId, clone
@@ -111,14 +115,12 @@ This map is generated deterministically from the filesystem, manifests, and sour
     - Symbols: READ, registerContextTools, registerLifecycleTools, loadIndex
   - `src/context/types.ts` — TypeScript
     - Symbols: CONTEXT_LEVELS, ContextLevel, ContextCategory, ContextCandidate, ContextRequest, ContextSelection, ContextLifecycleConfiguration, ContextLifecycleAction, AgentCheckpoint, ContextLifecycleState
-  - `src/documentation/agent.ts` — TypeScript
-    - Symbols: DocumentationAgent
-  - `src/documentation/analyzer.ts` — TypeScript
-    - Symbols: BackendDocumentationAnalyzer, RuleBasedDocumentationAnalyzer, parseDocumentationAnalysis, parseAssessment, assessment, record
 
 ### test
 - Path: test
-- Files: 30; directories: 1
+- Files: 31; directories: 1
+  - `test/agent-customization.test.ts` — TypeScript (test)
+    - Symbols: fixture, cleanup, permission
   - `test/commit.test.ts` — TypeScript (test)
     - Symbols: root, baseline, disabledGates
   - `test/completion.test.ts` — TypeScript (test)
@@ -170,13 +172,17 @@ This map is generated deterministically from the filesystem, manifests, and sour
   - `test/usage.test.ts` — TypeScript (test)
   - `test/watchdog.test.ts` — TypeScript (test)
     - Symbols: fixture, cleanup, task
-  - `test/webview-ui.mjs` — JavaScript (test)
-    - Symbols: root, browser
 
 ## Relationships
 
 - `src/agents/index.ts` → `src/agents/types.ts`
 - `src/agents/index.ts` → `src/agents/workspace.ts`
+- `src/agents/index.ts` → `src/agents/skill-generation.ts`
+- `src/agents/index.ts` → `src/agents/policy.ts`
+- `src/agents/policy.ts` → `src/tools/types.ts`
+- `src/agents/policy.ts` → `src/agents/types.ts`
+- `src/agents/skill-generation.ts` → `src/knowledge/types.ts`
+- `src/agents/skill-generation.ts` → `src/knowledge/skills.ts`
 - `src/agents/types.ts` → `src/interaction/types.ts`
 - `src/agents/workspace.ts` → `src/agents/types.ts`
 - `src/artifacts/index.ts` → `src/artifacts/types.ts`
@@ -289,17 +295,13 @@ This map is generated deterministically from the filesystem, manifests, and sour
 - `src/editing/service.ts` → `src/editing/types.ts`
 - `src/editing/tools.ts` → `src/tools/types.ts`
 - `src/editing/tools.ts` → `src/tools/framework.ts`
-- `src/editing/tools.ts` → `src/editing/service.ts`
-- `src/execution/evidence.ts` → `src/execution/types.ts`
-- `src/execution/index.ts` → `src/execution/types.ts`
-- `src/execution/index.ts` → `src/execution/permissions.ts`
-- `src/execution/index.ts` → `src/execution/logs.ts`
-- `src/execution/index.ts` → `src/execution/evidence.ts`
 
 ## Reverse dependencies
 
-- `src/agents/index.ts` ← `src/settings/messages.ts`, `src/settings/panel.ts`
-- `src/agents/types.ts` ← `src/agents/index.ts`, `src/agents/workspace.ts`
+- `src/agents/index.ts` ← `src/extension.ts`, `src/settings/messages.ts`, `src/settings/panel.ts`, `test/agent-customization.test.ts`
+- `src/agents/policy.ts` ← `src/agents/index.ts`
+- `src/agents/skill-generation.ts` ← `src/agents/index.ts`
+- `src/agents/types.ts` ← `src/agents/index.ts`, `src/agents/policy.ts`, `src/agents/workspace.ts`
 - `src/agents/workspace.ts` ← `src/agents/index.ts`, `test/phase29.test.ts`
 - `src/artifacts/index.ts` ← `src/tools/index.ts`
 - `src/artifacts/pipeline.ts` ← `src/artifacts/index.ts`, `src/artifacts/vision.ts`
@@ -357,9 +359,9 @@ This map is generated deterministically from the filesystem, manifests, and sour
 - `src/interaction/types.ts` ← `src/agents/types.ts`, `src/interaction/context.ts`, `src/interaction/execution.ts`, `src/interaction/index.ts`, `src/interaction/modes.ts`, `src/interaction/panel.ts`, `src/shared/messages.ts`, `src/webview/main.ts`
 - `src/knowledge/index.ts` ← `src/tools/index.ts`, `src/tools/workspace.ts`
 - `src/knowledge/memory.ts` ← `src/knowledge/index.ts`, `src/knowledge/tools.ts`
-- `src/knowledge/skills.ts` ← `src/knowledge/index.ts`, `src/knowledge/tools.ts`, `src/settings/panel.ts`, `test/phase29.test.ts`
+- `src/knowledge/skills.ts` ← `src/agents/skill-generation.ts`, `src/knowledge/index.ts`, `src/knowledge/tools.ts`, `src/settings/panel.ts`, `test/agent-customization.test.ts`, `test/phase29.test.ts`
 - `src/knowledge/tools.ts` ← `src/knowledge/index.ts`
-- `src/knowledge/types.ts` ← `src/knowledge/index.ts`, `src/knowledge/memory.ts`, `src/knowledge/skills.ts`, `src/knowledge/tools.ts`, `src/settings/messages.ts`
+- `src/knowledge/types.ts` ← `src/agents/skill-generation.ts`, `src/knowledge/index.ts`, `src/knowledge/memory.ts`, `src/knowledge/skills.ts`, `src/knowledge/tools.ts`, `src/settings/messages.ts`
 - `src/localruntime/index.ts` ← `src/tools/index.ts`, `src/tools/workspace.ts`
 - `src/localruntime/service.ts` ← `src/localruntime/index.ts`, `src/localruntime/tools.ts`
 - `src/localruntime/tools.ts` ← `src/localruntime/index.ts`
@@ -425,13 +427,13 @@ This map is generated deterministically from the filesystem, manifests, and sour
 - `src/settings/styles.css` ← `src/settings/main.ts`
 - `src/shared/logger.ts` ← `src/extension.ts`
 - `src/shared/messages.ts` ← `src/extension.ts`, `src/webview/main.ts`, `test/messages.test.ts`
-- `src/tools/framework.ts` ← `src/commit/tools.ts`, `src/completion/tools.ts`, `src/computer/tools.ts`, `src/context/tools.ts`, `src/documentation/tools.ts`, `src/editing/service.ts`, `src/editing/tools.ts`, `src/integrations/tools.ts`, `src/knowledge/tools.ts`, `src/localruntime/tools.ts`, `src/orchestration/tools.ts`, `src/planning/tools.ts`, `src/research/tools.ts`, `src/review/tools.ts`, `src/runtime/tools.ts`, `src/tools/git.ts`, `src/tools/index.ts`, `src/tools/loop.ts`, `src/tools/repository.ts`, `src/tools/workspace.ts`, `src/usage/tools.ts`, `src/verification/tools.ts`, `src/watchdog/escalation.ts`, `src/watchdog/tools.ts`
+- `src/tools/framework.ts` ← `src/commit/tools.ts`, `src/completion/tools.ts`, `src/computer/tools.ts`, `src/context/tools.ts`, `src/documentation/tools.ts`, `src/editing/service.ts`, `src/editing/tools.ts`, `src/integrations/tools.ts`, `src/knowledge/tools.ts`, `src/localruntime/tools.ts`, `src/orchestration/tools.ts`, `src/planning/tools.ts`, `src/research/tools.ts`, `src/review/tools.ts`, `src/runtime/tools.ts`, `src/tools/git.ts`, `src/tools/index.ts`, `src/tools/loop.ts`, `src/tools/repository.ts`, `src/tools/workspace.ts`, `src/usage/tools.ts`, `src/verification/tools.ts`, `src/watchdog/escalation.ts`, `src/watchdog/tools.ts`, `test/agent-customization.test.ts`
 - `src/tools/git.ts` ← `src/commit/service.ts`, `src/documentation/agent.ts`, `src/documentation/context.ts`, `src/review/context.ts`, `src/review/reviewer.ts`, `src/tools/index.ts`, `src/tools/workspace.ts`
 - `src/tools/index.ts` ← `src/extension.ts`, `test/commit.test.ts`, `test/completion.test.ts`, `test/computer.test.ts`, `test/documentation.test.ts`, `test/editing.test.ts`, `test/execution.test.ts`, `test/git.test.ts`, `test/integrations.test.ts`, `test/knowledge.test.ts`, `test/localruntime.test.ts`, `test/phase28.test.ts`, `test/planning.test.ts`, `test/research.test.ts`, `test/review.test.ts`, `test/runtime.test.ts`, `test/tools.test.ts`, `test/watchdog.test.ts`
 - `src/tools/loop.ts` ← `src/tools/index.ts`, `src/watchdog/escalation.ts`
 - `src/tools/repository.ts` ← `src/tools/index.ts`, `src/tools/workspace.ts`
 - `src/tools/schema.ts` ← `src/tools/framework.ts`, `src/tools/index.ts`
-- `src/tools/types.ts` ← `src/commit/tools.ts`, `src/completion/tools.ts`, `src/computer/tools.ts`, `src/context/tools.ts`, `src/documentation/tools.ts`, `src/editing/service.ts`, `src/editing/tools.ts`, `src/integrations/hub.ts`, `src/integrations/tools.ts`, `src/integrations/types.ts`, `src/knowledge/tools.ts`, `src/localruntime/tools.ts`, `src/orchestration/tools.ts`, `src/planning/tools.ts`, `src/research/policy.ts`, `src/research/tools.ts`, `src/review/tools.ts`, `src/runtime/tools.ts`, `src/tools/framework.ts`, `src/tools/git.ts`, `src/tools/index.ts`, `src/tools/loop.ts`, `src/tools/repository.ts`, `src/tools/schema.ts`, `src/verification/tools.ts`, `src/watchdog/tools.ts`, `src/watchdog/triggers.ts`
+- `src/tools/types.ts` ← `src/agents/policy.ts`, `src/commit/tools.ts`, `src/completion/tools.ts`, `src/computer/tools.ts`, `src/context/tools.ts`, `src/documentation/tools.ts`, `src/editing/service.ts`, `src/editing/tools.ts`, `src/integrations/hub.ts`, `src/integrations/tools.ts`, `src/integrations/types.ts`, `src/knowledge/tools.ts`, `src/localruntime/tools.ts`, `src/orchestration/tools.ts`, `src/planning/tools.ts`, `src/research/policy.ts`, `src/research/tools.ts`, `src/review/tools.ts`, `src/runtime/tools.ts`, `src/tools/framework.ts`, `src/tools/git.ts`, `src/tools/index.ts`, `src/tools/loop.ts`, `src/tools/repository.ts`, `src/tools/schema.ts`, `src/verification/tools.ts`, `src/watchdog/tools.ts`, `src/watchdog/triggers.ts`
 - `src/tools/workspace.ts` ← `src/tools/index.ts`
 - `src/usage/config.ts` ← `src/settings/configuration.ts`, `src/usage/index.ts`, `src/verification/config.ts`
 - `src/usage/index.ts` ← `src/extension.ts`, `src/orchestration/inference.ts`, `src/tools/index.ts`, `src/tools/workspace.ts`, `src/watchdog/escalation.ts`, `test/context.test.ts`, `test/usage.test.ts`
@@ -473,9 +475,9 @@ This map is generated deterministically from the filesystem, manifests, and sour
 
 ## Incremental update
 
-- Reused: 207
+- Reused: 217
 - Added: 0
-- Changed: 7
+- Changed: 0
 - Removed: 0
 - Renamed: 0
 

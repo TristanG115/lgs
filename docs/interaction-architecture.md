@@ -42,3 +42,9 @@ The existing tool permission, workspace, privacy, and approval gates remain auth
 - An Activity Event records observable execution.
 
 Project agent configuration is version-controlled in `AGENTS.md` and `.agents/{skills,profiles,config.json}`. Skill routing reads metadata first, loads `SKILL.md` only for selected skills, and leaves references unloaded until needed. `ExtensionSource<T>` establishes the future marketplace/Git/local/package boundary; arbitrary external content is not implicitly trusted or installed.
+
+Repositories that have not opted in expose an `Initialize agent workspace` action. Initialization creates only missing compatible paths and never replaces an existing `AGENTS.md` or `.agents/config.json`. Automatic management remains off in the starter configuration.
+
+Skills can be project or global scoped, enabled independently, inspected, imported from a compatible local directory, or created through Skill Generation. Generation collects desired examples, unwanted behavior, priorities, constraints, scope, profile routing, and activation policy. LGS shows inferred patterns and a proposed diff before the explicit approval that creates or updates `SKILL.md`. Supporting resources use safe relative paths. Source adapters remain provider-neutral so Git, archives, registries, and marketplaces can be added without changing the skill model.
+
+Agent Profiles are defaults, not job silos. Built-in Manager, Researcher, Planner, Frontend, Backend, and Verifier profiles keep web research and supporting implementation tools available where useful. Each profile separates soft preferences, initial defaults, required outcomes, and rare runtime restrictions. User overrides are stored separately from immutable built-in definitions, making `Restore defaults` reliable; user-created profiles remain distinguishable from default and modified-default profiles.

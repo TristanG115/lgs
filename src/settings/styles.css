@@ -218,7 +218,7 @@ legend { color: var(--muted); font-size: 11px; }
 
 @keyframes spin { to { transform: rotate(360deg); } }
 @media (max-width: 860px) {
-  .layout { grid-template-columns: 1fr; }
+  .layout { grid-template-columns: 1fr; align-content: start; }
   .rail { position: relative; z-index: 4; width: 100%; min-width: 0; height: auto; overflow: hidden; padding: 14px; border-right: 0; border-bottom: 1px solid var(--border); }
   .identity { min-width: 0; padding-bottom: 12px; }.rail nav { display: flex; width: 100%; min-width: 0; max-width: 100%; overflow-x: auto; }.nav-item { flex: 0 0 auto; width: auto; white-space: nowrap; }
   .content { padding: 26px 20px 60px; }.theme-grid { grid-template-columns: 1fr; }.theme-card { display: grid; grid-template-columns: 42% 1fr; }.theme-preview { height: 112px; border-right: 1px solid currentColor; border-bottom: 0; }
@@ -239,5 +239,12 @@ legend { color: var(--muted); font-size: 11px; }
 .profile-list b, .profile-list span { display: block; }
 .profile-list span, .profile-list small { margin-top: 3px; color: var(--muted); font-size: 11px; }
 .profile-list code { color: var(--accent); font-size: 10px; overflow-wrap: anywhere; }
+.proposal { margin-top: 16px; padding: 12px 0; border-block: 1px solid var(--border); }
+.proposal b { font-size: 12px; }.proposal ul { margin: 8px 0; padding-left: 20px; color: var(--muted); }
+.proposal details { margin-top: 10px; }.proposal pre { max-height: 260px; overflow: auto; padding: 10px; background: var(--inset); color: var(--text); font-size: 10px; white-space: pre-wrap; }
+.connection-facts .invalid { color: var(--danger); }
+.form-grid fieldset.wide { display: flex; flex-wrap: wrap; gap: 8px 16px; padding: 10px; border: 1px solid var(--border); }
+.form-grid fieldset.wide legend { padding: 0 5px; color: var(--muted); font-size: 11px; }
+.form-grid details.wide { padding: 10px 0; border-top: 1px solid var(--border); }.form-grid details.wide label { margin-top: 8px; }
 @media (max-width: 620px) { .row-actions { justify-content: flex-start; } .profile-list article { grid-template-columns: 1fr; gap: 4px; } }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition: none !important; } }

@@ -29,6 +29,12 @@ sidebar request
 
 Phase 28 adds persistent `PLAN.md` and `RESEARCH.md` projections, deterministic research requirements before unsupported execution, experiment novelty and budget enforcement, task-owned artifact indexing, and checkpointed context rotation. The external-site BrowserAgent reuses the isolated Playwright session but applies a separate confirmation gate to consequential actions. Detailed lifecycle contracts are in [research-workflows.md](research-workflows.md).
 
+## Managed agent configuration
+
+`src/agents` owns repository workspace detection, immutable built-in profile definitions, separate profile overrides, and approval-oriented Skill Generation sessions. `src/knowledge/skills.ts` owns compatible `SKILL.md` parsing, validation, project/global discovery, safe resources, imports, routing metadata, and progressive selection. Settings is a management surface over those host-side contracts.
+
+Profile policy has four semantic layers: preferences, defaults, requirements, and restrictions. Preferences and defaults guide the model. Requirements participate in completion policy. Restrictions must be enforced by the runtime/tool layer. Plan Mode is such a product guarantee and is enforced centrally by `ToolExecutor`, independently of profile prompt text.
+
 ## Persistent state
 
 - VS Code global state: user scalar settings, provider-profile metadata, chats, and Git baselines.

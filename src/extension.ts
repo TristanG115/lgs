@@ -29,6 +29,7 @@ import { FilePricingStore, FileUsageStore, setActiveUsageTracker, UsageTracker }
 import { UsageDashboardPanel } from './usage/panel.js';
 import { ActivityLogPanel } from './interaction/panel.js';
 import { contextUsage, FileActivityStore, MemoryActivityStore, modeAllows, RequestExecutionService, type ActivityEventType, type ExecutionMode, type RequestExecution } from './interaction/index.js';
+import { AgentProfileExecutionGuard, AgentProfileStore } from './agents/index.js';
 
 type AttachmentSummary = { name: string; mediaType: string; bytes: number };
 type SavedChat = { id: string; title: string; updatedAt: number; messages: LgsMessage[]; attachments?: Record<number, AttachmentSummary[]>; requestIds?: string[] };
@@ -336,7 +337,9 @@ class LgsViewProvider implements vscode.WebviewViewProvider {
           editing, contextLifecycle,
         });
         const capabilityGuard: ToolExecutionGuard = { check: definition => capabilityBlock(definition.id, definition.permission, this.options) };
-        const executor = new ToolExecutor(registry, root, audit, undefined, [new ResearchExecutionGuard(researchRequirements, project.research.webEnabled && this.options.capabilities.web), capabilityGuard]);
+        const behaviorProfiles = new AgentProfileStore(path.join(this.context.globalStorageUri.fsPath, 'profiles')).list();
+        const profileGuard = new AgentProfileExecutionGuard(identity => behaviorProfiles.find(profile => profile.id === identity.agentRole) || behaviorProfiles.find(profile => profile.id === 'manager'));
+        const executor = new ToolExecutor(registry, root, audit, undefined, [new ResearchExecutionGuard(researchRequirements, project.research.webEnabled && this.options.capabilities.web), capabilityGuard, profileGuard]);
         publish();
         const outcome = await runToolLoop({
           model: routedModel, executor, messages: this.history,
@@ -407,7 +410,7 @@ class LgsViewProvider implements vscode.WebviewViewProvider {
       catch (error) { this.send({ type: 'error', message: error instanceof Error ? error.message : 'The edited plan is invalid.' }); }
       return;
     }
-    if (action === 'beginImplementation') { const plan = plans.read(this.chatId); if (plan?.handoff === 'wait-for-approval' && plan.status !== 'approved') { this.send({ type: 'error', message: 'Approve the plan before beginning implementation.' }); return; } this.options = { ...this.options, mode: 'normal' }; this.send({ type: 'options', options: this.options }); return; }
+    if (action === 'beginImplementation') { const plan = plans.read(this.chatId); if (plan?.handoff === 'wait-for-approval' && plan.status !== 'approved') { this.send({ type: 'error', message: 'Approve the plan before beginning implementation.' }); return; } this.options = { ...this.options, mode: 'normal' }; this.send({ type: 'options', options: this.options }); if (this.currentRequestId) this.executions.event(this.currentRequestId, 'phase', 'Plan approved · implementation enabled', { status: 'success', resource: { kind: 'file', value: `.lgs/tasks/${this.chatId}/PLAN.md` } }); return; }
     if (action === 'regeneratePlan') { this.options = { ...this.options, mode: 'plan' }; this.send({ type: 'options', options: this.options }); this.send({ type: 'state', state: 'Plan mode ready · submit revision evidence' }); return; }
     const file = action === 'viewTaskState' ? path.join(root, '.lgs', 'tasks', this.chatId, 'state.json')
       : action === 'viewPlan' ? path.join(root, '.lgs', 'tasks', this.chatId, 'PLAN.md')

@@ -9,7 +9,7 @@ describe('Planning Mode', () => {
     const root = fs.mkdtempSync(path.join(os.tmpdir(), 'lgs-plan-')); const registry = new ToolRegistry();
     registry.register({ id: 'write_file', description: 'mutates', permission: { access: 'execute', scope: 'workspace', network: false, category: 'process' }, argumentSchema: { type: 'object', properties: {}, additionalProperties: false }, execute: () => ({ data: {}, resultCount: 1 }) });
     registerPlanningTools(registry, new FileTaskStateStore(root)); const executor = new ToolExecutor(registry, root);
-    expect((await executor.execute({ id: 'write_file', arguments: {} }, { taskMode: 'planning' })).error?.message).toContain('disabled');
+    expect((await executor.execute({ id: 'write_file', arguments: {} }, { taskMode: 'planning' })).error?.message).toContain('Write blocked by Plan Mode');
     const result = await executor.execute({ id: 'create_plan_task', arguments: { taskId: 'plan-18', objective: 'Plan safely.', acceptanceCriteria: ['No writes'], subtasks: ['Inspect'] } }, { taskMode: 'planning' });
     expect(result.status).toBe('success'); expect(new FileTaskStateStore(root).read('plan-18')).toMatchObject({ currentPlan: ['Inspect'] }); fs.rmSync(root, { recursive: true, force: true });
   });
